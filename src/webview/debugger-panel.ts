@@ -1,11 +1,10 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
+import { ExtensionContext, ViewColumn, WebviewPanel, window } from 'vscode';
+import { PanelViewProxy } from './panel-views/panel-view-proxy';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
 
-  constructor(private readonly context: ExtensionContext) {
+  constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
   }
 
   openPanel(): void {
@@ -18,13 +17,17 @@ export class DebuggerPanel {
     this.viewPanel = window.createWebviewPanel(
       'visualDebugger',
       'Visual Debugger',
-      ViewColumn.Beside
+      ViewColumn.Beside,
+      {
+        enableScripts: true
+      }
     );
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
 
-    const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'debugger-panel.html'));
-    this.viewPanel.webview.html = readFileSync(filePath.fsPath, 'utf8');
+    this.viewPanel.webview.html = this.panelViewProxy.getHtml();
+
+    this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel());
   }
 
   private teardownPanel(): void {
