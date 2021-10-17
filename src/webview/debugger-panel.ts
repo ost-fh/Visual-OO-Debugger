@@ -1,4 +1,6 @@
-import { ExtensionContext, ViewColumn, WebviewPanel, window } from "vscode";
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -21,24 +23,11 @@ export class DebuggerPanel {
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
 
-    this.viewPanel.webview.html = this.getWebviewContent();
+    const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'debugger-panel.html'));
+    this.viewPanel.webview.html = readFileSync(filePath.fsPath, 'utf8');
   }
 
   private teardownPanel(): void {
     this.viewPanel = undefined;
-  }
-
-  private getWebviewContent(): string {
-    return `<!DOCTYPE html>
-	  <html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Visual Debugger</title>
-		</head>
-		<body>
-			<p>Visual Debugger works!</p>
-		</body>
-	  </html>`;
   }
 }
