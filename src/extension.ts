@@ -16,4 +16,3 @@ class Extension {
     context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => this.debuggerPanel.openPanel()));
   }
 }
-
