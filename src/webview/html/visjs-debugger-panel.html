@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Debugger</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+      html,
+      body,
+      #visjs-network {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="visjs-network"></div>
+    <script type="text/javascript">
+      window.addEventListener('message', event => {
+        const message = event.data; // The JSON data our extension sent
+
+        if (message.command === 'updateVisjs') {
+          const container = document.querySelector('#visjs-network');
+          const network = new vis.Network(container, message.data, message.options);
+        }
+      });
+    </script>
+  </body>
+</html>
