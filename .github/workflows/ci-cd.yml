@@ -1,0 +1,14 @@
+name: CI/CD
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+      - name: Ensure a clean installation
+        run: npm ci
+      - name: Compile, lint and test
+        run: xvfb-run -a npm test
