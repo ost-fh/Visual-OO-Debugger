@@ -7,6 +7,10 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
+      - name: Select node version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - name: Ensure a clean installation
         run: npm ci
       - name: Compile, lint and test
