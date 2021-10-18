@@ -5,6 +5,7 @@
   "description": "A visual debugger for Java for teaching object-oriented programming. The extension visualizes objects and variables graphically and can run a program step by step to facilitate a better understanding of how objects and variables change over the course of a program.",
   "version": "0.0.1",
   "engines": {
+    "node": "^16",
     "vscode": "^1.61.0"
   },
   "categories": [
