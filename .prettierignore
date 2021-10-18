@@ -1,0 +1,9 @@
+# Based on .gitignore:
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+
+# Based on .eslintignore:
+#   N/A
