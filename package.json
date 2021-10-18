@@ -28,9 +28,11 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint:check",
+    "pretest": "npm run compile && npm run lint:check && npm run format:check",
     "lint:check": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
