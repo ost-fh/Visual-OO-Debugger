@@ -6,7 +6,7 @@ export function activate(context: ExtensionContext) {
   new Extension(context);
 }
 
-export function deactivate() { }
+export function deactivate() {}
 
 class Extension {
   private debuggerPanel: DebuggerPanel;

@@ -4,8 +4,7 @@ import { PanelViewProxy } from './panel-views/panel-view-proxy';
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
 
-  constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
-  }
+  constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {}
 
   openPanel(): void {
     // Make sure only one panel exists
@@ -14,14 +13,9 @@ export class DebuggerPanel {
       return;
     }
 
-    this.viewPanel = window.createWebviewPanel(
-      'visualDebugger',
-      'Visual Debugger',
-      ViewColumn.Beside,
-      {
-        enableScripts: true
-      }
-    );
+    this.viewPanel = window.createWebviewPanel('visualDebugger', 'Visual Debugger', ViewColumn.Beside, {
+      enableScripts: true,
+    });
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
 

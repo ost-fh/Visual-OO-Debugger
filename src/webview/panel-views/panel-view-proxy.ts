@@ -1,4 +1,3 @@
-
 export interface PanelViewProxy {
   getHtml: () => string;
   updatePanel: () => UpdatePanelViewCommand;
