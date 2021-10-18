@@ -21,7 +21,7 @@ export class DebuggerPanel {
 
     this.viewPanel.webview.html = this.panelViewProxy.getHtml();
 
-    this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel());
+    void this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel());
   }
 
   private teardownPanel(): void {

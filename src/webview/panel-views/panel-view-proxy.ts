@@ -4,6 +4,6 @@ export interface PanelViewProxy {
 }
 
 export interface UpdatePanelViewCommand {
-  [key: string]: any;
+  [key: string]: unknown;
   command: string;
 }
