@@ -2,11 +2,13 @@ import { commands, ExtensionContext } from 'vscode';
 import { DebuggerPanel } from './webview/debugger-panel';
 import { VisjsPanelView } from './webview/panel-views/visjs-panel-view';
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext): void {
   new Extension(context);
 }
 
-export function deactivate() {}
+export function deactivate(): void {
+  //  Do nothing
+}
 
 class Extension {
   private debuggerPanel: DebuggerPanel;
