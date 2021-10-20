@@ -12,7 +12,8 @@
     "Debuggers"
   ],
   "activationEvents": [
-    "onCommand:visual-oo-debugger.openDebugger"
+    "onCommand:visual-oo-debugger.openDebugger",
+    "onDebug"
   ],
   "main": "./out/extension.js",
   "contributes": {
