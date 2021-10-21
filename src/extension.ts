@@ -1,8 +1,7 @@
 import { commands, ExtensionContext } from 'vscode';
-import { DebuggerPanel } from './webview/debugger-panel';
-import { VisjsPanelView } from './webview/panel-views/visjs-panel-view';
-import { DebugPrinter } from './debug-adapter/DebugPrinter';
-import { DebugEventManager } from './debug-adapter/DebugEventManager';
+import { DebugEventManager } from './debug-adapter/debugEventManager';
+import { DebuggerPanel } from './webview/debuggerPanel';
+import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
 
 export function activate(context: ExtensionContext): void {
   new Extension(context);
@@ -16,13 +15,10 @@ class Extension {
   private debuggerPanel: DebuggerPanel;
 
   constructor(context: ExtensionContext) {
-    this.debuggerPanel = new DebuggerPanel(context, new VisjsPanelView(context));
-
-    const dp = new DebugPrinter 
-    const dsm = new DebugEventManager(dp);
+    const visjsPanelView = new VisjsPanelView(context);
+    this.debuggerPanel = new DebuggerPanel(context, visjsPanelView);
+    new DebugEventManager(this.debuggerPanel);
 
     context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => this.debuggerPanel.openPanel()));
-
-
   }
 }
