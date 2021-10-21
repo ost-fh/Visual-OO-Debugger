@@ -1,5 +1,6 @@
 import { ExtensionContext, ViewColumn, WebviewPanel, window } from 'vscode';
-import { PanelViewProxy } from './panel-views/panel-view-proxy';
+import { DebugSessionProxy } from '../debug-adapter/debugSessionProxy';
+import { PanelViewProxy } from './panel-views/panelViewProxy';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -20,8 +21,12 @@ export class DebuggerPanel {
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
 
     this.viewPanel.webview.html = this.panelViewProxy.getHtml();
+  }
 
-    void this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel());
+  async updatePanel(debugSessionProxy: DebugSessionProxy): Promise<void> {
+    if (this.viewPanel !== undefined && debugSessionProxy !== undefined) {
+      void this.viewPanel.webview.postMessage(await this.panelViewProxy.updatePanel(debugSessionProxy));
+    }
   }
 
   private teardownPanel(): void {
