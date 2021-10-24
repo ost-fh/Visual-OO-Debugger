@@ -22,6 +22,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/naming-convention": "error",
     "@typescript-eslint/semi": "error",
     "curly": "error",
