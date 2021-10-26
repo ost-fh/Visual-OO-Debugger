@@ -4,6 +4,7 @@ export interface PanelViewProxy {
   getHtml: () => string;
   updatePanel: (panelViewInput: PanelViewInput) => PanelViewCommand;
   exportPanel: () => PanelViewCommand;
+  teardownPanelView: () => void;
 }
 
 export interface PanelViewCommand {

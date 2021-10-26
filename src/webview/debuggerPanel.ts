@@ -5,6 +5,8 @@ import { PanelViewProxy } from './panel-views/panelViewProxy';
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
 
+  private currentPanelViewInput: PanelViewInput | undefined;
+
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {}
 
   openPanel(): void {
@@ -24,9 +26,14 @@ export class DebuggerPanel {
     this.viewPanel.webview.html = this.panelViewProxy.getHtml();
 
     void commands.executeCommand('setContext', 'viewPanel.exists', true);
+
+    if (this.currentPanelViewInput) {
+      this.updatePanel(this.currentPanelViewInput);
+    }
   }
 
   updatePanel(panelViewInput: PanelViewInput): void {
+    this.currentPanelViewInput = panelViewInput;
     if (this.viewPanel !== undefined && panelViewInput !== undefined) {
       void this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel(panelViewInput));
     }
@@ -40,6 +47,7 @@ export class DebuggerPanel {
 
   private teardownPanel(): void {
     this.viewPanel = undefined;
+    this.panelViewProxy.teardownPanelView();
     void commands.executeCommand('setContext', 'viewPanel.exists', false);
   }
 }

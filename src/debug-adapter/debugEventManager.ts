@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
 import { debug } from 'vscode';
 import { PanelViewInput, PanelViewVariable } from '../model/panelViewInput';
 import { Variable } from '../model/variable';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
+import * as hash from 'object-hash';
 
 export class DebugEventManager {
   private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
@@ -41,7 +41,7 @@ export class DebugEventManager {
     for (const variable of variables || []) {
       if (this.primitiveDataTypes.includes(variable.type)) {
         const panelViewVariable: PanelViewVariable = {
-          id: uuidv4(),
+          id: hash(variable),
           name: variable.name,
           type: variable.type,
           value: variable.value,
@@ -91,7 +91,7 @@ export class DebugEventManager {
     const id = variable.value;
     let panelViewVariable = this.panelViewInput?.variables.get(id);
     if (panelViewVariable === undefined) {
-      panelViewVariable = { id: id !== 'null' ? id : uuidv4() };
+      panelViewVariable = { id: id !== 'null' ? id : hash(variable) };
       if (!parentId) {
         panelViewVariable.name = variable.name;
       }

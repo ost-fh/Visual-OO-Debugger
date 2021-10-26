@@ -19,13 +19,27 @@
   <body>
     <div id="visjs-network"></div>
     <script type="text/javascript">
+      let network;
+      let edges;
+      let nodes;
+
       window.addEventListener('message', (event) => {
-        const message = event.data; // The JSON data our extension sent
-        if (message.command === 'updateVisjs') {
+        const message = event.data;
+
+        if (message.command === 'initializeVisjs') {
           const container = document.querySelector('#visjs-network');
-          const network = new vis.Network(container, message.data, message.options);
-        }
-        if (message.command === 'exportVisjs') {
+          edges = new vis.DataSet(message.data.edges);
+          nodes = new vis.DataSet(message.data.nodes);
+
+          const data = { edges, nodes };
+          network = new vis.Network(container, data, message.options);
+        } else if (message.command === 'updateVisjs') {
+          edges.remove(message.data.deleteEdgeIds);
+          nodes.remove(message.data.deleteNodeIds);
+          nodes.add(message.data.addNodes);
+          nodes.updateOnly(message.data.updateNodes);
+          edges.add(message.data.addEdges);
+        } else if (message.command === 'exportVisjs') {
           const canvas = document.querySelector('#visjs-network canvas');
           const img = canvas.toDataURL('image/png');
           var downloadLink = document.createElement('a');
