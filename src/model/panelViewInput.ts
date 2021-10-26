@@ -10,11 +10,17 @@ export interface PanelViewVariable {
   name?: string;
   primitiveValues?: PrimitiveValue[];
   incomingRelations?: VariableRelation[];
+  references?: VariableReference[];
 }
 
 export interface VariableRelation {
   relationName: string;
   parentId: string;
+}
+
+export interface VariableReference {
+  relationName: string;
+  childId: string;
 }
 
 export interface PrimitiveValue {
