@@ -1,8 +1,8 @@
-import { DebugSessionProxy } from '../../debug-adapter/debugSessionProxy';
+import { PanelViewInput } from '../../model/panelViewInput';
 
 export interface PanelViewProxy {
   getHtml: () => string;
-  updatePanel: (debugSessionProxy: DebugSessionProxy) => Promise<PanelViewCommand>;
+  updatePanel: (panelViewInput: PanelViewInput) => PanelViewCommand;
   exportPanel: () => PanelViewCommand;
 }
 

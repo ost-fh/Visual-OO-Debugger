@@ -1,8 +1,8 @@
-export interface VisjsPanelViewInput {
-  variables: Map<number | string, VisjsPanelViewVariable>; // The key is the value of an object or a random uuid for primitives
+export interface PanelViewInput {
+  variables: Map<string, PanelViewVariable>; // The key is the value of an object or a random uuid for primitives
 }
 
-export interface VisjsPanelViewVariable {
+export interface PanelViewVariable {
   id: string;
   type?: string;
   value?: string;
