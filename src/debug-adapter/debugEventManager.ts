@@ -119,6 +119,10 @@ export class DebugEventManager {
         ...(panelViewVariable.incomingRelations || []),
         { parentId: parentId, relationName: variable.name },
       ];
+      const parentVariable = this.panelViewInput?.variables.get(parentId);
+      if (parentVariable) {
+        parentVariable.references = [...(parentVariable.references || []), { childId: id, relationName: variable.name }];
+      }
     }
 
     if (isNewAndObject && variable.variablesReference) {
