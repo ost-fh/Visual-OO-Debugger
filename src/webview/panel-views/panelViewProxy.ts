@@ -2,10 +2,11 @@ import { DebugSessionProxy } from '../../debug-adapter/debugSessionProxy';
 
 export interface PanelViewProxy {
   getHtml: () => string;
-  updatePanel: (debugSessionProxy: DebugSessionProxy) => Promise<UpdatePanelViewCommand>;
+  updatePanel: (debugSessionProxy: DebugSessionProxy) => Promise<PanelViewCommand>;
+  exportPanel: () => PanelViewCommand;
 }
 
-export interface UpdatePanelViewCommand {
+export interface PanelViewCommand {
   [key: string]: unknown;
   command: string;
 }

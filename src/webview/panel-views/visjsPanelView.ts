@@ -6,7 +6,7 @@ import { ExtensionContext, Uri } from 'vscode';
 import { DebugSessionProxy } from '../../debug-adapter/debugSessionProxy';
 import { Variable } from '../../model/variable';
 import { VisjsPanelViewInput, VisjsPanelViewVariable } from '../../model/visjsPanelViewInput';
-import { PanelViewProxy, UpdatePanelViewCommand } from './panelViewProxy';
+import { PanelViewProxy, PanelViewCommand } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
   private readonly primitiveDataArray = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
@@ -25,7 +25,7 @@ export class VisjsPanelView implements PanelViewProxy {
     return readFileSync(filePath.fsPath, 'utf8');
   }
 
-  async updatePanel(debugSessionProxy: DebugSessionProxy): Promise<UpdatePanelViewCommand> {
+  async updatePanel(debugSessionProxy: DebugSessionProxy): Promise<PanelViewCommand> {
     this.debugSessionProxy = debugSessionProxy;
     const currentVariables = await this.debugSessionProxy.getAllCurrentVariables();
     const data = await this.getData(currentVariables);
@@ -42,6 +42,10 @@ export class VisjsPanelView implements PanelViewProxy {
     };
 
     return { command: 'updateVisjs', data, options };
+  }
+
+  exportPanel(): PanelViewCommand {
+    return { command: 'exportVisjs' };
   }
 
   private async getData(variables: Variable[] | undefined): Promise<Data> {
