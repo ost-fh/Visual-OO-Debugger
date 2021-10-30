@@ -22,6 +22,8 @@
       let network;
       let edges;
       let nodes;
+      let defaultNodeColor;
+      let defaultEdgeColor;
 
       window.addEventListener('message', (event) => {
         const message = event.data;
@@ -30,12 +32,18 @@
           const container = document.querySelector('#visjs-network');
           edges = new vis.DataSet(message.data.edges);
           nodes = new vis.DataSet(message.data.nodes);
+          defaultNodeColor = message.options.nodes.color;
+          defaultEdgeColor = message.options.edges.color;
 
           const data = { edges, nodes };
           network = new vis.Network(container, data, message.options);
         } else if (message.command === 'updateVisjs') {
           edges.remove(message.data.deleteEdgeIds);
           nodes.remove(message.data.deleteNodeIds);
+
+          nodes.updateOnly(nodes.map((node) => ({ ...node, color: defaultNodeColor })));
+          edges.updateOnly(edges.map((edge) => ({ ...edge, color: defaultEdgeColor })));
+
           nodes.add(message.data.addNodes);
           nodes.updateOnly(message.data.updateNodes);
           edges.add(message.data.addEdges);
