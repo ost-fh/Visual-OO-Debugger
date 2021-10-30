@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
-import { isEqual } from 'lodash';
+import { isEqual, some } from 'lodash';
 import { join } from 'path';
-import { Data, Edge, Node, Options } from 'vis-network';
+import { Color, Data, Edge, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri } from 'vscode';
 import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
@@ -9,6 +9,34 @@ import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { PanelViewProxy, PanelViewCommand } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
+  private readonly defaultNodeColor: Color = {
+    border: '#1e88e5',
+    background: '#6ab7ff',
+    highlight: {
+      border: '#1e88e5',
+      background: '#6ab7ff',
+    },
+  };
+
+  private readonly defaultEdgeColor: { color?: string; highlight?: string } = {
+    color: '#005cb2',
+    highlight: '#005cb2',
+  };
+
+  private readonly changedNodeColor: Color = {
+    border: '#fdd835',
+    background: '#ffff6b',
+    highlight: {
+      border: '#fdd835',
+      background: '#ffff6b',
+    },
+  };
+
+  private readonly changedEdgeColor: { color?: string; highlight?: string } = {
+    color: '#c6a700',
+    highlight: '#c6a700',
+  };
+
   private changelog: VisjsChangelogEntry[] = [];
 
   private currentPanelViewInput: PanelViewInput | undefined;
@@ -30,8 +58,12 @@ export class VisjsPanelView implements PanelViewProxy {
       this.currentPanelViewInput = panelViewInput;
 
       const options: Options = {
+        nodes: {
+          color: this.defaultNodeColor,
+        },
         edges: {
           arrows: 'to',
+          color: this.defaultEdgeColor,
         },
         physics: {
           solver: 'repulsion',
@@ -61,10 +93,10 @@ export class VisjsPanelView implements PanelViewProxy {
     for (const nodeChange of changelogEntry.nodeChanges) {
       switch (nodeChange.action) {
         case ChangeAction.create:
-          addNodes.push(nodeChange.node);
+          addNodes.push({ ...nodeChange.node, color: this.changedNodeColor });
           break;
         case ChangeAction.update:
-          updateNodes.push(nodeChange.newNode);
+          updateNodes.push({ ...nodeChange.newNode, color: this.changedNodeColor });
           break;
         case ChangeAction.delete:
           deleteNodeIds.push(nodeChange.node.id as string);
@@ -76,7 +108,7 @@ export class VisjsPanelView implements PanelViewProxy {
     for (const edgeChange of changelogEntry.edgeChanges) {
       switch (edgeChange.action) {
         case ChangeAction.create:
-          addEdges.push(edgeChange.edge);
+          addEdges.push({ ...edgeChange.edge, color: this.changedEdgeColor });
           break;
         case ChangeAction.delete:
           deleteEdgeIds.push(edgeChange.edge.id as string);
@@ -136,10 +168,12 @@ export class VisjsPanelView implements PanelViewProxy {
         }
 
         const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) => !oldVariable.incomingRelations?.includes(relation)
+          (relation: VariableRelation) =>
+            !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
         );
         const deletedIncomingRelations = (oldVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) => !newVariable.incomingRelations?.includes(relation)
+          (relation: VariableRelation) =>
+            !some(newVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
         );
 
         for (const relation of addedIncomingRelations) {

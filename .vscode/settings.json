@@ -10,6 +10,8 @@
   "typescript.tsc.autoDetect": "off",
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "html.format.extraLiners": "body",
   "html.format.indentInnerHtml": true,
   "html.format.maxPreserveNewLines": 1,
