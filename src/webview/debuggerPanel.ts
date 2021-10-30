@@ -29,6 +29,12 @@ export class DebuggerPanel {
     }
   }
 
+  exportPanel(): void {
+    if (this.viewPanel !== undefined) {
+      void this.viewPanel.webview.postMessage(this.panelViewProxy.exportPanel());
+    }
+  }
+
   private teardownPanel(): void {
     this.viewPanel = undefined;
   }

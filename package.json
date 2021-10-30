@@ -13,6 +13,7 @@
   ],
   "activationEvents": [
     "onCommand:visual-oo-debugger.openDebugger",
+    "onCommand:visual-oo-debugger.exportPNG",
     "onDebug"
   ],
   "main": "./out/extension.js",
@@ -21,6 +22,11 @@
       {
         "command": "visual-oo-debugger.openDebugger",
         "title": "Open debugger view",
+        "category": "VOOD"
+      },
+      {
+        "command": "visual-oo-debugger.exportPNG",
+        "title": "Export as PNG",
         "category": "VOOD"
       }
     ]

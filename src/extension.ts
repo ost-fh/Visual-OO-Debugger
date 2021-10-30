@@ -20,5 +20,6 @@ class Extension {
     new DebugEventManager(this.debuggerPanel);
 
     context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => this.debuggerPanel.openPanel()));
+    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.exportPNG', () => this.debuggerPanel.exportPanel()));
   }
 }
