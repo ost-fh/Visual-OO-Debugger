@@ -29,7 +29,15 @@
         "title": "Export as PNG",
         "category": "VOOD"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "visual-oo-debugger.exportPNG",
+          "when": "viewPanel.exists"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
