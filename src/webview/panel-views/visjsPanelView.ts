@@ -86,6 +86,10 @@ export class VisjsPanelView implements PanelViewProxy {
     return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(changelogEntry) };
   }
 
+  exportPanel(): PanelViewCommand {
+    return { command: 'exportVisjs' };
+  }
+
   private parseChangelogEntryToUpdateInput(changelogEntry: VisjsChangelogEntry): VisjsUpdateInput {
     const addNodes: Node[] = [];
     const updateNodes: Node[] = [];
@@ -282,10 +286,6 @@ export class VisjsPanelView implements PanelViewProxy {
     return Boolean(v1) && Boolean(v2) && !isEqual(v1, v2);
   }
 
-  exportPanel(): PanelViewCommand {
-    return { command: 'exportVisjs' };
-  }
-
   private parseInputToData(panelViewInput: PanelViewInput): Data {
     const nodes: Node[] = [];
     let edges: Edge[] = [];
@@ -302,7 +302,8 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
-    const topLine = `${variable.type ? `(${variable.type})` : ''}${hasValueAndType ? ' ' : ''}${variable.name ? `${variable.name}` : ''}`;
+    const variableType = variable.type ? `(${variable.type})` : '';
+    const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
       bottomSection = variable.value;
