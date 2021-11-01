@@ -95,25 +95,7 @@ export class DebugEventManager {
     const id = variable.value;
     let panelViewVariable = panelViewInput.variables.get(id);
     if (panelViewVariable === undefined) {
-      panelViewVariable = { id: id !== 'null' ? id : hash(variable) };
-      if (!parentId) {
-        panelViewVariable.name = variable.name;
-      }
-
-      if (variable.type !== 'null') {
-        panelViewVariable.type = variable.type;
-        if (variable.type === 'String') {
-          [panelViewVariable.value, panelViewVariable.tooltip] = this.prepareStringData(variable);
-        } else if (this.primitiveArrayDataTypes.includes(variable.type)) {
-          [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, ',');
-        } else if (variable.type === 'String[]') {
-          [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, '","');
-        } else {
-          isNewAndObject = true;
-        }
-      } else {
-        panelViewVariable.value = 'null';
-      }
+      [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable, parentId);
 
       panelViewInput.variables.set(panelViewVariable.id, panelViewVariable);
     }
@@ -133,6 +115,36 @@ export class DebugEventManager {
       const childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
       await this.readDataOfVariables(childVariables, panelViewInput, id, maxDepth - 1);
     }
+  }
+
+  private async createPanelViewVariable(
+    id: string,
+    variable: Variable,
+    parentId: string | undefined
+  ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
+    let isNewAndObject = false;
+    const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : hash(variable) };
+    if (!parentId) {
+      panelViewVariable.name = variable.name;
+    }
+
+    if (variable.type === 'null') {
+      panelViewVariable.value = 'null';
+      return [panelViewVariable, isNewAndObject];
+    }
+
+    panelViewVariable.type = variable.type;
+    if (variable.type === 'String') {
+      [panelViewVariable.value, panelViewVariable.tooltip] = this.prepareStringData(variable);
+    } else if (this.primitiveArrayDataTypes.includes(variable.type)) {
+      [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, ',');
+    } else if (variable.type === 'String[]') {
+      [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, '","');
+    } else {
+      isNewAndObject = true;
+    }
+
+    return [panelViewVariable, isNewAndObject];
   }
 
   private async preparePrimitiveArrayData(variable: Variable, delimiter: string): Promise<[label: string, tooltip: string | undefined]> {
