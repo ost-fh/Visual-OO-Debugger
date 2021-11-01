@@ -156,56 +156,65 @@ export class VisjsPanelView implements PanelViewProxy {
       const oldVariable = this.currentPanelViewInput?.variables.get(variableId);
       const newVariable = panelViewInput.variables.get(variableId);
       if (oldVariable && newVariable) {
-        if (
-          oldVariable.value !== newVariable.value ||
-          oldVariable.tooltip !== newVariable.tooltip ||
-          oldVariable.type !== newVariable.type ||
-          oldVariable.name !== newVariable.name ||
-          !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
-        ) {
-          nodeChanges.push({
-            action: ChangeAction.update,
-            oldNode: this.createNode(oldVariable),
-            newNode: this.createNode(newVariable),
-          });
-        }
-
-        const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) =>
-            !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
-        );
-        const deletedIncomingRelations = (oldVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) =>
-            !some(newVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
-        );
-
-        for (const relation of addedIncomingRelations) {
-          edgeChanges.push({
-            action: ChangeAction.create,
-            edge: {
-              id: `${relation.parentId}to${newVariable.id}`,
-              from: relation.parentId,
-              to: newVariable.id,
-              label: relation.relationName,
-            },
-          });
-        }
-
-        for (const relation of deletedIncomingRelations) {
-          edgeChanges.push({
-            action: ChangeAction.delete,
-            edge: {
-              id: `${relation.parentId}to${newVariable.id}`,
-              from: relation.parentId,
-              to: newVariable.id,
-              label: relation.relationName,
-            },
-          });
-        }
+        this.addNodeAndEdgeChanges(oldVariable, newVariable, nodeChanges, edgeChanges);
       }
     }
 
     return [nodeChanges, edgeChanges];
+  }
+
+  private addNodeAndEdgeChanges(
+    oldVariable: PanelViewVariable,
+    newVariable: PanelViewVariable,
+    nodeChanges: ChangedNode[],
+    edgeChanges: ChangedEdge[]
+  ): void {
+    if (
+      oldVariable.value !== newVariable.value ||
+      oldVariable.tooltip !== newVariable.tooltip ||
+      oldVariable.type !== newVariable.type ||
+      oldVariable.name !== newVariable.name ||
+      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
+    ) {
+      nodeChanges.push({
+        action: ChangeAction.update,
+        oldNode: this.createNode(oldVariable),
+        newNode: this.createNode(newVariable),
+      });
+    }
+
+    const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
+      (relation: VariableRelation) =>
+        !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
+    );
+    const deletedIncomingRelations = (oldVariable.incomingRelations || []).filter(
+      (relation: VariableRelation) =>
+        !some(newVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
+    );
+
+    for (const relation of addedIncomingRelations) {
+      edgeChanges.push({
+        action: ChangeAction.create,
+        edge: {
+          id: `${relation.parentId}to${newVariable.id}`,
+          from: relation.parentId,
+          to: newVariable.id,
+          label: relation.relationName,
+        },
+      });
+    }
+
+    for (const relation of deletedIncomingRelations) {
+      edgeChanges.push({
+        action: ChangeAction.delete,
+        edge: {
+          id: `${relation.parentId}to${newVariable.id}`,
+          from: relation.parentId,
+          to: newVariable.id,
+          label: relation.relationName,
+        },
+      });
+    }
   }
 
   private buildCreateChangelogEntry(
