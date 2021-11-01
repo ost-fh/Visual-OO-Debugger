@@ -6,7 +6,7 @@ import { ExtensionContext, Uri } from 'vscode';
 import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
-import { PanelViewProxy, PanelViewCommand } from './panelViewProxy';
+import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
   private readonly defaultNodeColor: Color = {
@@ -44,8 +44,11 @@ export class VisjsPanelView implements PanelViewProxy {
   constructor(private readonly context: ExtensionContext) {}
 
   getHtml(): string {
+    const visNetworkPath = Uri.file(
+      join(this.context.extensionPath, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
+    ).with({ scheme: 'vscode-resource' });
     const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'visjsDebuggerPanel.html'));
-    return readFileSync(filePath.fsPath, 'utf8');
+    return readFileSync(filePath.fsPath, 'utf8').replace('{{vis-network.min.js}}', visNetworkPath.toString());
   }
 
   teardownPanelView(): void {
@@ -224,7 +227,7 @@ export class VisjsPanelView implements PanelViewProxy {
           edgeChanges.push({
             action: ChangeAction.create,
             edge: {
-              id: `${relation.parentId}to${variable.id}`,
+              id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
               from: relation.parentId,
               to: variable.id,
               label: relation.relationName,

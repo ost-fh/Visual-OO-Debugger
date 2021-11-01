@@ -1,4 +1,4 @@
-import { ExtensionContext, ViewColumn, WebviewPanel, window, commands } from 'vscode';
+import { ExtensionContext, ViewColumn, WebviewPanel, window, commands, Uri } from 'vscode';
 import { PanelViewInput } from '../model/panelViewInput';
 import { PanelViewProxy } from './panel-views/panelViewProxy';
 
@@ -19,6 +19,7 @@ export class DebuggerPanel {
     this.viewPanel = window.createWebviewPanel('visualDebugger', 'Visual Debugger', ViewColumn.Beside, {
       enableScripts: true,
       retainContextWhenHidden: true,
+      localResourceRoots: [Uri.joinPath(this.context.extensionUri, 'node_modules')],
     });
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
