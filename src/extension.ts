@@ -21,16 +21,20 @@ class Extension {
     const debugEventManager = new DebugEventManager();
     debugEventManager.registerDebuggerPanel(debuggerPanel);
 
-    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => debuggerPanel.openPanel()));
-    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel()));
-    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel()));
-    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel()));
+    this.registerCommand('visual-oo-debugger.openDebugger', () => debuggerPanel.openPanel());
+    this.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel());
+    this.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel());
+    this.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel());
 
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
       }
     });
+  }
+
+  private registerCommand(command: string, callback: (...args: unknown[]) => unknown, thisArg?: unknown): void {
+    this.context.subscriptions.push(commands.registerCommand(command, callback, thisArg));
   }
 
   getPanelViewByConfiguration(): PanelViewProxy {
