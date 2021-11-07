@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visual Debugger</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.3/dist/ffmpeg.min.js"></script>
     <style type="text/css">
       html,
       body,
@@ -81,10 +82,30 @@
               type: "video/webm"
             });
             const webmVideo = URL.createObjectURL(blob);
-            var downloadLink = document.createElement('a');
-            downloadLink.download = 'export.webm';
-            downloadLink.href = webmVideo;
-            downloadLink.click();
+            //--
+            const {
+              createFFmpeg,
+              fetchFile
+            } = FFmpeg;
+            const ffmpeg = createFFmpeg({
+              corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
+              log: true
+            });
+            (async () => {
+              await ffmpeg.load();
+              ffmpeg.FS('writeFile', 'export.webm', await fetchFile(webmVideo));
+              await ffmpeg.run('-i', 'export.webm', 'export.gif');
+              const data = ffmpeg.FS('readFile', 'export.gif');
+              var gifVideo = URL.createObjectURL(new Blob([data.buffer], {
+                type: 'image/gif'
+              }));
+              var downloadLink = document.createElement('a');
+              downloadLink.download = 'export.gif';
+              downloadLink.href = gifVideo;
+              downloadLink.click();
+              process.exit(0);
+            })();
+            //--
           }, 0);
         }
       });

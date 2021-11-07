@@ -86,7 +86,6 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
-    "gifshot": "^0.4.5",
     "lodash": "^4.17.21",
     "object-hash": "^2.2.0",
     "vis-network": "^9.1.0"
