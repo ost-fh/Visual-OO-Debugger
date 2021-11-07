@@ -21,5 +21,7 @@ class Extension {
 
     context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => this.debuggerPanel.openPanel()));
     context.subscriptions.push(commands.registerCommand('visual-oo-debugger.exportPNG', () => this.debuggerPanel.exportPanel()));
+    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.startGIF', () => this.debuggerPanel.startRecordingPanel()));
+    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.stopGIF', () => this.debuggerPanel.stopRecordingPanel()));
   }
 }

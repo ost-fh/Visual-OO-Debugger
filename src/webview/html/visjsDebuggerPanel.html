@@ -24,26 +24,32 @@
       let nodes;
       let defaultNodeColor;
       let defaultEdgeColor;
-
+      let recorder;
+      let chunks;
       window.addEventListener('message', (event) => {
         const message = event.data;
-
         if (message.command === 'initializeVisjs') {
           const container = document.querySelector('#visjs-network');
           edges = new vis.DataSet(message.data.edges);
           nodes = new vis.DataSet(message.data.nodes);
           defaultNodeColor = message.options.nodes.color;
           defaultEdgeColor = message.options.edges.color;
-
-          const data = { edges, nodes };
+          const data = {
+            edges,
+            nodes
+          };
           network = new vis.Network(container, data, message.options);
         } else if (message.command === 'updateVisjs') {
           edges.remove(message.data.deleteEdgeIds);
           nodes.remove(message.data.deleteNodeIds);
-
-          nodes.updateOnly(nodes.map((node) => ({ ...node, color: defaultNodeColor })));
-          edges.updateOnly(edges.map((edge) => ({ ...edge, color: defaultEdgeColor })));
-
+          nodes.updateOnly(nodes.map((node) => ({
+            ...node,
+            color: defaultNodeColor
+          })));
+          edges.updateOnly(edges.map((edge) => ({
+            ...edge,
+            color: defaultEdgeColor
+          })));
           nodes.add(message.data.addNodes);
           nodes.updateOnly(message.data.updateNodes);
           edges.add(message.data.addEdges);
@@ -54,6 +60,32 @@
           downloadLink.download = 'export.png';
           downloadLink.href = img;
           downloadLink.click();
+        } else if (message.command === 'startRecordingVisjs') {
+          chunks = [];
+          const canvas = document.querySelector('#visjs-network canvas');
+          const stream = canvas.captureStream();
+          recorder = new MediaRecorder(stream, {
+            mimeType: 'video/webm;codecs=vp9',
+            ignoreMutedMedia: true
+          });
+          recorder.ondataavailable = e => {
+            if (e.data.size > 0) {
+              chunks.push(e.data);
+            }
+          };
+          recorder.start()
+        } else if (message.command === 'stopRecordingVisjs') {
+          recorder.stop();
+          setTimeout(() => {
+            const blob = new Blob(chunks, {
+              type: "video/webm"
+            });
+            const webmVideo = URL.createObjectURL(blob);
+            var downloadLink = document.createElement('a');
+            downloadLink.download = 'export.webm';
+            downloadLink.href = webmVideo;
+            downloadLink.click();
+          }, 0);
         }
       });
     </script>

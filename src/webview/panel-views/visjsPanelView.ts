@@ -274,6 +274,14 @@ export class VisjsPanelView implements PanelViewProxy {
     return { command: 'exportVisjs' };
   }
 
+  startRecordingPanel(): PanelViewCommand {
+    return { command: 'startRecordingVisjs' };
+  }
+
+  stopRecordingPanel(): PanelViewCommand {
+    return { command: 'stopRecordingVisjs' };
+  }
+
   private parseInputToData(panelViewInput: PanelViewInput): Data {
     const nodes: Node[] = [];
     let edges: Edge[] = [];

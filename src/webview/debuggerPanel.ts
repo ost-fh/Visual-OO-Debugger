@@ -45,6 +45,18 @@ export class DebuggerPanel {
     }
   }
 
+  startRecordingPanel(): void {
+    if (this.viewPanel !== undefined) {
+      void this.viewPanel.webview.postMessage(this.panelViewProxy.startRecordingPanel());
+    }
+  }
+
+  stopRecordingPanel(): void {
+    if (this.viewPanel !== undefined) {
+      void this.viewPanel.webview.postMessage(this.panelViewProxy.stopRecordingPanel());
+    }
+  }
+
   private teardownPanel(): void {
     this.viewPanel = undefined;
     this.panelViewProxy.teardownPanelView();

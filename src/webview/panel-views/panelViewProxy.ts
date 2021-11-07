@@ -4,6 +4,8 @@ export interface PanelViewProxy {
   getHtml: () => string;
   updatePanel: (panelViewInput: PanelViewInput) => PanelViewCommand;
   exportPanel: () => PanelViewCommand;
+  startRecordingPanel: () => PanelViewCommand;
+  stopRecordingPanel: () => PanelViewCommand;
   teardownPanelView: () => void;
 }
 
