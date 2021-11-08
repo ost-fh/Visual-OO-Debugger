@@ -1,7 +1,7 @@
 import { ExtensionContext, ViewColumn, WebviewPanel, window, commands, Uri } from 'vscode';
 import { PanelViewInput } from '../model/panelViewInput';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
-import { PanelViewProxy } from './panel-views/panelViewProxy';
+import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -63,27 +63,25 @@ export class DebuggerPanel {
 
   updatePanel(panelViewInput: PanelViewInput): void {
     this.currentPanelViewInput = panelViewInput;
-    if (this.viewPanel !== undefined && panelViewInput !== undefined) {
-      void this.viewPanel.webview.postMessage(this.panelViewProxy.updatePanel(panelViewInput));
+    if (panelViewInput !== undefined) {
+      this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.updatePanel(panelViewInput));
     }
   }
 
   exportPanel(): void {
-    if (this.viewPanel !== undefined) {
-      void this.viewPanel.webview.postMessage(this.panelViewProxy.exportPanel());
-    }
+    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.exportPanel());
   }
 
   startRecordingPanel(): void {
-    if (this.viewPanel !== undefined) {
-      void this.viewPanel.webview.postMessage(this.panelViewProxy.startRecordingPanel());
-    }
+    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.startRecordingPanel());
   }
 
   stopRecordingPanel(): void {
-    if (this.viewPanel !== undefined) {
-      void this.viewPanel.webview.postMessage(this.panelViewProxy.stopRecordingPanel());
-    }
+    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.stopRecordingPanel());
+  }
+
+  private postCommandToWebViewIfViewPanelIsDefined(command: PanelViewCommand): void {
+    void this.viewPanel?.webview.postMessage(command);
   }
 
   setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
