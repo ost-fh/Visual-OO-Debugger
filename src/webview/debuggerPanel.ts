@@ -29,7 +29,7 @@ export class DebuggerPanel {
       (message) => {
         switch (message.command) {
           case 'info':
-            window.showInformationMessage(message.text);
+            void window.showInformationMessage(message.text);
             return;
         }
       },
