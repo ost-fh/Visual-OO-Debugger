@@ -27,6 +27,7 @@
       let defaultEdgeColor;
       let recorder;
       let chunks;
+      let vscode;
       window.addEventListener('message', (event) => {
         const message = event.data;
         if (message.command === 'initializeVisjs') {
@@ -40,6 +41,7 @@
             nodes
           };
           network = new vis.Network(container, data, message.options);
+          vscode = acquireVsCodeApi();
         } else if (message.command === 'updateVisjs') {
           edges.remove(message.data.deleteEdgeIds);
           nodes.remove(message.data.deleteNodeIds);
@@ -74,7 +76,9 @@
           recorder.start()
         } else if (message.command === 'stopRecordingVisjs') {
           recorder.stop();
-          sendInfoMessage('Creating GIF. This may take some time.');
+          vscode.postMessage(
+            'CreatingGIF'
+          )
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: "video/webm"
@@ -84,14 +88,6 @@
           }, 0);
         }
       });
-
-      function sendInfoMessage(message) {
-        const vscode = acquireVsCodeApi();
-        vscode.postMessage({
-          command: 'info',
-          text: message
-        })
-      }
 
       function convertWebmToGif(file) {
         const {

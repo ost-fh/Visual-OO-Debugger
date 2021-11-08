@@ -27,10 +27,8 @@ export class DebuggerPanel {
 
     this.viewPanel.webview.onDidReceiveMessage(
       (message) => {
-        switch (message.command) {
-          case 'info':
-            void window.showInformationMessage(message.text);
-            return;
+        if (message === 'CreatingGIF') {
+          void window.showInformationMessage('Creating GIF. This may take some time.');
         }
       },
       undefined,
