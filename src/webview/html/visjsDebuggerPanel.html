@@ -57,10 +57,7 @@
         } else if (message.command === 'exportVisjs') {
           const canvas = document.querySelector('#visjs-network canvas');
           const img = canvas.toDataURL('image/png');
-          var downloadLink = document.createElement('a');
-          downloadLink.download = 'export.png';
-          downloadLink.href = img;
-          downloadLink.click();
+          downloadFile('export.png', img);
         } else if (message.command === 'startRecordingVisjs') {
           chunks = [];
           const canvas = document.querySelector('#visjs-network canvas');
@@ -77,38 +74,53 @@
           recorder.start()
         } else if (message.command === 'stopRecordingVisjs') {
           recorder.stop();
+          sendInfoMessage('Creating GIF. This may take some time.');
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: "video/webm"
             });
             const webmVideo = URL.createObjectURL(blob);
-            //--
-            const {
-              createFFmpeg,
-              fetchFile
-            } = FFmpeg;
-            const ffmpeg = createFFmpeg({
-              corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
-              log: true
-            });
-            (async () => {
-              await ffmpeg.load();
-              ffmpeg.FS('writeFile', 'export.webm', await fetchFile(webmVideo));
-              await ffmpeg.run('-i', 'export.webm', 'export.gif');
-              const data = ffmpeg.FS('readFile', 'export.gif');
-              var gifVideo = URL.createObjectURL(new Blob([data.buffer], {
-                type: 'image/gif'
-              }));
-              var downloadLink = document.createElement('a');
-              downloadLink.download = 'export.gif';
-              downloadLink.href = gifVideo;
-              downloadLink.click();
-              process.exit(0);
-            })();
-            //--
+            convertWebmToGif(webmVideo);
           }, 0);
         }
       });
+
+      function sendInfoMessage(message) {
+        const vscode = acquireVsCodeApi();
+        vscode.postMessage({
+          command: 'info',
+          text: message
+        })
+      }
+
+      function convertWebmToGif(file) {
+        const {
+          createFFmpeg,
+          fetchFile
+        } = FFmpeg;
+        const ffmpeg = createFFmpeg({
+          corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
+          log: true
+        });
+        (async () => {
+          await ffmpeg.load();
+          ffmpeg.FS('writeFile', 'export.webm', await fetchFile(file));
+          await ffmpeg.run('-i', 'export.webm', 'export.gif');
+          const data = ffmpeg.FS('readFile', 'export.gif');
+          var gifVideo = URL.createObjectURL(new Blob([data.buffer], {
+            type: 'image/gif'
+          }));
+          downloadFile('export.gif', gifVideo);
+          process.exit(0);
+        })();
+      }
+
+      function downloadFile(filename, file) {
+        var downloadLink = document.createElement('a');
+        downloadLink.download = filename;
+        downloadLink.href = file;
+        downloadLink.click();
+      }
     </script>
   </body>
 </html>

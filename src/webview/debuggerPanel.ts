@@ -25,6 +25,18 @@ export class DebuggerPanel {
 
     this.viewPanel.webview.html = this.panelViewProxy.getHtml();
 
+    this.viewPanel.webview.onDidReceiveMessage(
+      (message) => {
+        switch (message.command) {
+          case 'info':
+            window.showInformationMessage(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
+
     void commands.executeCommand('setContext', 'viewPanel.exists', true);
 
     if (this.currentPanelViewInput) {
