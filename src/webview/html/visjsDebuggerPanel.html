@@ -38,21 +38,25 @@
           defaultEdgeColor = message.options.edges.color;
           const data = {
             edges,
-            nodes
+            nodes,
           };
           network = new vis.Network(container, data, message.options);
           vscode = acquireVsCodeApi();
         } else if (message.command === 'updateVisjs') {
           edges.remove(message.data.deleteEdgeIds);
           nodes.remove(message.data.deleteNodeIds);
-          nodes.updateOnly(nodes.map((node) => ({
-            ...node,
-            color: defaultNodeColor
-          })));
-          edges.updateOnly(edges.map((edge) => ({
-            ...edge,
-            color: defaultEdgeColor
-          })));
+          nodes.updateOnly(
+            nodes.map((node) => ({
+              ...node,
+              color: defaultNodeColor,
+            }))
+          );
+          edges.updateOnly(
+            edges.map((edge) => ({
+              ...edge,
+              color: defaultEdgeColor,
+            }))
+          );
           nodes.add(message.data.addNodes);
           nodes.updateOnly(message.data.updateNodes);
           edges.add(message.data.addEdges);
@@ -66,22 +70,20 @@
           const stream = canvas.captureStream();
           recorder = new MediaRecorder(stream, {
             mimeType: 'video/webm;codecs=vp9',
-            ignoreMutedMedia: true
+            ignoreMutedMedia: true,
           });
-          recorder.ondataavailable = e => {
+          recorder.ondataavailable = (e) => {
             if (e.data.size > 0) {
               chunks.push(e.data);
             }
           };
-          recorder.start()
+          recorder.start();
         } else if (message.command === 'stopRecordingVisjs') {
           recorder.stop();
-          vscode.postMessage(
-            'CreatingGIF'
-          )
+          vscode.postMessage('CreatingGIF');
           setTimeout(() => {
             const blob = new Blob(chunks, {
-              type: "video/webm"
+              type: 'video/webm',
             });
             const webmVideo = URL.createObjectURL(blob);
             convertWebmToGif(webmVideo);
@@ -95,17 +97,19 @@
           fetchFile
         } = FFmpeg;
         const ffmpeg = createFFmpeg({
-          corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
-          log: true
+          corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
+          log: true,
         });
         (async () => {
           await ffmpeg.load();
           ffmpeg.FS('writeFile', 'export.webm', await fetchFile(file));
           await ffmpeg.run('-i', 'export.webm', 'export.gif');
           const data = ffmpeg.FS('readFile', 'export.gif');
-          var gifVideo = URL.createObjectURL(new Blob([data.buffer], {
-            type: 'image/gif'
-          }));
+          var gifVideo = URL.createObjectURL(
+            new Blob([data.buffer], {
+              type: 'image/gif',
+            })
+          );
           downloadFile('export.gif', gifVideo);
           process.exit(0);
         })();
