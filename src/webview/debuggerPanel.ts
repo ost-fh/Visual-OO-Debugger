@@ -28,7 +28,7 @@ export class DebuggerPanel {
 
     this.viewPanel.webview.onDidReceiveMessage(
       (message) => {
-        if (message === 'CreatingGif') {
+        if (message === 'creatingGif') {
           void window.showInformationMessage('Creating GIF. This may take some time.');
         }
       },
