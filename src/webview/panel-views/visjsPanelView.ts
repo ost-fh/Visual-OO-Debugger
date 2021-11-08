@@ -6,7 +6,7 @@ import { ExtensionContext, Uri } from 'vscode';
 import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
-import { PanelViewProxy, PanelViewCommand } from './panelViewProxy';
+import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
   private readonly defaultNodeColor: Color = {
@@ -44,8 +44,11 @@ export class VisjsPanelView implements PanelViewProxy {
   constructor(private readonly context: ExtensionContext) {}
 
   getHtml(): string {
+    const visNetworkPath = Uri.file(
+      join(this.context.extensionPath, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
+    ).with({ scheme: 'vscode-resource' });
     const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'visjsDebuggerPanel.html'));
-    return readFileSync(filePath.fsPath, 'utf8');
+    return readFileSync(filePath.fsPath, 'utf8').replace('{{vis-network.min.js}}', visNetworkPath.toString());
   }
 
   teardownPanelView(): void {
@@ -81,6 +84,10 @@ export class VisjsPanelView implements PanelViewProxy {
     this.currentPanelViewInput = panelViewInput;
 
     return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(changelogEntry) };
+  }
+
+  exportPanel(): PanelViewCommand {
+    return { command: 'exportVisjs' };
   }
 
   private parseChangelogEntryToUpdateInput(changelogEntry: VisjsChangelogEntry): VisjsUpdateInput {
@@ -153,56 +160,65 @@ export class VisjsPanelView implements PanelViewProxy {
       const oldVariable = this.currentPanelViewInput?.variables.get(variableId);
       const newVariable = panelViewInput.variables.get(variableId);
       if (oldVariable && newVariable) {
-        if (
-          oldVariable.value !== newVariable.value ||
-          oldVariable.tooltip !== newVariable.tooltip ||
-          oldVariable.type !== newVariable.type ||
-          oldVariable.name !== newVariable.name ||
-          !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
-        ) {
-          nodeChanges.push({
-            action: ChangeAction.update,
-            oldNode: this.createNode(oldVariable),
-            newNode: this.createNode(newVariable),
-          });
-        }
-
-        const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) =>
-            !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
-        );
-        const deletedIncomingRelations = (oldVariable.incomingRelations || []).filter(
-          (relation: VariableRelation) =>
-            !some(newVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
-        );
-
-        for (const relation of addedIncomingRelations) {
-          edgeChanges.push({
-            action: ChangeAction.create,
-            edge: {
-              id: `${relation.parentId}to${newVariable.id}`,
-              from: relation.parentId,
-              to: newVariable.id,
-              label: relation.relationName,
-            },
-          });
-        }
-
-        for (const relation of deletedIncomingRelations) {
-          edgeChanges.push({
-            action: ChangeAction.delete,
-            edge: {
-              id: `${relation.parentId}to${newVariable.id}`,
-              from: relation.parentId,
-              to: newVariable.id,
-              label: relation.relationName,
-            },
-          });
-        }
+        this.addNodeAndEdgeChanges(oldVariable, newVariable, nodeChanges, edgeChanges);
       }
     }
 
     return [nodeChanges, edgeChanges];
+  }
+
+  private addNodeAndEdgeChanges(
+    oldVariable: PanelViewVariable,
+    newVariable: PanelViewVariable,
+    nodeChanges: ChangedNode[],
+    edgeChanges: ChangedEdge[]
+  ): void {
+    if (
+      oldVariable.value !== newVariable.value ||
+      oldVariable.tooltip !== newVariable.tooltip ||
+      oldVariable.type !== newVariable.type ||
+      oldVariable.name !== newVariable.name ||
+      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
+    ) {
+      nodeChanges.push({
+        action: ChangeAction.update,
+        oldNode: this.createNode(oldVariable),
+        newNode: this.createNode(newVariable),
+      });
+    }
+
+    const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
+      (relation: VariableRelation) =>
+        !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
+    );
+    const deletedIncomingRelations = (oldVariable.incomingRelations || []).filter(
+      (relation: VariableRelation) =>
+        !some(newVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
+    );
+
+    for (const relation of addedIncomingRelations) {
+      edgeChanges.push({
+        action: ChangeAction.create,
+        edge: {
+          id: `${relation.parentId}to${newVariable.id}`,
+          from: relation.parentId,
+          to: newVariable.id,
+          label: relation.relationName,
+        },
+      });
+    }
+
+    for (const relation of deletedIncomingRelations) {
+      edgeChanges.push({
+        action: ChangeAction.delete,
+        edge: {
+          id: `${relation.parentId}to${newVariable.id}`,
+          from: relation.parentId,
+          to: newVariable.id,
+          label: relation.relationName,
+        },
+      });
+    }
   }
 
   private buildCreateChangelogEntry(
@@ -224,7 +240,7 @@ export class VisjsPanelView implements PanelViewProxy {
           edgeChanges.push({
             action: ChangeAction.create,
             edge: {
-              id: `${relation.parentId}to${variable.id}`,
+              id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
               from: relation.parentId,
               to: variable.id,
               label: relation.relationName,
@@ -298,7 +314,8 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
-    const topLine = `${variable.type ? `(${variable.type})` : ''}${hasValueAndType ? ' ' : ''}${variable.name ? `${variable.name}` : ''}`;
+    const variableType = variable.type ? `(${variable.type})` : '';
+    const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
       bottomSection = variable.value;

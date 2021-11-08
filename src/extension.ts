@@ -4,7 +4,8 @@ import { DebuggerPanel } from './webview/debuggerPanel';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
 
 export function activate(context: ExtensionContext): void {
-  new Extension(context);
+  const extension = new Extension(context);
+  extension.registerCommands();
 }
 
 export function deactivate(): void {
@@ -12,16 +13,18 @@ export function deactivate(): void {
 }
 
 class Extension {
-  private debuggerPanel: DebuggerPanel;
+  constructor(private readonly context: ExtensionContext) {}
 
-  constructor(context: ExtensionContext) {
-    const visjsPanelView = new VisjsPanelView(context);
-    this.debuggerPanel = new DebuggerPanel(context, visjsPanelView);
-    new DebugEventManager(this.debuggerPanel);
+  registerCommands(): void {
+    const visjsPanelView = new VisjsPanelView(this.context);
+    const debuggerPanel = new DebuggerPanel(this.context, visjsPanelView);
+    const debugEventManager = new DebugEventManager();
+    debugEventManager.registerDebuggerPanel(debuggerPanel);
 
-    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => this.debuggerPanel.openPanel()));
-    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.exportPNG', () => this.debuggerPanel.exportPanel()));
-    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.startGIF', () => this.debuggerPanel.startRecordingPanel()));
-    context.subscriptions.push(commands.registerCommand('visual-oo-debugger.stopGIF', () => this.debuggerPanel.stopRecordingPanel()));
+    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.openDebugger', () => debuggerPanel.openPanel()));
+    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel()));
+    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel()));
+    this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel()));
+
   }
 }
