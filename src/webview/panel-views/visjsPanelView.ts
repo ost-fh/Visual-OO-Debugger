@@ -103,6 +103,7 @@ export class VisjsPanelView implements PanelViewProxy {
     if (this.changelogIndex !== -1 && this.changelogIndex < this.changelog.length - 1) {
       return { command: 'noop' };
     }
+    this.changelogIndex = -1;
     return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(changelogEntry) };
   }
 
@@ -116,6 +117,13 @@ export class VisjsPanelView implements PanelViewProxy {
 
   stopRecordingPanel(): PanelViewCommand {
     return { command: 'stopRecordingVisjs' };
+  }
+
+  stepForward(): PanelViewCommand {
+    if (this.changelogIndex === -1 || this.changelogIndex === this.changelog.length) {
+      return { command: 'noop' };
+    }
+    return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(this.changelog[this.changelogIndex++]) };
   }
 
   stepBack(): PanelViewCommand {
@@ -301,7 +309,7 @@ export class VisjsPanelView implements PanelViewProxy {
       edgeChanges.push({
         action: ChangeAction.create,
         edge: {
-          id: `${relation.parentId}to${newVariable.id}`,
+          id: `${relation.parentId}to${newVariable.id}withName${relation.relationName}`,
           from: relation.parentId,
           to: newVariable.id,
           label: relation.relationName,
@@ -313,7 +321,7 @@ export class VisjsPanelView implements PanelViewProxy {
       edgeChanges.push({
         action: ChangeAction.delete,
         edge: {
-          id: `${relation.parentId}to${newVariable.id}`,
+          id: `${relation.parentId}to${newVariable.id}withName${relation.relationName}`,
           from: relation.parentId,
           to: newVariable.id,
           label: relation.relationName,
@@ -370,7 +378,7 @@ export class VisjsPanelView implements PanelViewProxy {
           edgeChanges.push({
             action: ChangeAction.delete,
             edge: {
-              id: `${relation.parentId}to${variable.id}`,
+              id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
               from: relation.parentId,
               to: variable.id,
               label: relation.relationName,
@@ -430,7 +438,7 @@ export class VisjsPanelView implements PanelViewProxy {
 
     for (const relation of variable.incomingRelations || []) {
       edges.push({
-        id: `${relation.parentId}to${variable.id}`,
+        id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
         from: relation.parentId,
         to: variable.id,
         label: relation.relationName,

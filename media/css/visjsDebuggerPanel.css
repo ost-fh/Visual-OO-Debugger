@@ -22,7 +22,7 @@ body,
 }
 
 .top-row .codicon {
-  padding: 0 16px;
+  padding-left: 16px;
   font-size: 24px;
   color: var(--vscode-editor-foreground);
   cursor: pointer;
