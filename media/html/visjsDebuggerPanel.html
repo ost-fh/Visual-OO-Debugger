@@ -6,19 +6,18 @@
     <title>Visual Debugger</title>
     <script type="text/javascript" src="{{vis-network.min.js}}"></script>
     <script type="text/javascript" src="{{ffmpeg.min.js}}"></script>
-    <style type="text/css">
-      html,
-      body,
-      #visjs-network {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-      }
-    </style>
+    <link href="{{visjsDebuggerPanel.css}}" rel="stylesheet" />
+    <link href="{{codicon.css}}" rel="stylesheet" />
   </head>
 
   <body>
-    <div id="visjs-network"></div>
+    <div class="container">
+      <div id="visjs-network"></div>
+      <div class="top-row">
+        <a class="codicon codicon-debug-reverse-continue" onclick="stepBack()"></a>
+      </div>
+    </div>
+
     <script type="text/javascript">
       let network;
       let edges;
@@ -29,6 +28,7 @@
       let chunks;
       let vscode;
       let canvas;
+
       window.addEventListener('message', (event) => {
         const message = event.data;
         switch (message.command) {
@@ -124,6 +124,10 @@
         downloadLink.download = filename;
         downloadLink.href = file;
         downloadLink.click();
+      }
+
+      function stepBack() {
+        vscode.postMessage('stepBack');
       }
     </script>
   </body>
