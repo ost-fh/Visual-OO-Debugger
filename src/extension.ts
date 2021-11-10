@@ -31,13 +31,11 @@ class Extension {
   }
 
   getPanelViewByConfiguration(): PanelViewProxy {
-    let panelView;
     const preferredView = workspace.getConfiguration('visual-oo-debugger');
-    if (preferredView.get('preferredView') === 'mock.js') {
-      panelView = new MockPanelView(this.context);
+    if (preferredView.get('preferredView') === 'mock') {
+      return new MockPanelView(this.context);
     } else {
-      panelView = new VisjsPanelView(this.context);
+      return new VisjsPanelView(this.context);
     }
-    return panelView;
   }
 }

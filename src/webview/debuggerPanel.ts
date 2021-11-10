@@ -69,8 +69,12 @@ export class DebuggerPanel {
   }
 
   setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
+    const viewPanelVisible = this.viewPanel?.visible;
     this.teardownPanel();
     this.panelViewProxy = panelViewProxy;
+    if (viewPanelVisible) {
+      this.openPanel();
+    }
   }
 
   private teardownPanel(): void {
@@ -78,6 +82,7 @@ export class DebuggerPanel {
       this.viewPanel.dispose();
       this.viewPanel = undefined;
     }
+    this.panelViewProxy.teardownPanelView();
     void commands.executeCommand('setContext', 'viewPanel.exists', false);
   }
 }

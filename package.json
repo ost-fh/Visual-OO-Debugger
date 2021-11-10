@@ -44,12 +44,11 @@
       "title": "Visual OO Debugger",
       "properties": {
         "visual-oo-debugger.preferredView": {
-          "description": "Specifies the how the debug data will be visualised.",
+          "description": "Specifies how debugging data will be visualised.",
           "type": "string",
           "default": "vis.js",
           "enum": [
-            "vis.js",
-            "mock.js"
+            "vis.js"
           ]
         }
       }
