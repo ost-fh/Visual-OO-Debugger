@@ -100,10 +100,7 @@
       });
 
       function convertWebmToGif(file) {
-        const {
-          createFFmpeg,
-          fetchFile
-        } = FFmpeg;
+        const { createFFmpeg, fetchFile } = FFmpeg;
         const ffmpeg = createFFmpeg({
           corePath: '{{ffmpeg-core.js}}',
           log: true,
