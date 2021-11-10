@@ -1,8 +1,7 @@
 import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
-import { join } from 'path';
 import { Color, Data, Edge, Node, Options } from 'vis-network';
-import { ExtensionContext, Uri } from 'vscode';
+import { ExtensionContext, Uri, Webview } from 'vscode';
 import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
@@ -41,28 +40,37 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private currentPanelViewInput: PanelViewInput | undefined;
 
+  private changelogIndex = -1;
+
   constructor(private readonly context: ExtensionContext) {}
 
-  getHtml(): string {
-    const visNetworkPath = Uri.file(
-      join(this.context.extensionPath, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
-    ).with({ scheme: 'vscode-resource' });
-    const ffmpegPath = Uri.file(join(this.context.extensionPath, 'node_modules', '@ffmpeg', 'ffmpeg', 'dist', 'ffmpeg.min.js')).with({
-      scheme: 'vscode-resource',
-    });
-    const ffmpegCorePath = Uri.file(join(this.context.extensionPath, 'node_modules', '@ffmpeg', 'core', 'dist', 'ffmpeg-core.js')).with({
-      scheme: 'vscode-resource',
-    });
-    const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'visjsDebuggerPanel.html'));
+  getHtml(webview: Webview): string {
+    const visNetworkUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
+    );
+    const ffmpegUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, 'node_modules', '@ffmpeg', 'ffmpeg', 'dist', 'ffmpeg.min.js')
+    );
+    const ffmpegCoreUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, 'node_modules', '@ffmpeg', 'core', 'dist', 'ffmpeg-core.js')
+    );
+    const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
+    const cssUri = webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'media', 'css', 'visjsDebuggerPanel.css'));
+    const codiconsUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')
+    );
     return readFileSync(filePath.fsPath, 'utf8')
-      .replace('{{vis-network.min.js}}', visNetworkPath.toString())
-      .replace('{{ffmpeg.min.js}}', ffmpegPath.toString())
-      .replace('{{ffmpeg-core.js}}', ffmpegCorePath.toString());
+      .replace('{{vis-network.min.js}}', visNetworkUri.toString())
+      .replace('{{ffmpeg.min.js}}', ffmpegUri.toString())
+      .replace('{{ffmpeg-core.js}}', ffmpegCoreUri.toString())
+      .replace('{{visjsDebuggerPanel.css}}', cssUri.toString())
+      .replace('{{codicon.css}}', codiconsUri.toString());
   }
 
   teardownPanelView(): void {
     this.changelog = [];
     this.currentPanelViewInput = undefined;
+    this.changelogIndex = -1;
   }
 
   updatePanel(panelViewInput: PanelViewInput): PanelViewCommand {
@@ -92,6 +100,9 @@ export class VisjsPanelView implements PanelViewProxy {
     this.changelog.push(changelogEntry);
     this.currentPanelViewInput = panelViewInput;
 
+    if (this.changelogIndex !== -1 && this.changelogIndex < this.changelog.length - 1) {
+      return { command: 'noop' };
+    }
     return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(changelogEntry) };
   }
 
@@ -105,6 +116,79 @@ export class VisjsPanelView implements PanelViewProxy {
 
   stopRecordingPanel(): PanelViewCommand {
     return { command: 'stopRecordingVisjs' };
+  }
+
+  stepBack(): PanelViewCommand {
+    if (this.changelog.length === 0 || this.changelogIndex === 0) {
+      return { command: 'noop' };
+    }
+    if (this.changelogIndex === -1) {
+      this.changelogIndex = this.changelog.length - 1;
+    } else {
+      this.changelogIndex--;
+    }
+    const invertedChangelogEntry = this.invertChangelogEntry(this.changelog[this.changelogIndex]);
+    return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(invertedChangelogEntry) };
+  }
+
+  private invertChangelogEntry(entry: VisjsChangelogEntry): VisjsChangelogEntry {
+    return {
+      nodeChanges: this.invertNodeChanges(entry.nodeChanges),
+      edgeChanges: this.invertEdgeChanges(entry.edgeChanges),
+    };
+  }
+
+  private invertNodeChanges(nodeChanges: ChangedNode[]): ChangedNode[] {
+    const invertedNodeChanges: ChangedNode[] = [];
+    for (const nodeChange of nodeChanges) {
+      let invertedChange: ChangedNode;
+      switch (nodeChange.action) {
+        case ChangeAction.create:
+          invertedChange = {
+            action: ChangeAction.delete,
+            node: nodeChange.node,
+          };
+          break;
+        case ChangeAction.delete:
+          invertedChange = {
+            action: ChangeAction.create,
+            node: nodeChange.node,
+          };
+          break;
+        case ChangeAction.update:
+          invertedChange = {
+            action: ChangeAction.update,
+            newNode: nodeChange.oldNode,
+            oldNode: nodeChange.newNode,
+          };
+          break;
+      }
+      invertedNodeChanges.push(invertedChange);
+    }
+    return invertedNodeChanges;
+  }
+
+  private invertEdgeChanges(edgeChanges: ChangedEdge[]): ChangedEdge[] {
+    const invertedEdgeChanges: ChangedEdge[] = [];
+    for (const edgeChange of edgeChanges) {
+      let invertedChange: ChangedEdge;
+      switch (edgeChange.action) {
+        case ChangeAction.create:
+          invertedChange = {
+            action: ChangeAction.delete,
+            edge: edgeChange.edge,
+          };
+          break;
+        case ChangeAction.delete:
+          invertedChange = {
+            action: ChangeAction.create,
+            edge: edgeChange.edge,
+          };
+          break;
+      }
+      invertedEdgeChanges.push(invertedChange);
+    }
+    return invertedEdgeChanges;
   }
 
   private parseChangelogEntryToUpdateInput(changelogEntry: VisjsChangelogEntry): VisjsUpdateInput {

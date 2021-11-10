@@ -19,17 +19,26 @@ export class DebuggerPanel {
     this.viewPanel = window.createWebviewPanel('visualDebugger', 'Visual Debugger', ViewColumn.Beside, {
       enableScripts: true,
       retainContextWhenHidden: true,
-      localResourceRoots: [Uri.joinPath(this.context.extensionUri, 'node_modules')],
+      localResourceRoots: [Uri.joinPath(this.context.extensionUri, 'node_modules'), Uri.joinPath(this.context.extensionUri, 'media')],
     });
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);
 
-    this.viewPanel.webview.html = this.panelViewProxy.getHtml();
+    this.viewPanel.webview.html = this.panelViewProxy.getHtml(this.viewPanel.webview);
 
     this.viewPanel.webview.onDidReceiveMessage(
       (message) => {
-        if (message === 'creatingGif') {
-          void window.showInformationMessage('Creating GIF. This may take some time.');
+        switch (message) {
+          case 'creatingGif':
+            void window.showInformationMessage('Creating GIF. This may take some time.');
+            break;
+          case 'stepBack':
+            if (this.panelViewProxy.stepBack) {
+              void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepBack());
+            }
+            break;
+          default:
+            console.log(message);
         }
       },
       undefined,
