@@ -26,6 +26,16 @@ export class DebuggerPanel {
 
     this.viewPanel.webview.html = this.panelViewProxy.getHtml();
 
+    this.viewPanel.webview.onDidReceiveMessage(
+      (message) => {
+        if (message === 'creatingGif') {
+          void window.showInformationMessage('Creating GIF. This may take some time.');
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
+
     void commands.executeCommand('setContext', 'viewPanel.exists', true);
 
     if (this.currentPanelViewInput) {
@@ -43,6 +53,18 @@ export class DebuggerPanel {
   exportPanel(): void {
     if (this.viewPanel !== undefined) {
       void this.viewPanel.webview.postMessage(this.panelViewProxy.exportPanel());
+    }
+  }
+
+  startRecordingPanel(): void {
+    if (this.viewPanel !== undefined) {
+      void this.viewPanel.webview.postMessage(this.panelViewProxy.startRecordingPanel());
+    }
+  }
+
+  stopRecordingPanel(): void {
+    if (this.viewPanel !== undefined) {
+      void this.viewPanel.webview.postMessage(this.panelViewProxy.stopRecordingPanel());
     }
   }
 

@@ -47,8 +47,17 @@ export class VisjsPanelView implements PanelViewProxy {
     const visNetworkPath = Uri.file(
       join(this.context.extensionPath, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
     ).with({ scheme: 'vscode-resource' });
+    const ffmpegPath = Uri.file(join(this.context.extensionPath, 'node_modules', '@ffmpeg', 'ffmpeg', 'dist', 'ffmpeg.min.js')).with({
+      scheme: 'vscode-resource',
+    });
+    const ffmpegCorePath = Uri.file(join(this.context.extensionPath, 'node_modules', '@ffmpeg', 'core', 'dist', 'ffmpeg-core.js')).with({
+      scheme: 'vscode-resource',
+    });
     const filePath = Uri.file(join(this.context.extensionPath, 'src', 'webview', 'html', 'visjsDebuggerPanel.html'));
-    return readFileSync(filePath.fsPath, 'utf8').replace('{{vis-network.min.js}}', visNetworkPath.toString());
+    return readFileSync(filePath.fsPath, 'utf8')
+      .replace('{{vis-network.min.js}}', visNetworkPath.toString())
+      .replace('{{ffmpeg.min.js}}', ffmpegPath.toString())
+      .replace('{{ffmpeg-core.js}}', ffmpegCorePath.toString());
   }
 
   teardownPanelView(): void {
@@ -88,6 +97,14 @@ export class VisjsPanelView implements PanelViewProxy {
 
   exportPanel(): PanelViewCommand {
     return { command: 'exportVisjs' };
+  }
+
+  startRecordingPanel(): PanelViewCommand {
+    return { command: 'startRecordingVisjs' };
+  }
+
+  stopRecordingPanel(): PanelViewCommand {
+    return { command: 'stopRecordingVisjs' };
   }
 
   private parseChangelogEntryToUpdateInput(changelogEntry: VisjsChangelogEntry): VisjsUpdateInput {
