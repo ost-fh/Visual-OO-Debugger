@@ -37,8 +37,13 @@ export class DebuggerPanel {
               void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepBack());
             }
             break;
+          case 'stepForward':
+            if (this.panelViewProxy.stepForward) {
+              void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepForward());
+            }
+            break;
           default:
-            console.log(message);
+            console.debug(message);
         }
       },
       undefined,

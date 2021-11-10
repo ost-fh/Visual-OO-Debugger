@@ -9,6 +9,7 @@ export interface PanelViewProxy {
   stopRecordingPanel: () => PanelViewCommand;
   teardownPanelView: () => void;
   stepBack?: () => PanelViewCommand;
+  stepForward?: () => PanelViewCommand;
 }
 
 export interface PanelViewCommand {

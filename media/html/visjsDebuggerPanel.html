@@ -15,6 +15,7 @@
       <div id="visjs-network"></div>
       <div class="top-row">
         <a class="codicon codicon-debug-reverse-continue" onclick="stepBack()"></a>
+        <a class="codicon codicon-debug-continue" onclick="stepForward()"></a>
       </div>
     </div>
 
@@ -33,71 +34,97 @@
         const message = event.data;
         switch (message.command) {
           case 'initializeVisjs':
-            const container = document.querySelector('#visjs-network');
-            edges = new vis.DataSet(message.data.edges);
-            nodes = new vis.DataSet(message.data.nodes);
-            defaultNodeColor = message.options.nodes.color;
-            defaultEdgeColor = message.options.edges.color;
-            const data = {
-              edges,
-              nodes,
-            };
-            network = new vis.Network(container, data, message.options);
-            vscode = acquireVsCodeApi();
-            canvas = document.querySelector('#visjs-network canvas');
+            initializeVisjs(message);
             break;
           case 'updateVisjs':
-            edges.remove(message.data.deleteEdgeIds);
-            nodes.remove(message.data.deleteNodeIds);
-            nodes.updateOnly(
-              nodes.map((node) => ({
-                ...node,
-                color: defaultNodeColor,
-              }))
-            );
-            edges.updateOnly(
-              edges.map((edge) => ({
-                ...edge,
-                color: defaultEdgeColor,
-              }))
-            );
-            nodes.add(message.data.addNodes);
-            nodes.updateOnly(message.data.updateNodes);
-            edges.add(message.data.addEdges);
+            updateVisjs(message);
             break;
           case 'exportVisjs':
-            const img = canvas.toDataURL('image/png');
-            downloadFile('export.png', img);
+            exportVisjs();
             break;
           case 'startRecordingVisjs':
-            chunks = [];
-            const stream = canvas.captureStream();
-            recorder = new MediaRecorder(stream, {
-              mimeType: 'video/webm;codecs=vp9',
-              ignoreMutedMedia: true,
-            });
-            recorder.ondataavailable = (e) => {
-              if (e.data.size > 0) {
-                chunks.push(e.data);
-              }
-            };
-            recorder.start();
+            startRecordingVisjs();
             break;
           case 'stopRecordingVisjs':
-            recorder.stop();
-            vscode.postMessage('creatingGif');
-            setTimeout(() => {
-              const blob = new Blob(chunks, {
-                type: 'video/webm',
-              });
-              const webmVideo = URL.createObjectURL(blob);
-              convertWebmToGif(webmVideo);
-            }, 0);
+            stopRecordingVisjs();
             break;
           default:
-            console.log(message.command);
+            console.debug(message.command);
         }
       });
+
+      function initializeVisjs(message) {
+        const container = document.querySelector('#visjs-network');
+        edges = new vis.DataSet(message.data.edges);
+        nodes = new vis.DataSet(message.data.nodes);
+        defaultNodeColor = message.options.nodes.color;
+        defaultEdgeColor = message.options.edges.color;
+        const data = {
+          edges,
+          nodes,
+        };
+        network = new vis.Network(container, data, message.options);
+        vscode = acquireVsCodeApi();
+        canvas = document.querySelector('#visjs-network canvas');
+      }
+
+      function updateVisjs(message) {
+        edges.remove(message.data.deleteEdgeIds);
+        nodes.remove(message.data.deleteNodeIds);
+        nodes.updateOnly(
+          nodes.map((node) => ({
+            ...node,
+            color: defaultNodeColor,
+          }))
+        );
+        edges.updateOnly(
+          edges.map((edge) => ({
+            ...edge,
+            color: defaultEdgeColor,
+          }))
+        );
+        nodes.add(message.data.addNodes);
+        nodes.updateOnly(message.data.updateNodes);
+        edges.add(message.data.addEdges);
+      }
+
+      function exportVisjs() {
+        if (canvas) {
+          const img = canvas.toDataURL('image/png');
+          downloadFile('export.png', img);
+        }
+      }
+
+      function startRecordingVisjs() {
+        if (canvas) {
+          chunks = [];
+          const stream = canvas.captureStream();
+          recorder = new MediaRecorder(stream, {
+            mimeType: 'video/webm;codecs=vp9',
+            ignoreMutedMedia: true,
+          });
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+              chunks.push(e.data);
+            }
+          };
+          recorder.start();
+        }
+      }
+
+      function stopRecordingVisjs() {
+        if (vscode) {
+          recorder.stop();
+          vscode.postMessage('creatingGif');
+          setTimeout(() => {
+            const blob = new Blob(chunks, {
+              type: 'video/webm',
+            });
+            const webmVideo = URL.createObjectURL(blob);
+            convertWebmToGif(webmVideo);
+          }, 0);
+        }
+      }
 
       function convertWebmToGif(file) {
         const { createFFmpeg, fetchFile } = FFmpeg;
@@ -127,7 +154,11 @@
       }
 
       function stepBack() {
-        vscode.postMessage('stepBack');
+        vscode?.postMessage('stepBack');
+      }
+
+      function stepForward() {
+        vscode?.postMessage('stepForward');
       }
     </script>
   </body>
