@@ -68,9 +68,16 @@ export class DebuggerPanel {
     }
   }
 
+  setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
+    this.teardownPanel();
+    this.panelViewProxy = panelViewProxy;
+  }
+
   private teardownPanel(): void {
-    this.viewPanel = undefined;
-    this.panelViewProxy.teardownPanelView();
+    if (this.viewPanel !== undefined) {
+      this.viewPanel.dispose();
+      this.viewPanel = undefined;
+    }
     void commands.executeCommand('setContext', 'viewPanel.exists', false);
   }
 }
