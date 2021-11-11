@@ -3,7 +3,6 @@ import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
-import { MockPanelView } from './webview/panel-views/mockPanelView';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -32,10 +31,11 @@ class Extension {
 
   getPanelViewByConfiguration(): PanelViewProxy {
     const preferredView = workspace.getConfiguration('visual-oo-debugger');
-    if (preferredView.get('preferredView') === 'mock') {
-      return new MockPanelView(this.context);
-    } else {
-      return new VisjsPanelView(this.context);
+    switch (preferredView.get('preferredView')) {
+      case 'vis.js':
+        return new VisjsPanelView(this.context);
+      default:
+        return new VisjsPanelView(this.context);
     }
   }
 }
