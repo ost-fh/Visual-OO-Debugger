@@ -26,7 +26,11 @@ class Extension {
     this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel()));
     this.context.subscriptions.push(commands.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel()));
 
-    workspace.onDidChangeConfiguration(() => debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration()));
+    workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
+        debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
+      }
+    });
   }
 
   getPanelViewByConfiguration(): PanelViewProxy {
