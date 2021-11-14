@@ -71,15 +71,16 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint:check && npm run format:check",
+    "vscode:prepublish": "npm run compile:ext",
+    "compile:ext": "tsc -p ./tsconfig.ext.json",
+    "compile:ext:watch": "npm run compile:ext -- --watch",
+    "compile:test": "tsc -p ./tsconfig.test.json",
     "lint:check": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "test": "node ./out/test/runTest.js"
+    "pretest:ext": "npm run compile:ext && npm run compile:test",
+    "test:ext": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/chai": "4.2.22",

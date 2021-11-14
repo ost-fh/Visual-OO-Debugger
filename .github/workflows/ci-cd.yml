@@ -16,5 +16,9 @@ jobs:
           node-version: '16'
       - name: Ensure a clean installation
         run: npm ci
-      - name: Compile, lint and test
-        run: xvfb-run -a npm test
+      - name: Run linting checks
+        run: npm run lint:check
+      - name: Run formatting checks
+        run: npm run format:check
+      - name: Run integration and installation tests
+        run: xvfb-run -a npm run test:ext
