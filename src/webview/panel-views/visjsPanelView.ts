@@ -80,6 +80,7 @@ export class VisjsPanelView implements PanelViewProxy {
       const options: Options = {
         nodes: {
           color: this.defaultNodeColor,
+          shape: 'box',
         },
         edges: {
           arrows: 'to',
