@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visual Debugger</title>
+    <link href="{{joint.css}}" type="text/css" rel="stylesheet" />
+    <link href="{{jointjsDebuggerPanel.css}}" type="text/css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="jointjs-holder"></div>
+
+    <!-- dependencies -->
+    <script src="{{jquery.js}}"></script>
+    <script src="{{lodash.js}}"></script>
+    <script src="{{backbone.js}}"></script>
+    <script src="{{joint.js}}"></script>
+
+    <script type="text/javascript">
+      const graph = new joint.dia.Graph();
+
+      const paper = new joint.dia.Paper({
+        el: document.getElementById('jointjs-holder'),
+        model: graph,
+        width: '100%',
+        height: '100%',
+        gridSize: 1,
+      });
+
+      const rect = new joint.shapes.standard.Rectangle();
+      rect.position(100, 30);
+      rect.resize(100, 40);
+      rect.attr({
+        body: {
+          fill: 'blue',
+        },
+        label: {
+          text: 'Hello',
+          fill: 'white',
+        },
+      });
+      rect.addTo(graph);
+
+      const rect2 = rect.clone();
+      rect2.translate(300, 0);
+      rect2.attr('label/text', 'World!');
+      rect2.addTo(graph);
+
+      const link = new joint.shapes.standard.Link();
+      link.source(rect);
+      link.target(rect2);
+      link.addTo(graph);
+    </script>
+  </body>
+</html>

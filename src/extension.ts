@@ -1,6 +1,7 @@
 import { commands, ExtensionContext, workspace } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
+import { JointjsPanelView } from './webview/panel-views/jointjsPanelView';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
 
@@ -38,6 +39,8 @@ class Extension {
     switch (preferredView.get('preferredView')) {
       case 'vis.js':
         return new VisjsPanelView(this.context);
+      case 'jointjs':
+        return new JointjsPanelView(this.context);
       default:
         return new VisjsPanelView(this.context);
     }

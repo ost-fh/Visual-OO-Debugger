@@ -48,7 +48,8 @@
           "type": "string",
           "default": "vis.js",
           "enum": [
-            "vis.js"
+            "vis.js",
+            "jointjs"
           ]
         }
       }
@@ -111,6 +112,9 @@
     "@ffmpeg/core": "^0.10.0",
     "@ffmpeg/ffmpeg": "^0.10.1",
     "@vscode/codicons": "^0.0.25",
+    "backbone": "^1.4.0",
+    "jointjs": "^3.4.4",
+    "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "object-hash": "^2.2.0",
     "vis-network": "^9.1.0"
