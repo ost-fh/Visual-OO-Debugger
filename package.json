@@ -80,7 +80,9 @@
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "pretest:ext": "npm run compile:ext && npm run compile:test",
-    "test:ext": "node ./out/test/runTest.js"
+    "test:ext": "node ./out/test/runTest.js",
+    "test:spec": "cross-env TS_NODE_PROJECT=\"tsconfig.spec.json\" mocha -r ts-node/register \"src/**/*.spec.ts\"",
+    "test:spec:watch": "npm run test:spec -- --watch --watch-files src"
   },
   "devDependencies": {
     "@types/chai": "4.2.22",

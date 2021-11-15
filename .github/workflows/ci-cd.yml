@@ -20,5 +20,7 @@ jobs:
         run: npm run lint:check
       - name: Run formatting checks
         run: npm run format:check
+      - name: Run unit tests
+        run: npm run test:spec
       - name: Run integration and installation tests
         run: xvfb-run -a npm run test:ext
