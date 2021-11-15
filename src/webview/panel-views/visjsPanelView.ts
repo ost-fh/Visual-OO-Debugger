@@ -9,11 +9,11 @@ import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
   private readonly defaultNodeColor: Color = {
-    border: '#1e88e5',
-    background: '#6ab7ff',
+    border: '#005cb2',
+    background: '#1e88e5',
     highlight: {
-      border: '#1e88e5',
-      background: '#6ab7ff',
+      border: '#005cb2',
+      background: '#1e88e5',
     },
   };
 
@@ -23,11 +23,11 @@ export class VisjsPanelView implements PanelViewProxy {
   };
 
   private readonly changedNodeColor: Color = {
-    border: '#fdd835',
-    background: '#ffff6b',
+    border: '#c6a700',
+    background: '#fdd835',
     highlight: {
-      border: '#fdd835',
-      background: '#ffff6b',
+      border: '#c6a700',
+      background: '#fdd835',
     },
   };
 
