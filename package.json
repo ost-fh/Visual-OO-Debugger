@@ -40,6 +40,19 @@
         "category": "VOOD"
       }
     ],
+    "configuration": {
+      "title": "Visual OO Debugger",
+      "properties": {
+        "visual-oo-debugger.preferredView": {
+          "description": "Specifies how debugging data will be visualised.",
+          "type": "string",
+          "default": "vis.js",
+          "enum": [
+            "vis.js"
+          ]
+        }
+      }
+    },
     "menus": {
       "commandPalette": [
         {
