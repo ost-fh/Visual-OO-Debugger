@@ -1,0 +1,35 @@
+name: Master CI
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+      - name: Select node version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Ensure a clean installation
+        run: npm ci
+      - name: Run linting checks
+        run: npm run lint:check
+      - name: Run formatting checks
+        run: npm run format:check
+      - name: Run unit tests
+        run: npm run test:spec
+      - name: Run integration and installation tests
+        run: xvfb-run -a npm run test:ext
+
+  trigger_deploy_to_vs_marketplace:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: deploy-to-vs-marketplace

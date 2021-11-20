@@ -1,9 +1,5 @@
-name: CI/CD
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+name: Pull Request CI
+on: pull_request
 jobs:
   test:
     runs-on: ubuntu-latest

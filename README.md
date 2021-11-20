@@ -1,6 +1,6 @@
-# Visual-OO-Debugger
+# Visual OO Debugger
 
-VS Code plugin for visualizing debug information.
+VS Code extension for visualizing debug information.
 
 Still in early development!
 
