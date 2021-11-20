@@ -1,10 +1,19 @@
 {
   "name": "visual-oo-debugger",
-  "publisher": "OST",
-  "displayName": "Visual OO-Debugger",
+  "publisher": "GinoCardilloOST",
+  "displayName": "Visual OO Debugger",
   "description": "A visual debugger for Java for teaching object-oriented programming. The extension visualizes objects and variables graphically and can run a program step by step to facilitate a better understanding of how objects and variables change over the course of a program.",
   "version": "0.0.1",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GinoCardillo-OST/Visual-OO-Debugger.git"
+  },
+  "icon": "images/logo_128x128.png",
+  "galleryBanner": {
+    "color": "#1e88e5",
+    "theme": "dark"
+  },
   "engines": {
     "node": "^16",
     "vscode": "^1.61.0"
@@ -17,7 +26,13 @@
     "onCommand:visual-oo-debugger.exportPNG",
     "onDebug"
   ],
-  "main": "./out/extension.js",
+  "keywords": [
+    "visual",
+    "object-oriented",
+    "debugger",
+    "vood"
+  ],
+  "main": "./dist/extension",
   "contributes": {
     "commands": [
       {
@@ -72,9 +87,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile:ext",
-    "compile:ext": "tsc -p ./tsconfig.ext.json",
-    "compile:ext:watch": "npm run compile:ext -- --watch",
+    "vscode:prepublish": "webpack --mode production",
+    "compile": "webpack --mode none",
+    "watch": "webpack --mode none --watch",
     "compile:test": "tsc -p ./tsconfig.test.json",
     "lint:check": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
@@ -83,7 +98,8 @@
     "pretest:ext": "npm run compile:ext && npm run compile:test",
     "test:ext": "node ./out/test/runTest.js",
     "test:spec": "cross-env TS_NODE_PROJECT=\"tsconfig.spec.json\" mocha -r ts-node/register \"src/**/*.spec.ts\"",
-    "test:spec:watch": "npm run test:spec -- --watch --watch-files src"
+    "test:spec:watch": "npm run test:spec -- --watch --watch-files src",
+    "deploy": "vsce publish"
   },
   "devDependencies": {
     "@types/chai": "4.2.22",
@@ -105,8 +121,12 @@
     "glob": "^7.1.7",
     "mocha": "^9.1.1",
     "prettier": "2.4.1",
+    "ts-loader": "^9.2.6",
     "ts-node": "10.4.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "vsce": "^2.3.0",
+    "webpack": "^5.64.2",
+    "webpack-cli": "^4.9.1"
   },
   "dependencies": {
     "@ffmpeg/core": "^0.10.0",

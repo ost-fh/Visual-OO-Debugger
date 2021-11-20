@@ -1,0 +1,23 @@
+name: Continuous Deployment
+on:
+  repository_dispatch:
+    types: [deploy-to-vs-marketplace]
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    needs: [test]
+    environment: production
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+      - name: Select node version
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Ensure a clean installation
+        run: npm ci
+      - name: Publish to VS Marketplace
+        if: success()
+        run: npm run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
