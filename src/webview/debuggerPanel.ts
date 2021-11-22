@@ -1,5 +1,6 @@
 import { ExtensionContext, ViewColumn, WebviewPanel, window, commands, Uri } from 'vscode';
 import { PanelViewInput } from '../model/panelViewInput';
+import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { PanelViewProxy } from './panel-views/panelViewProxy';
 
 export class DebuggerPanel {
@@ -19,7 +20,10 @@ export class DebuggerPanel {
     this.viewPanel = window.createWebviewPanel('visualDebugger', 'Visual Debugger', ViewColumn.Beside, {
       enableScripts: true,
       retainContextWhenHidden: true,
-      localResourceRoots: [Uri.joinPath(this.context.extensionUri, 'node_modules'), Uri.joinPath(this.context.extensionUri, 'media')],
+      localResourceRoots: [
+        Uri.joinPath(this.context.extensionUri, NodeModulesAccessor.outputPath, 'libs'),
+        Uri.joinPath(this.context.extensionUri, 'media'),
+      ],
     });
 
     this.viewPanel.onDidDispose(() => this.teardownPanel(), null, this.context.subscriptions);

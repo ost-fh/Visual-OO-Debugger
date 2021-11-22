@@ -12,4 +12,4 @@ src
 .prettierrc.json
 tsconfig.json
 tsconfig.*.json
-webpack.config.js
+webpack.config.ts

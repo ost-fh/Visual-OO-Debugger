@@ -5,6 +5,8 @@ import { ExtensionContext, Uri, Webview } from 'vscode';
 import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
+import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
+import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
@@ -46,19 +48,19 @@ export class VisjsPanelView implements PanelViewProxy {
 
   getHtml(webview: Webview): string {
     const visNetworkUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, 'node_modules', 'vis-network', 'standalone', 'umd', 'vis-network.min.js')
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.visNetworkMinJs))
     );
     const ffmpegUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, 'node_modules', '@ffmpeg', 'ffmpeg', 'dist', 'ffmpeg.min.js')
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.ffmpegMinJs))
     );
     const ffmpegCoreUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, 'node_modules', '@ffmpeg', 'core', 'dist', 'ffmpeg-core.js')
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.ffmpegCoreJs))
     );
-    const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
-    const cssUri = webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'media', 'css', 'visjsDebuggerPanel.css'));
     const codiconsUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.codiconCss))
     );
+    const cssUri = webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'media', 'css', 'visjsDebuggerPanel.css'));
+    const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
     return readFileSync(filePath.fsPath, 'utf8')
       .replace('{{vis-network.min.js}}', visNetworkUri.toString())
       .replace('{{ffmpeg.min.js}}', ffmpegUri.toString())
