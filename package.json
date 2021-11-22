@@ -135,6 +135,7 @@
     "@ffmpeg/core": "^0.10.0",
     "@ffmpeg/ffmpeg": "^0.10.1",
     "@vscode/codicons": "^0.0.25",
+    "async-mutex": "^0.3.2",
     "lodash": "^4.17.21",
     "object-hash": "^2.2.0",
     "vis-network": "^9.1.0"

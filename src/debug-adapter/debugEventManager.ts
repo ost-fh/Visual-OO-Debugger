@@ -3,6 +3,7 @@ import { PanelViewInput, PanelViewVariable } from '../model/panelViewInput';
 import { Variable } from '../model/variable';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
+import { Mutex, tryAcquire } from 'async-mutex';
 import * as hash from 'object-hash';
 
 export class DebugEventManager {
@@ -10,6 +11,7 @@ export class DebugEventManager {
   private readonly primitiveDataTypes = ['boolean', 'char', 'byte', 'short', 'int', 'long', 'float', 'double'];
   private readonly maxValueLength = 30;
   private readonly maxDepth = 10;
+  private mutex = new Mutex();
 
   private debugSessionProxy: DebugSessionProxy | undefined;
 
@@ -20,10 +22,12 @@ export class DebugEventManager {
         const onDidSendMessage = async (m: Message): Promise<void> => {
           if (m.type === 'event') {
             if (m.event === 'stopped') {
-              const threadId = m.body.threadId;
-              await this.debugSessionProxy?.setActiveStackFrameId(threadId);
-              const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
-              debuggerPanel.updatePanel(await this.getData(currentVariables));
+              await tryAcquire(this.mutex).runExclusive(async () => {
+                const threadId = m.body.threadId;
+                await this.debugSessionProxy?.setActiveStackFrameId(threadId);
+                const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
+                debuggerPanel.updatePanel(await this.getData(currentVariables));
+              });
             }
           }
         };

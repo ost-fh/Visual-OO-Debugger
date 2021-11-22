@@ -75,11 +75,16 @@ export class DebugSessionProxy {
   }
 
   async getAllCurrentVariables(): Promise<Variable[]> {
-    const scopes = await this.getAllCurrentScopes();
-    const reply = await Promise.all(
-      scopes.filter((s) => !s.expensive && s.name !== 'Global').map((s) => this.getVariables(s.variablesReference))
-    );
+    try {
+      const scopes = await this.getAllCurrentScopes();
+      const reply = await Promise.all(
+        scopes.filter((s) => !s.expensive && s.name !== 'Global').map((s) => this.getVariables(s.variablesReference))
+      );
 
-    return reply.reduce((p, c) => p.concat(c));
+      return reply.reduce((p, c) => p.concat(c));
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 }
