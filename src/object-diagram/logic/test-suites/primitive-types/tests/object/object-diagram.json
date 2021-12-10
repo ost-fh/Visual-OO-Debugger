@@ -1,0 +1,71 @@
+{
+  "structures": [
+    {
+      "id": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "[StackFrame]",
+      "type": "[StackFrame]"
+    },
+    {
+      "id": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "PrimitiveTypesDemo$FieldContainer",
+      "name": "PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\""
+    }
+  ],
+  "fields": [
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "boolean",
+      "name": "_boolean",
+      "value": "false"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "byte",
+      "name": "_byte",
+      "value": "0"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "char",
+      "name": "_char",
+      "value": "\\u0000"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "double",
+      "name": "_double",
+      "value": "0.000000"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "float",
+      "name": "_float",
+      "value": "0.000000"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "int",
+      "name": "_int",
+      "value": "0"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "long",
+      "name": "_long",
+      "value": "0"
+    },
+    {
+      "parentId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "type": "short",
+      "name": "_short",
+      "value": "0"
+    }
+  ],
+  "references": [
+    {
+      "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "endId": "_ea0aca3bedbad950e9d8b35c1bab07af352d76c4",
+      "name": "fieldContainer"
+    }
+  ]
+}

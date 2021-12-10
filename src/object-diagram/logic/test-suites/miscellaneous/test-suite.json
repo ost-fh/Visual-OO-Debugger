@@ -1,0 +1,7 @@
+{
+  "ignore": false,
+  "only": false,
+  "title": "miscellaneous",
+  "_source": "demos/java/src/miscellaneous",
+  "_remark": "Based on Gino's example"
+}
