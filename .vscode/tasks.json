@@ -15,6 +15,22 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "type": "npm",
+      "script": "test:spec:watch",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: test:spec:watch",
+      "detail": "npm run test:spec -- --watch --watch-files src"
+    },
+    {
+      "type": "npm",
+      "script": "compile",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: compile",
+      "detail": "webpack --mode development"
     }
   ]
 }
