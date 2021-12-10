@@ -1,0 +1,6 @@
+{
+  "ignore": false,
+  "only": false,
+  "title": "primitive types",
+  "_source": "demos/java/src/PrimitiveTypesDemo.java"
+}

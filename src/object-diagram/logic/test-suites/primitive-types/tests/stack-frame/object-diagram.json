@@ -1,0 +1,72 @@
+{
+  "structures": [
+    {
+      "id": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "[StackFrame]",
+      "type": "[StackFrame]"
+    },
+    {
+      "id": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
+      "type": "String[]",
+      "name": "String[0]@8",
+      "value": "[]"
+    }
+  ],
+  "fields": [
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_boolean",
+      "value": "false",
+      "type": "boolean"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_byte",
+      "value": "0",
+      "type": "byte"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_char",
+      "value": "\\u0000",
+      "type": "char"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_short",
+      "value": "0",
+      "type": "short"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_int",
+      "value": "0",
+      "type": "int"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_long",
+      "value": "0",
+      "type": "long"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_float",
+      "value": "0.000000",
+      "type": "float"
+    },
+    {
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "_double",
+      "value": "0.000000",
+      "type": "double"
+    }
+  ],
+  "references": [
+    {
+      "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "endId": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
+      "name": "args"
+    }
+  ]
+}

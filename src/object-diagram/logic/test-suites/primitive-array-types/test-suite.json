@@ -1,0 +1,6 @@
+{
+  "ignore": false,
+  "only": false,
+  "title": "primitive array types",
+  "_source": "demos/java/src/PrimitiveArrayTypesDemo.java"
+}
