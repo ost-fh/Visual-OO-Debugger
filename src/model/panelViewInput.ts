@@ -1,5 +1,5 @@
 export interface PanelViewInput {
-  variables: Map<string, PanelViewVariable>; // The key is the value of an object or a random uuid for primitives
+  variables: Map<string, PanelViewVariable>; // The key is the value of an object or the hash of the variable for primitives
 }
 
 export interface PanelViewVariable {
