@@ -95,7 +95,7 @@ export class DebugEventManager {
     const id = variable.value;
     let panelViewVariable = panelViewInput.variables.get(id);
     if (panelViewVariable === undefined) {
-      [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable, parentId);
+      [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
 
       panelViewInput.variables.set(panelViewVariable.id, panelViewVariable);
     }
@@ -109,6 +109,13 @@ export class DebugEventManager {
       if (parentVariable) {
         parentVariable.references = [...(parentVariable.references || []), { childId: id, relationName: variable.name }];
       }
+    } else {
+      const namedVariable = this.createVariableEntryForNamedVariable(variable, id);
+      panelViewInput.variables.set(namedVariable.id, namedVariable);
+      panelViewVariable.incomingRelations = [
+        ...(panelViewVariable.incomingRelations || []),
+        { parentId: namedVariable.id, relationName: '' },
+      ];
     }
 
     if (isNewAndObject && variable.variablesReference) {
@@ -117,16 +124,9 @@ export class DebugEventManager {
     }
   }
 
-  private async createPanelViewVariable(
-    id: string,
-    variable: Variable,
-    parentId: string | undefined
-  ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
+  private async createPanelViewVariable(id: string, variable: Variable): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
     const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : hash(variable) };
-    if (!parentId) {
-      panelViewVariable.name = variable.name;
-    }
 
     if (variable.type === 'null') {
       panelViewVariable.value = 'null';
@@ -145,6 +145,14 @@ export class DebugEventManager {
     }
 
     return [panelViewVariable, isNewAndObject];
+  }
+
+  private createVariableEntryForNamedVariable(variable: Variable, referencedObjectId: string): PanelViewVariable {
+    return {
+      id: variable.name,
+      name: variable.name,
+      references: [{ childId: referencedObjectId, relationName: '' }],
+    };
   }
 
   private async preparePrimitiveArrayData(variable: Variable, delimiter: string): Promise<[label: string, tooltip: string | undefined]> {
