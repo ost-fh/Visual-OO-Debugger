@@ -1,6 +1,11 @@
-import { ExtensionContext, ViewColumn, WebviewPanel, window, commands, Uri } from 'vscode';
+import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { PanelViewInput } from '../model/panelViewInput';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
+import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
+import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
+import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
+import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
+import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
 
 export class DebuggerPanel {
@@ -8,7 +13,12 @@ export class DebuggerPanel {
 
   private currentPanelViewInput: PanelViewInput | undefined;
 
-  constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {}
+  private readonly plantUmlObjectDiagramFileSaver: FileSaver;
+
+  constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
+    const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
+    this.plantUmlObjectDiagramFileSaver = objectDiagramFileSaverFactory.createPlantUmlObjectDiagramFileSaver();
+  }
 
   openPanel(): void {
     // Make sure only one panel exists
@@ -78,6 +88,23 @@ export class DebuggerPanel {
 
   stopRecordingPanel(): void {
     this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.stopRecordingPanel());
+  }
+
+  exportAsPlantUml(): Promise<void> {
+    return this.plantUmlObjectDiagramFileSaver.saveFile();
+  }
+
+  private createObjectDiagramFileSaverFactory(memento: Memento): ObjectDiagramFileSaverFactory {
+    return new ObjectDiagramFileSaverFactory(
+      new MementoAccessor<string>(memento, 'visual-oo-debugger.lastObjectDiagramExportDirectoryPath'),
+      (): ObjectDiagram => {
+        const input = this.currentPanelViewInput;
+        if (!input) {
+          throw new Error('Could not export (no panel view input available)');
+        }
+        return new PanelViewInputObjectDiagramReader().read(input);
+      }
+    );
   }
 
   private postCommandToWebViewIfViewPanelIsDefined(command: PanelViewCommand): void {
