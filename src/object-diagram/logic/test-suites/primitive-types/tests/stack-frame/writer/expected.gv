@@ -1,0 +1,20 @@
+digraph ObjectDiagram {
+  node [shape=plaintext]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>[StackFrame]</b><br/><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
+    <tr><td align="left">_boolean</td><td align="left" port="_boolean">false (boolean)</td></tr>
+    <tr><td align="left">_byte</td><td align="left" port="_byte">0 (byte)</td></tr>
+    <tr><td align="left">_char</td><td align="left" port="_char">\u0000 (char)</td></tr>
+    <tr><td align="left">_short</td><td align="left" port="_short">0 (short)</td></tr>
+    <tr><td align="left">_int</td><td align="left" port="_int">0 (int)</td></tr>
+    <tr><td align="left">_long</td><td align="left" port="_long">0 (long)</td></tr>
+    <tr><td align="left">_float</td><td align="left" port="_float">0.000000 (float)</td></tr>
+    <tr><td align="left">_double</td><td align="left" port="_double">0.000000 (double)</td></tr>
+    <tr><td align="left">args</td><td align="left" port="args"></td></tr>
+  </table>>]
+  _482d9dec6ff954d68d94793f765be61dbc59cb47 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>String[0]@8</b><br/><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[]</td></tr>
+  </table>>]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47 [label="args"]
+}

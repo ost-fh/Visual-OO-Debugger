@@ -1,0 +1,6 @@
+digraph ObjectDiagram {
+  node [shape=plaintext]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>[StackFrame]</b><br/><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
+  </table>>]
+}

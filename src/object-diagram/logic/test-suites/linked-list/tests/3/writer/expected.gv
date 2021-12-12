@@ -1,0 +1,51 @@
+digraph ObjectDiagram {
+  node [shape=plaintext]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>[StackFrame]</b><br/><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
+    <tr><td align="left">args</td><td align="left" port="args"></td></tr>
+    <tr><td align="left">list</td><td align="left" port="list"></td></tr>
+  </table>>]
+  _482d9dec6ff954d68d94793f765be61dbc59cb47 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>String[0]@8</b><br/><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[]</td></tr>
+  </table>>]
+  _7f72fde5bcfbd3fa5f2426e64a749e253c7dc602 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>LinkedList@9</b><br/><i>&lt;&lt;LinkedList&gt;&gt;</i></td></th>
+    <tr><td align="left">head</td><td align="left" port="head"></td></tr>
+  </table>>]
+  _228d691985f93beaed469d085317435fb3665ef9 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>LinkedList$Node@17</b><br/><i>&lt;&lt;LinkedList$Node&gt;&gt;</i></td></th>
+    <tr><td align="left">next</td><td align="left" port="next"></td></tr>
+    <tr><td align="left">value</td><td align="left" port="value"></td></tr>
+  </table>>]
+  _d2865ba5ee220622dea76e88fc2636f5678302a5 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>LinkedList$Node@26</b><br/><i>&lt;&lt;LinkedList$Node&gt;&gt;</i></td></th>
+    <tr><td align="left">next</td><td align="left" port="next"></td></tr>
+    <tr><td align="left">value</td><td align="left" port="value"></td></tr>
+  </table>>]
+  _9216cc81275965426f13a25b0d4cc5251cf83d7c [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>LinkedList$Node@28</b><br/><i>&lt;&lt;LinkedList$Node&gt;&gt;</i></td></th>
+    <tr><td align="left">next</td><td align="left" port="next">null</td></tr>
+    <tr><td align="left">value</td><td align="left" port="value"></td></tr>
+  </table>>]
+  _6c8ee4d6b87c98cd376adf5b3a8536fbe38a8afa [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>"3"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <tr><td colspan="2">"3"</td></tr>
+  </table>>]
+  _aa72d35e21c1d6132dbb8e75f8fbc7117c4f423d [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>"2"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <tr><td colspan="2">"2"</td></tr>
+  </table>>]
+  _25f504355ec07b115120e557c385e256ddbe8e4e [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>"1"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <tr><td colspan="2">"1"</td></tr>
+  </table>>]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47 [label="args"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:list -> _7f72fde5bcfbd3fa5f2426e64a749e253c7dc602 [label="list"]
+  _7f72fde5bcfbd3fa5f2426e64a749e253c7dc602:head -> _228d691985f93beaed469d085317435fb3665ef9 [label="head"]
+  _228d691985f93beaed469d085317435fb3665ef9:next -> _d2865ba5ee220622dea76e88fc2636f5678302a5 [label="next"]
+  _d2865ba5ee220622dea76e88fc2636f5678302a5:next -> _9216cc81275965426f13a25b0d4cc5251cf83d7c [label="next"]
+  _9216cc81275965426f13a25b0d4cc5251cf83d7c:value -> _6c8ee4d6b87c98cd376adf5b3a8536fbe38a8afa [label="value"]
+  _d2865ba5ee220622dea76e88fc2636f5678302a5:value -> _aa72d35e21c1d6132dbb8e75f8fbc7117c4f423d [label="value"]
+  _228d691985f93beaed469d085317435fb3665ef9:value -> _25f504355ec07b115120e557c385e256ddbe8e4e [label="value"]
+}
