@@ -1,0 +1,191 @@
+[
+  {
+    "id": "String[0]@8",
+    "type": "String[]",
+    "value": "[]",
+    "incomingRelations": [
+      {
+        "parentId": "args",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "args",
+    "name": "args",
+    "references": [
+      {
+        "childId": "String[0]@8",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "boolean[1]@9",
+    "type": "boolean[]",
+    "value": "[false]",
+    "incomingRelations": [
+      {
+        "parentId": "booleans",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "booleans",
+    "name": "booleans",
+    "references": [
+      {
+        "childId": "boolean[1]@9",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "byte[1]@10",
+    "type": "byte[]",
+    "value": "[0]",
+    "incomingRelations": [
+      {
+        "parentId": "bytes",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "bytes",
+    "name": "bytes",
+    "references": [
+      {
+        "childId": "byte[1]@10",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "char[1]@11",
+    "type": "char[]",
+    "value": "[\u0000]",
+    "incomingRelations": [
+      {
+        "parentId": "chars",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "chars",
+    "name": "chars",
+    "references": [
+      {
+        "childId": "char[1]@11",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "short[1]@12",
+    "type": "short[]",
+    "value": "[0]",
+    "incomingRelations": [
+      {
+        "parentId": "shorts",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "shorts",
+    "name": "shorts",
+    "references": [
+      {
+        "childId": "short[1]@12",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "int[1]@13",
+    "type": "int[]",
+    "value": "[0]",
+    "incomingRelations": [
+      {
+        "parentId": "ints",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "ints",
+    "name": "ints",
+    "references": [
+      {
+        "childId": "int[1]@13",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "long[1]@14",
+    "type": "long[]",
+    "value": "[0]",
+    "incomingRelations": [
+      {
+        "parentId": "longs",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "longs",
+    "name": "longs",
+    "references": [
+      {
+        "childId": "long[1]@14",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "float[1]@15",
+    "type": "float[]",
+    "value": "[0.000000]",
+    "incomingRelations": [
+      {
+        "parentId": "floats",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "floats",
+    "name": "floats",
+    "references": [
+      {
+        "childId": "float[1]@15",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "double[1]@16",
+    "type": "double[]",
+    "value": "[0.000000]",
+    "incomingRelations": [
+      {
+        "parentId": "doubles",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "doubles",
+    "name": "doubles",
+    "references": [
+      {
+        "childId": "double[1]@16",
+        "relationName": ""
+      }
+    ]
+  }
+]

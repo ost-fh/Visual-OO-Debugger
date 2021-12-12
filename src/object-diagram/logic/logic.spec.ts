@@ -4,7 +4,9 @@ import { after, before, ExclusiveSuiteFunction, PendingSuiteFunction, SuiteFunct
 import { join } from 'path';
 import { ObjectDiagram } from '../model/objectDiagram';
 import { ObjectDiagramReader } from './reader/objectDiagramReader';
+import { PanelViewInputObjectDiagramReader } from './reader/panelViewInputObjectDiagramReader';
 import { ObjectDiagramWriter } from './writer/objectDiagramWriter';
+import { PanelViewInput, PanelViewVariable } from '../../model/panelViewInput';
 
 interface SuiteConfiguration {
   title: string;
@@ -28,6 +30,15 @@ const parseJsonFiles = <T extends unknown[]>(...paths: string[]): T =>
   readUtf8FilesSync(...paths).map((content) => JSON.parse(content) as unknown) as T;
 
 const createSubPaths = <T extends string[]>(directoryPath: string, ...names: T): T => names.map((name) => join(directoryPath, name)) as T;
+
+const loadPanelViewInputFromVariablesFile = (filePath: string): PanelViewInput => {
+  const [panelViewVariables] = parseJsonFiles<[PanelViewVariable[]]>(filePath);
+  const variables = new Map<string, PanelViewVariable>();
+  panelViewVariables.forEach((variable) => variables.set(variable.id, variable));
+  return {
+    variables,
+  };
+};
 
 const shouldReadTheObjectDiagramCorrectlyFromSource = <Source>(
   sourceName: string,
@@ -78,11 +89,14 @@ describe('Object diagram logic', () => {
             const [test, objectDiagram] = parseJsonFiles<[SuiteConfiguration, ObjectDiagram]>(testFilePath, objectDiagramFilePath);
             const [
               //  Reader input file path variables
+              panelViewVariablesFilePath,
             ] = createSubPaths(
               readerDirectoryPath,
               //  Reader input file names
+              'panel-view-variables.json'
             );
             //  Reader inputs
+            const panelViewInput = loadPanelViewInputFromVariablesFile(panelViewVariablesFilePath);
             const [
               //  Writer expectation variables
             ] = readUtf8FilesSync(
@@ -93,6 +107,12 @@ describe('Object diagram logic', () => {
             );
             getSuiteFunction(test)(test.title, () => {
               //  Reader tests
+              shouldReadTheObjectDiagramCorrectlyFromSource(
+                'a panel view input',
+                new PanelViewInputObjectDiagramReader(),
+                panelViewInput,
+                objectDiagram
+              );
               //  Writer tests
             });
           });
