@@ -28,6 +28,11 @@ After ending the recording, the footage will be converted into a GIF. This proce
 Simply execute the command `VOOD: Export as PlantUML` to create a PlantUML file of the current state of the visualization
 or click on the `Visual Debugger` panel menu item `Export as PlantUML` instead.
 
+### Exporting a GraphViz file
+
+Simply execute the command `VOOD: Export as GraphViz` to create a GraphViz file of the current state of the visualization
+or click on the `Visual Debugger` panel menu item `Export as GraphViz` instead.
+
 ### Back-Stepper
 
 Use the buttons in the top left hand corner of the view to load the previous or next state of the visualization. Note that this will only change the state of the visualization and is not a way to step back/forward in the debugger. Only states that have been visualized before may be loaded that way.
