@@ -4,6 +4,7 @@ import { SaveDialogOptionsFactory } from '../../utilities/export/saveDialogOptio
 import { MementoAccessor } from '../../utilities/storage/mementoAccessor';
 import { ObjectDiagramWriter } from '../writer/objectDiagramWriter';
 import { PlantUmlObjectDiagramWriter } from '../writer/plantUmlObjectDiagramWriter';
+import { GraphVizObjectDiagramWriter } from '../writer/graphVizObjectDiagramWriter';
 
 export class ObjectDiagramFileSaverFactory {
   private static readonly fileNameStub = 'object-diagram';
@@ -18,6 +19,10 @@ export class ObjectDiagramFileSaverFactory {
       SaveDialogOptionsFactory.create('PlantUML', 'puml', 'pu', 'plantuml', 'iuml', 'wsd'),
       new PlantUmlObjectDiagramWriter()
     );
+  }
+
+  createGraphVizObjectDiagramFileSaver(): FileSaver {
+    return this.createObjectDiagramFileSaver(SaveDialogOptionsFactory.create('GraphViz', 'gv'), new GraphVizObjectDiagramWriter());
   }
 
   private createObjectDiagramFileSaver(saveDialogOptionsFactory: SaveDialogOptionsFactory, writer: ObjectDiagramWriter): FileSaver {

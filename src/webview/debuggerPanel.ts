@@ -15,9 +15,12 @@ export class DebuggerPanel {
 
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
+  private readonly graphVizObjectDiagramFileSaver: FileSaver;
+
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
     const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
     this.plantUmlObjectDiagramFileSaver = objectDiagramFileSaverFactory.createPlantUmlObjectDiagramFileSaver();
+    this.graphVizObjectDiagramFileSaver = objectDiagramFileSaverFactory.createGraphVizObjectDiagramFileSaver();
   }
 
   openPanel(): void {
@@ -92,6 +95,10 @@ export class DebuggerPanel {
 
   exportAsPlantUml(): Promise<void> {
     return this.plantUmlObjectDiagramFileSaver.saveFile();
+  }
+
+  exportAsGraphViz(): Promise<void> {
+    return this.graphVizObjectDiagramFileSaver.saveFile();
   }
 
   private createObjectDiagramFileSaverFactory(memento: Memento): ObjectDiagramFileSaverFactory {

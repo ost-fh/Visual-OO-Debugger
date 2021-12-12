@@ -60,6 +60,12 @@
         "title": "Export as PlantUML",
         "category": "VOOD",
         "enablement": "viewPanel.exists"
+      },
+      {
+        "command": "visual-oo-debugger.exportAsGraphViz",
+        "title": "Export as GraphViz",
+        "category": "VOOD",
+        "enablement": "viewPanel.exists"
       }
     ],
     "configuration": {
@@ -93,11 +99,20 @@
           "command": "visual-oo-debugger.exportAsPlantUml",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportAsMarkUp"
+        },
+        {
+          "command": "visual-oo-debugger.exportAsGraphViz",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
         }
       ],
       "editor/title": [
         {
           "command": "visual-oo-debugger.exportAsPlantUml",
+          "when": "viewPanel.exists"
+        },
+        {
+          "command": "visual-oo-debugger.exportAsGraphViz",
           "when": "viewPanel.exists"
         }
       ]
