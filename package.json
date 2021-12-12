@@ -54,6 +54,12 @@
         "command": "visual-oo-debugger.stopGIF",
         "title": "Stop recording a GIF",
         "category": "VOOD"
+      },
+      {
+        "command": "visual-oo-debugger.exportAsPlantUml",
+        "title": "Export as PlantUML",
+        "category": "VOOD",
+        "enablement": "viewPanel.exists"
       }
     ],
     "configuration": {
@@ -81,6 +87,17 @@
         },
         {
           "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists"
+        },
+        {
+          "command": "visual-oo-debugger.exportAsPlantUml",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "visual-oo-debugger.exportAsPlantUml",
           "when": "viewPanel.exists"
         }
       ]

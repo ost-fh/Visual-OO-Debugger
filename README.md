@@ -23,6 +23,11 @@ Simply execute the command `VOOD: Export as PNG` to create a PNG of the current 
 To start recording a GIF, use the command `VOOD: Start recording a GIF`. To end the recording, use the command `VOOD: Stop recording a GIF`. For quicker use, create a key-mapping for those commands.
 After ending the recording, the footage will be converted into a GIF. This process might take some time, so we recommend keeping the recording as long as necessary and as short as possible.
 
+### Exporting a PlantUML file
+
+Simply execute the command `VOOD: Export as PlantUML` to create a PlantUML file of the current state of the visualization
+or click on the `Visual Debugger` panel menu item `Export as PlantUML` instead.
+
 ### Back-Stepper
 
 Use the buttons in the top left hand corner of the view to load the previous or next state of the visualization. Note that this will only change the state of the visualization and is not a way to step back/forward in the debugger. Only states that have been visualized before may be loaded that way.

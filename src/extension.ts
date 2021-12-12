@@ -25,6 +25,7 @@ class Extension {
     this.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel());
     this.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel());
     this.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel());
+    this.registerCommand('visual-oo-debugger.exportAsPlantUml', () => debuggerPanel.exportAsPlantUml());
 
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
