@@ -1,0 +1,44 @@
+@startuml
+map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+  borderWidth => 5 (int)
+  args =>
+  topLeft =>
+  topLeftCopy =>
+  bottomRight =>
+  background =>
+}
+object "String[0]@8" as _482d9dec6ff954d68d94793f765be61dbc59cb47 <<String[]>> {
+  []
+}
+map "Point@9 <U+0022>x: 1 y: 1<U+0022>" as _782d99bf989d0a8059bfc0b89707b5fecd44189a <<Point>> {
+  x => 1 (int)
+  y => 1 (int)
+}
+map "Point@10 <U+0022>x: 5 y: 7<U+0022>" as _a4085fe64a34efdca9c495374ced14d982a9fcf0 <<Point>> {
+  x => 5 (int)
+  y => 7 (int)
+}
+map "Color@11 <U+0022>BLUE<U+0022>" as _c782cb251d54e777f73ba090318ea4549ea0154c <<Color>> {
+  ordinal => 2 (int)
+  hexValue =>
+  name =>
+  textValue =>
+}
+object "<U+0022>#0000FF<U+0022>" as _ddc022e583fa6f700df84118a557f6ee593d0896 <<String>> {
+  "#0000FF"
+}
+object "<U+0022>BLUE<U+0022>" as _68f417e07413646bc6802be73fa896ef65e71986 <<String>> {
+  "BLUE"
+}
+object "<U+0022>blue<U+0022>" as _2fc96ff8cf245465ff831587cf4c032a1fee1ecb <<String>> {
+  "blue"
+}
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args => _482d9dec6ff954d68d94793f765be61dbc59cb47 : args
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeft => _782d99bf989d0a8059bfc0b89707b5fecd44189a : topLeft
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeftCopy => _782d99bf989d0a8059bfc0b89707b5fecd44189a : topLeftCopy
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::bottomRight => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : bottomRight
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::background => _c782cb251d54e777f73ba090318ea4549ea0154c : background
+_c782cb251d54e777f73ba090318ea4549ea0154c::hexValue => _ddc022e583fa6f700df84118a557f6ee593d0896 : hexValue
+_c782cb251d54e777f73ba090318ea4549ea0154c::name => _68f417e07413646bc6802be73fa896ef65e71986 : name
+_c782cb251d54e777f73ba090318ea4549ea0154c::textValue => _2fc96ff8cf245465ff831587cf4c032a1fee1ecb : textValue
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+  args =>
+  list =>
+}
+object "String[0]@8" as _482d9dec6ff954d68d94793f765be61dbc59cb47 <<String[]>> {
+  []
+}
+map "LinkedList@9" as _7f72fde5bcfbd3fa5f2426e64a749e253c7dc602 <<LinkedList>> {
+  head => null
+}
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args => _482d9dec6ff954d68d94793f765be61dbc59cb47 : args
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::list => _7f72fde5bcfbd3fa5f2426e64a749e253c7dc602 : list
+@enduml
