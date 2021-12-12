@@ -6,6 +6,7 @@ import { ObjectDiagram } from '../model/objectDiagram';
 import { ObjectDiagramReader } from './reader/objectDiagramReader';
 import { PanelViewInputObjectDiagramReader } from './reader/panelViewInputObjectDiagramReader';
 import { ObjectDiagramWriter } from './writer/objectDiagramWriter';
+import { PlantUmlObjectDiagramWriter } from './writer/plantUmlObjectDiagramWriter';
 import { PanelViewInput, PanelViewVariable } from '../../model/panelViewInput';
 
 interface SuiteConfiguration {
@@ -99,10 +100,12 @@ describe('Object diagram logic', () => {
             const panelViewInput = loadPanelViewInputFromVariablesFile(panelViewVariablesFilePath);
             const [
               //  Writer expectation variables
+              expectedPlantUml,
             ] = readUtf8FilesSync(
               ...createSubPaths(
                 writerDirectoryPath,
                 //  Writer expectation file names
+                'expected.puml',
               )
             );
             getSuiteFunction(test)(test.title, () => {
@@ -114,6 +117,12 @@ describe('Object diagram logic', () => {
                 objectDiagram
               );
               //  Writer tests
+              itShouldWriteTheObjectDiagramCorrectlyAsTarget(
+                'PlantUml',
+                new PlantUmlObjectDiagramWriter(),
+                objectDiagram,
+                expectedPlantUml
+              );
             });
           });
       });
