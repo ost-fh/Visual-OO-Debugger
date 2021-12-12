@@ -1,0 +1,181 @@
+[
+  {
+    "id": "def019eeb93c98b95b5d267aaab48305001377eb",
+    "name": "borderWidth",
+    "type": "int",
+    "value": "5"
+  },
+  {
+    "id": "String[0]@8",
+    "type": "String[]",
+    "value": "[]",
+    "incomingRelations": [
+      {
+        "parentId": "args",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "args",
+    "name": "args",
+    "references": [
+      {
+        "childId": "String[0]@8",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "Point@9 \"x: 1 y: 1\"",
+    "type": "Point",
+    "incomingRelations": [
+      {
+        "parentId": "topLeft",
+        "relationName": ""
+      },
+      {
+        "parentId": "topLeftCopy",
+        "relationName": ""
+      }
+    ],
+    "primitiveValues": [
+      {
+        "type": "int",
+        "name": "x",
+        "value": "1"
+      },
+      {
+        "type": "int",
+        "name": "y",
+        "value": "1"
+      }
+    ]
+  },
+  {
+    "id": "topLeft",
+    "name": "topLeft",
+    "references": [
+      {
+        "childId": "Point@9 \"x: 1 y: 1\"",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "topLeftCopy",
+    "name": "topLeftCopy",
+    "references": [
+      {
+        "childId": "Point@9 \"x: 1 y: 1\"",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "Point@10 \"x: 5 y: 7\"",
+    "type": "Point",
+    "incomingRelations": [
+      {
+        "parentId": "bottomRight",
+        "relationName": ""
+      }
+    ],
+    "primitiveValues": [
+      {
+        "type": "int",
+        "name": "x",
+        "value": "5"
+      },
+      {
+        "type": "int",
+        "name": "y",
+        "value": "7"
+      }
+    ]
+  },
+  {
+    "id": "bottomRight",
+    "name": "bottomRight",
+    "references": [
+      {
+        "childId": "Point@10 \"x: 5 y: 7\"",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "Color@11 \"BLUE\"",
+    "type": "Color",
+    "incomingRelations": [
+      {
+        "parentId": "background",
+        "relationName": ""
+      }
+    ],
+    "references": [
+      {
+        "childId": "\"#0000FF\"",
+        "relationName": "hexValue"
+      },
+      {
+        "childId": "\"BLUE\"",
+        "relationName": "name"
+      },
+      {
+        "childId": "\"blue\"",
+        "relationName": "textValue"
+      }
+    ],
+    "primitiveValues": [
+      {
+        "type": "int",
+        "name": "ordinal",
+        "value": "2"
+      }
+    ]
+  },
+  {
+    "id": "background",
+    "name": "background",
+    "references": [
+      {
+        "childId": "Color@11 \"BLUE\"",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "\"#0000FF\"",
+    "type": "String",
+    "value": "\"#0000FF\"",
+    "incomingRelations": [
+      {
+        "parentId": "Color@11 \"BLUE\"",
+        "relationName": "hexValue"
+      }
+    ]
+  },
+  {
+    "id": "\"BLUE\"",
+    "type": "String",
+    "value": "\"BLUE\"",
+    "incomingRelations": [
+      {
+        "parentId": "Color@11 \"BLUE\"",
+        "relationName": "name"
+      }
+    ]
+  },
+  {
+    "id": "\"blue\"",
+    "type": "String",
+    "value": "\"blue\"",
+    "incomingRelations": [
+      {
+        "parentId": "Color@11 \"BLUE\"",
+        "relationName": "textValue"
+      }
+    ]
+  }
+]

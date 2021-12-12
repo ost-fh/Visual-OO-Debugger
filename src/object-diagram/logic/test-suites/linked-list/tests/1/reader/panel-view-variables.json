@@ -1,0 +1,90 @@
+[
+  {
+    "id": "String[0]@8",
+    "type": "String[]",
+    "value": "[]",
+    "incomingRelations": [
+      {
+        "parentId": "args",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "args",
+    "name": "args",
+    "references": [
+      {
+        "childId": "String[0]@8",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "LinkedList@9",
+    "type": "LinkedList",
+    "incomingRelations": [
+      {
+        "parentId": "list",
+        "relationName": ""
+      }
+    ],
+    "references": [
+      {
+        "childId": "LinkedList$Node@17",
+        "relationName": "head"
+      }
+    ]
+  },
+  {
+    "id": "list",
+    "name": "list",
+    "references": [
+      {
+        "childId": "LinkedList@9",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "LinkedList$Node@17",
+    "type": "LinkedList$Node",
+    "incomingRelations": [
+      {
+        "parentId": "LinkedList@9",
+        "relationName": "head"
+      }
+    ],
+    "references": [
+      {
+        "childId": "null",
+        "relationName": "next"
+      },
+      {
+        "childId": "\"1\"",
+        "relationName": "value"
+      }
+    ]
+  },
+  {
+    "id": "1392249c8fd703b4cab84e1a71481d8086f306d3",
+    "value": "null",
+    "incomingRelations": [
+      {
+        "parentId": "LinkedList$Node@17",
+        "relationName": "next"
+      }
+    ]
+  },
+  {
+    "id": "\"1\"",
+    "type": "String",
+    "value": "\"1\"",
+    "incomingRelations": [
+      {
+        "parentId": "LinkedList$Node@17",
+        "relationName": "value"
+      }
+    ]
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "id": "String[0]@8",
+    "type": "String[]",
+    "value": "[]",
+    "incomingRelations": [
+      {
+        "parentId": "args",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "args",
+    "name": "args",
+    "references": [
+      {
+        "childId": "String[0]@8",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "LinkedList@9",
+    "type": "LinkedList",
+    "incomingRelations": [
+      {
+        "parentId": "list",
+        "relationName": ""
+      }
+    ],
+    "references": [
+      {
+        "childId": "null",
+        "relationName": "head"
+      }
+    ]
+  },
+  {
+    "id": "list",
+    "name": "list",
+    "references": [
+      {
+        "childId": "LinkedList@9",
+        "relationName": ""
+      }
+    ]
+  },
+  {
+    "id": "f42b771a37ba1fb9c6e4d0565f53c5945bd22e89",
+    "value": "null",
+    "incomingRelations": [
+      {
+        "parentId": "LinkedList@9",
+        "relationName": "head"
+      }
+    ]
+  }
+]

@@ -1,0 +1,64 @@
+[
+  {
+    "id": "PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
+    "type": "PrimitiveTypesDemo$FieldContainer",
+    "incomingRelations": [
+      {
+        "parentId": "fieldContainer",
+        "relationName": ""
+      }
+    ],
+    "primitiveValues": [
+      {
+        "type": "boolean",
+        "name": "_boolean",
+        "value": "false"
+      },
+      {
+        "type": "byte",
+        "name": "_byte",
+        "value": "0"
+      },
+      {
+        "type": "char",
+        "name": "_char",
+        "value": "\u0000"
+      },
+      {
+        "type": "double",
+        "name": "_double",
+        "value": "0.000000"
+      },
+      {
+        "type": "float",
+        "name": "_float",
+        "value": "0.000000"
+      },
+      {
+        "type": "int",
+        "name": "_int",
+        "value": "0"
+      },
+      {
+        "type": "long",
+        "name": "_long",
+        "value": "0"
+      },
+      {
+        "type": "short",
+        "name": "_short",
+        "value": "0"
+      }
+    ]
+  },
+  {
+    "id": "fieldContainer",
+    "name": "fieldContainer",
+    "references": [
+      {
+        "childId": "PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
+        "relationName": ""
+      }
+    ]
+  }
+]
