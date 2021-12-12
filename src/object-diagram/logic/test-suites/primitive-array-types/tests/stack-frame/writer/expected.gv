@@ -1,0 +1,60 @@
+digraph ObjectDiagram {
+  node [shape=plaintext]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>[StackFrame]</b><br/><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
+    <tr><td align="left">args</td><td align="left" port="args"></td></tr>
+    <tr><td align="left">booleans</td><td align="left" port="booleans"></td></tr>
+    <tr><td align="left">bytes</td><td align="left" port="bytes"></td></tr>
+    <tr><td align="left">chars</td><td align="left" port="chars"></td></tr>
+    <tr><td align="left">shorts</td><td align="left" port="shorts"></td></tr>
+    <tr><td align="left">ints</td><td align="left" port="ints"></td></tr>
+    <tr><td align="left">longs</td><td align="left" port="longs"></td></tr>
+    <tr><td align="left">floats</td><td align="left" port="floats"></td></tr>
+    <tr><td align="left">doubles</td><td align="left" port="doubles"></td></tr>
+  </table>>]
+  _482d9dec6ff954d68d94793f765be61dbc59cb47 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>String[0]@8</b><br/><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[]</td></tr>
+  </table>>]
+  _b154bfeb1a9320d40888ff4cdef84d83c4a0763e [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>boolean[1]@9</b><br/><i>&lt;&lt;boolean[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[false]</td></tr>
+  </table>>]
+  _dd7b1158113ccb66341b847e268104fd10a73f08 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>byte[1]@10</b><br/><i>&lt;&lt;byte[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0]</td></tr>
+  </table>>]
+  _107a7f5ab9da095e7ebc472daf37a4b638129ed8 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>char[1]@11</b><br/><i>&lt;&lt;char[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[\u0000]</td></tr>
+  </table>>]
+  _fad48851f910c6ef0f8c63d5e047b6288c977977 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>short[1]@12</b><br/><i>&lt;&lt;short[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0]</td></tr>
+  </table>>]
+  _b44837f8cf9531d95542f988ac73cd2a7cfe6bc2 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>int[1]@13</b><br/><i>&lt;&lt;int[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0]</td></tr>
+  </table>>]
+  _fcfd466207315f120afc973f533b6ed01d5330bc [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>long[1]@14</b><br/><i>&lt;&lt;long[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0]</td></tr>
+  </table>>]
+  _a2d4f1721001eb4a4a134b6572cef2f2015c2280 [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>float[1]@15</b><br/><i>&lt;&lt;float[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0.000000]</td></tr>
+  </table>>]
+  _8aab52297f8c7f19a95f5ce7a264c03b1cea2d1e [label=<<table border="0" cellborder="1" cellspacing="0">
+    <th><td colspan="2"><b>double[1]@16</b><br/><i>&lt;&lt;double[]&gt;&gt;</i></td></th>
+    <tr><td colspan="2">[0.000000]</td></tr>
+  </table>>]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47 [label="args"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:booleans -> _b154bfeb1a9320d40888ff4cdef84d83c4a0763e [label="booleans"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:bytes -> _dd7b1158113ccb66341b847e268104fd10a73f08 [label="bytes"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:chars -> _107a7f5ab9da095e7ebc472daf37a4b638129ed8 [label="chars"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:shorts -> _fad48851f910c6ef0f8c63d5e047b6288c977977 [label="shorts"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:ints -> _b44837f8cf9531d95542f988ac73cd2a7cfe6bc2 [label="ints"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:longs -> _fcfd466207315f120afc973f533b6ed01d5330bc [label="longs"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:floats -> _a2d4f1721001eb4a4a134b6572cef2f2015c2280 [label="floats"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:doubles -> _8aab52297f8c7f19a95f5ce7a264c03b1cea2d1e [label="doubles"]
+}

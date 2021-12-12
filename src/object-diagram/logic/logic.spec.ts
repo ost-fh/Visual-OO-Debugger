@@ -7,6 +7,7 @@ import { ObjectDiagramReader } from './reader/objectDiagramReader';
 import { PanelViewInputObjectDiagramReader } from './reader/panelViewInputObjectDiagramReader';
 import { ObjectDiagramWriter } from './writer/objectDiagramWriter';
 import { PlantUmlObjectDiagramWriter } from './writer/plantUmlObjectDiagramWriter';
+import { GraphVizObjectDiagramWriter } from './writer/graphVizObjectDiagramWriter';
 import { PanelViewInput, PanelViewVariable } from '../../model/panelViewInput';
 
 interface SuiteConfiguration {
@@ -101,11 +102,13 @@ describe('Object diagram logic', () => {
             const [
               //  Writer expectation variables
               expectedPlantUml,
+              expectedGraphViz,
             ] = readUtf8FilesSync(
               ...createSubPaths(
                 writerDirectoryPath,
                 //  Writer expectation file names
                 'expected.puml',
+                'expected.gv'
               )
             );
             getSuiteFunction(test)(test.title, () => {
@@ -122,6 +125,12 @@ describe('Object diagram logic', () => {
                 new PlantUmlObjectDiagramWriter(),
                 objectDiagram,
                 expectedPlantUml
+              );
+              itShouldWriteTheObjectDiagramCorrectlyAsTarget(
+                'GraphViz',
+                new GraphVizObjectDiagramWriter(),
+                objectDiagram,
+                expectedGraphViz
               );
             });
           });
