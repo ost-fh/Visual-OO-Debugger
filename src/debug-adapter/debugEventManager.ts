@@ -11,6 +11,8 @@ export class DebugEventManager {
   private readonly maxValueLength = 30;
   private readonly maxDepth = 10;
 
+  private callSeq = 0;
+
   private debugSessionProxy: DebugSessionProxy | undefined;
 
   registerDebuggerPanel(debuggerPanel: DebuggerPanel): void {
@@ -20,10 +22,16 @@ export class DebugEventManager {
         const onDidSendMessage = async (m: Message): Promise<void> => {
           if (m.type === 'event') {
             if (m.event === 'stopped') {
+              this.callSeq = m.seq;
+
               const threadId = m.body.threadId;
               await this.debugSessionProxy?.setActiveStackFrameId(threadId);
               const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
-              debuggerPanel.updatePanel(await this.getData(currentVariables));
+              const data = await this.getData(currentVariables);
+
+              if (this.callSeq === m.seq) {
+                debuggerPanel.updatePanel(data);
+              }
             }
           }
         };
@@ -190,5 +198,6 @@ export class DebugEventManager {
 interface Message {
   type: string;
   event?: string;
+  seq: number;
   body: { threadId: number };
 }
