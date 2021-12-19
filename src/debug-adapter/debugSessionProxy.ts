@@ -1,7 +1,5 @@
 import { DebugSession } from 'vscode';
-import { Scope } from '../model/scope';
-import { StackFrame } from '../model/stackFrame';
-import { Variable } from '../model/variable';
+import { DebugProtocol } from 'vscode-debugprotocol';
 
 export class DebugSessionProxy {
   private activeStackFrameId: number | undefined;
@@ -17,22 +15,22 @@ export class DebugSessionProxy {
     threadId: number,
     startFrame?: number,
     levels?: number
-  ): Promise<{ totalFrames?: number; stackFrames: StackFrame[] }> {
+  ): Promise<{ totalFrames?: number; stackFrames: DebugProtocol.StackFrame[] }> {
     try {
       return (await this.session.customRequest('stackTrace', {
         threadId,
         levels,
         startFrame: startFrame ?? 0,
-      })) as { totalFrames?: number; stackFrames: StackFrame[] };
+      })) as { totalFrames?: number; stackFrames: DebugProtocol.StackFrame[] };
     } catch (e) {
       console.error(e);
       throw e;
     }
   }
 
-  async getScopes(frameId: number): Promise<Scope[]> {
+  async getScopes(frameId: number): Promise<DebugProtocol.Scope[]> {
     try {
-      const reply = (await this.session.customRequest('scopes', { frameId })) as { scopes: Scope[] };
+      const reply = (await this.session.customRequest('scopes', { frameId })) as { scopes: DebugProtocol.Scope[] };
       if (!reply) {
         return [];
       }
@@ -43,14 +41,14 @@ export class DebugSessionProxy {
     }
   }
 
-  async getAllCurrentScopes(): Promise<Scope[]> {
+  async getAllCurrentScopes(): Promise<DebugProtocol.Scope[]> {
     if (this.activeStackFrameId === undefined) {
       return [];
     }
     try {
       const reply = (await this.session.customRequest('scopes', {
         frameId: this.activeStackFrameId,
-      })) as { scopes: Scope[] };
+      })) as { scopes: DebugProtocol.Scope[] };
       if (!reply) {
         return [];
       }
@@ -61,9 +59,9 @@ export class DebugSessionProxy {
     }
   }
 
-  async getVariables(variablesReference: number): Promise<Variable[]> {
+  async getVariables(variablesReference: number): Promise<DebugProtocol.Variable[]> {
     try {
-      const reply = (await this.session.customRequest('variables', { variablesReference })) as { variables: Variable[] };
+      const reply = (await this.session.customRequest('variables', { variablesReference })) as { variables: DebugProtocol.Variable[] };
       if (!reply) {
         return [];
       }
@@ -74,7 +72,7 @@ export class DebugSessionProxy {
     }
   }
 
-  async getAllCurrentVariables(): Promise<Variable[]> {
+  async getAllCurrentVariables(): Promise<DebugProtocol.Variable[]> {
     try {
       const scopes = await this.getAllCurrentScopes();
       const reply = await Promise.all(

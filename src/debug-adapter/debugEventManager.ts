@@ -1,9 +1,9 @@
+import * as hash from 'object-hash';
 import { debug } from 'vscode';
+import { DebugProtocol } from 'vscode-debugprotocol';
 import { PanelViewInput, PanelViewVariable } from '../model/panelViewInput';
-import { Variable } from '../model/variable';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
-import * as hash from 'object-hash';
 
 export class DebugEventManager {
   private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
@@ -11,7 +11,7 @@ export class DebugEventManager {
   private readonly maxValueLength = 30;
   private readonly maxDepth = 10;
 
-  private callSeq = 0;
+  private callSeq: number | undefined;
 
   private debugSessionProxy: DebugSessionProxy | undefined;
 
@@ -19,19 +19,17 @@ export class DebugEventManager {
     debug.registerDebugAdapterTrackerFactory('*', {
       createDebugAdapterTracker: (session) => {
         this.debugSessionProxy = new DebugSessionProxy(session);
-        const onDidSendMessage = async (m: Message): Promise<void> => {
-          if (m.type === 'event') {
-            if (m.event === 'stopped') {
-              this.callSeq = m.seq;
+        const onDidSendMessage = async (m: DebugProtocol.ProtocolMessage): Promise<void> => {
+          if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
+            this.callSeq = m.seq;
 
-              const threadId = m.body.threadId;
-              await this.debugSessionProxy?.setActiveStackFrameId(threadId);
-              const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
-              const data = await this.getData(currentVariables);
+            const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
+            await this.debugSessionProxy?.setActiveStackFrameId(threadId ?? 0);
+            const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
+            const data = await this.getData(currentVariables);
 
-              if (this.callSeq === m.seq) {
-                debuggerPanel.updatePanel(data);
-              }
+            if (this.callSeq === m.seq) {
+              debuggerPanel.updatePanel(data);
             }
           }
         };
@@ -40,12 +38,12 @@ export class DebugEventManager {
     });
   }
 
-  private async getData(variables: Variable[] | undefined): Promise<PanelViewInput> {
+  private async getData(variables: DebugProtocol.Variable[] | undefined): Promise<PanelViewInput> {
     const panelViewInput = { variables: new Map() };
 
     // Add primitives of local scope
     for (const variable of variables || []) {
-      if (this.primitiveDataTypes.includes(variable.type)) {
+      if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
         const panelViewVariable: PanelViewVariable = {
           id: hash(variable),
           name: variable.name,
@@ -63,7 +61,7 @@ export class DebugEventManager {
   }
 
   private async readDataOfVariables(
-    variables: Variable[] | undefined,
+    variables: DebugProtocol.Variable[] | undefined,
     panelViewInput: PanelViewInput,
     parentId?: string | undefined,
     maxDepth = this.maxDepth
@@ -73,7 +71,7 @@ export class DebugEventManager {
     }
 
     for (const variable of variables) {
-      if (this.primitiveDataTypes.includes(variable.type)) {
+      if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
         this.addPrimitiveValueToParent(variable, parentId, panelViewInput);
       } else {
         await this.prepareObjectData(variable, maxDepth, parentId, panelViewInput);
@@ -81,10 +79,10 @@ export class DebugEventManager {
     }
   }
 
-  private addPrimitiveValueToParent(variable: Variable, parentId: string | undefined, panelViewInput: PanelViewInput): void {
+  private addPrimitiveValueToParent(variable: DebugProtocol.Variable, parentId: string | undefined, panelViewInput: PanelViewInput): void {
     if (parentId) {
       const panelViewVariable = panelViewInput.variables.get(parentId);
-      if (panelViewVariable) {
+      if (panelViewVariable && variable.type) {
         panelViewVariable.primitiveValues = [
           ...(panelViewVariable.primitiveValues || []),
           { type: variable.type, name: variable.name, value: variable.value },
@@ -94,7 +92,7 @@ export class DebugEventManager {
   }
 
   private async prepareObjectData(
-    variable: Variable,
+    variable: DebugProtocol.Variable,
     maxDepth: number,
     parentId: string | undefined,
     panelViewInput: PanelViewInput
@@ -132,7 +130,10 @@ export class DebugEventManager {
     }
   }
 
-  private async createPanelViewVariable(id: string, variable: Variable): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
+  private async createPanelViewVariable(
+    id: string,
+    variable: DebugProtocol.Variable
+  ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
     const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : hash(variable) };
 
@@ -144,7 +145,7 @@ export class DebugEventManager {
     panelViewVariable.type = variable.type;
     if (variable.type === 'String') {
       [panelViewVariable.value, panelViewVariable.tooltip] = this.prepareStringData(variable);
-    } else if (this.primitiveArrayDataTypes.includes(variable.type)) {
+    } else if (variable.type && this.primitiveArrayDataTypes.includes(variable.type)) {
       [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, ',');
     } else if (variable.type === 'String[]') {
       [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, '","');
@@ -155,7 +156,7 @@ export class DebugEventManager {
     return [panelViewVariable, isNewAndObject];
   }
 
-  private createVariableEntryForNamedVariable(variable: Variable, referencedObjectId: string): PanelViewVariable {
+  private createVariableEntryForNamedVariable(variable: DebugProtocol.Variable, referencedObjectId: string): PanelViewVariable {
     return {
       id: variable.name,
       name: variable.name,
@@ -163,7 +164,10 @@ export class DebugEventManager {
     };
   }
 
-  private async preparePrimitiveArrayData(variable: Variable, delimiter: string): Promise<[label: string, tooltip: string | undefined]> {
+  private async preparePrimitiveArrayData(
+    variable: DebugProtocol.Variable,
+    delimiter: string
+  ): Promise<[label: string, tooltip: string | undefined]> {
     const childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
     const fullLengthArray = childVariables ? this.renderAsArray(childVariables) : '[]';
 
@@ -178,7 +182,7 @@ export class DebugEventManager {
     return [value, tooltip];
   }
 
-  private prepareStringData(variable: Variable): [label: string, tooltip: string | undefined] {
+  private prepareStringData(variable: DebugProtocol.Variable): [label: string, tooltip: string | undefined] {
     let tooltip;
     let value = variable.value;
     if (value.length > this.maxValueLength) {
@@ -190,14 +194,7 @@ export class DebugEventManager {
     return [value, tooltip];
   }
 
-  private renderAsArray(variables: Variable[]): string {
+  private renderAsArray(variables: DebugProtocol.Variable[]): string {
     return `[${variables.map((v) => v.value).join(',')}]`;
   }
-}
-
-interface Message {
-  type: string;
-  event?: string;
-  seq: number;
-  body: { threadId: number };
 }
