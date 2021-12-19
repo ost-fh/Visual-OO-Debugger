@@ -100,10 +100,13 @@ export class VisjsPanelView implements PanelViewProxy {
     }
 
     const changelogEntry = this.createChangelogEntry(panelViewInput);
-    this.changelog.push(changelogEntry);
     this.currentPanelViewInput = panelViewInput;
+    const hasChanges = changelogEntry.edgeChanges?.length > 0 || changelogEntry.nodeChanges?.length > 0;
+    if (hasChanges) {
+      this.changelog.push(changelogEntry);
+    }
 
-    if (this.changelogIndex !== -1 && this.changelogIndex < this.changelog.length - 1) {
+    if (!hasChanges || (this.changelogIndex !== -1 && this.changelogIndex < this.changelog.length - 1)) {
       return { command: 'noop' };
     }
     this.changelogIndex = -1;
