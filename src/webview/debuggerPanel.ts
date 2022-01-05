@@ -77,20 +77,20 @@ export class DebuggerPanel {
   updatePanel(panelViewInput: PanelViewInput): void {
     this.currentPanelViewInput = panelViewInput;
     if (panelViewInput !== undefined) {
-      this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.updatePanel(panelViewInput));
+      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput));
     }
   }
 
   exportPanel(): void {
-    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.exportPanel());
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.exportPanel());
   }
 
   startRecordingPanel(): void {
-    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.startRecordingPanel());
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanel());
   }
 
   stopRecordingPanel(): void {
-    this.postCommandToWebViewIfViewPanelIsDefined(this.panelViewProxy.stopRecordingPanel());
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanel());
   }
 
   exportAsPlantUml(): Promise<void> {
@@ -114,8 +114,8 @@ export class DebuggerPanel {
     );
   }
 
-  private postCommandToWebViewIfViewPanelIsDefined(command: PanelViewCommand): void {
-    void this.viewPanel?.webview.postMessage(command);
+  private postCommandToWebViewIfViewPanelIsDefined(commandFactory: () => PanelViewCommand): void {
+    void this.viewPanel?.webview.postMessage(commandFactory());
   }
 
   setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
