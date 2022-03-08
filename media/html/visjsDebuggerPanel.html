@@ -66,6 +66,15 @@
         network = new vis.Network(container, data, message.options);
         vscode = acquireVsCodeApi();
         canvas = document.querySelector('#visjs-network canvas');
+
+        network.on('click', function (properties) {
+          const isCtrlClicked = properties.event.srcEvent.ctrlKey;
+          const ids = properties.nodes;
+          if (isCtrlClicked && ids?.length === 1) {
+            const clickedNode = nodes.get(ids[0]);
+            vscode.postMessage({ command: 'highlightVariable', content: clickedNode.id });
+          }
+        });
       }
 
       function updateVisjs(message) {
@@ -115,7 +124,7 @@
       function stopRecordingVisjs() {
         if (vscode) {
           recorder.stop();
-          vscode.postMessage('creatingGif');
+          vscode.postMessage({ command: 'creatingGif' });
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: 'video/webm',
@@ -154,11 +163,11 @@
       }
 
       function stepBack() {
-        vscode?.postMessage('stepBack');
+        vscode?.postMessage({ command: 'stepBack' });
       }
 
       function stepForward() {
-        vscode?.postMessage('stepForward');
+        vscode?.postMessage({ command: 'stepForward' });
       }
     </script>
   </body>

@@ -1,5 +1,7 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
+import { DebugEventManager } from '../debug-adapter/debugEventManager';
 import { PanelViewInput } from '../model/panelViewInput';
+import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
 import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
@@ -44,8 +46,8 @@ export class DebuggerPanel {
     this.viewPanel.webview.html = this.panelViewProxy.getHtml(this.viewPanel.webview);
 
     this.viewPanel.webview.onDidReceiveMessage(
-      (message) => {
-        switch (message) {
+      (message: WebviewMessage) => {
+        switch (message.command) {
           case 'creatingGif':
             void window.showInformationMessage('Creating GIF. This may take some time.');
             break;
@@ -58,6 +60,9 @@ export class DebuggerPanel {
             if (this.panelViewProxy.stepForward) {
               void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepForward());
             }
+            break;
+          case 'highlightVariable':
+            this.highlightVariable(message.content as string);
             break;
           default:
             console.debug(message);
@@ -99,6 +104,13 @@ export class DebuggerPanel {
 
   exportAsGraphViz(): Promise<void> {
     return this.graphVizObjectDiagramFileSaver.saveFile();
+  }
+
+  private highlightVariable(variableId: string): void {
+    if (variableId.startsWith(DebugEventManager.variablePrefix)) {
+      const variableName = variableId.substring(DebugEventManager.variablePrefix.length);
+      console.log(variableName);
+    }
   }
 
   private createObjectDiagramFileSaverFactory(memento: Memento): ObjectDiagramFileSaverFactory {

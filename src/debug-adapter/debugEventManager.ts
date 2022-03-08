@@ -6,6 +6,10 @@ import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
 
 export class DebugEventManager {
+  public static readonly variablePrefix = 'variable_';
+  public static readonly objectPrefix = 'object_';
+  public static readonly nullPrefix = 'null_';
+
   private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
   private readonly primitiveDataTypes = ['boolean', 'char', 'byte', 'short', 'int', 'long', 'float', 'double'];
   private readonly maxValueLength = 30;
@@ -45,7 +49,7 @@ export class DebugEventManager {
     for (const variable of variables || []) {
       if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
         const panelViewVariable: PanelViewVariable = {
-          id: hash(variable),
+          id: `${DebugEventManager.variablePrefix}${hash(variable)}`,
           name: variable.name,
           type: variable.type,
           value: variable.value,
@@ -98,7 +102,7 @@ export class DebugEventManager {
     panelViewInput: PanelViewInput
   ): Promise<void> {
     let isNewAndObject = false;
-    const id = variable.value;
+    const id = variable.value === 'null' ? variable.value : `${DebugEventManager.objectPrefix}${variable.value}`;
     let panelViewVariable = panelViewInput.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
@@ -135,10 +139,11 @@ export class DebugEventManager {
     variable: DebugProtocol.Variable
   ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
-    const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : hash(variable) };
+    const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : `${DebugEventManager.variablePrefix}${hash(variable)}` };
 
     if (variable.type === 'null') {
       panelViewVariable.value = 'null';
+      panelViewVariable.id = `${DebugEventManager.nullPrefix}${hash(variable)}`;
       return [panelViewVariable, isNewAndObject];
     }
 
@@ -158,7 +163,7 @@ export class DebugEventManager {
 
   private createVariableEntryForNamedVariable(variable: DebugProtocol.Variable, referencedObjectId: string): PanelViewVariable {
     return {
-      id: variable.name,
+      id: `${DebugEventManager.variablePrefix}${variable.name}`,
       name: variable.name,
       references: [{ childId: referencedObjectId, relationName: '' }],
     };
