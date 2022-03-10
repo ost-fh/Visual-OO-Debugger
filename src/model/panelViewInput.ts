@@ -1,4 +1,9 @@
 export interface PanelViewInput {
+  callstack: PanelViewStackFrame[];
+}
+
+export interface PanelViewStackFrame {
+  name: string;
   variables: Map<string, PanelViewVariable>; // The key is the value of an object or the hash of the variable for primitives
 }
 

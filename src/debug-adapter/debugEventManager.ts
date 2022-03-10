@@ -1,7 +1,7 @@
 import * as hash from 'object-hash';
 import { debug } from 'vscode';
 import { DebugProtocol } from 'vscode-debugprotocol';
-import { PanelViewInput, PanelViewVariable } from '../model/panelViewInput';
+import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
 
@@ -24,12 +24,13 @@ export class DebugEventManager {
             this.callSeq = m.seq;
 
             const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
-            await this.debugSessionProxy?.setActiveStackFrameId(threadId ?? 0);
-            const currentVariables = await this.debugSessionProxy?.getAllCurrentVariables();
-            const data = await this.getData(currentVariables);
-
-            if (this.callSeq === m.seq) {
-              debuggerPanel.updatePanel(data);
+            await this.debugSessionProxy?.loadStackFrames(threadId ?? 0);
+            const currentCallStack = this.debugSessionProxy?.getCallStack();
+            if (currentCallStack !== undefined) {
+              const data = await this.getData(currentCallStack);
+              if (this.callSeq === m.seq) {
+                debuggerPanel.updatePanel(data);
+              }
             }
           }
         };
@@ -38,9 +39,17 @@ export class DebugEventManager {
     });
   }
 
-  private async getData(variables: DebugProtocol.Variable[] | undefined): Promise<PanelViewInput> {
-    const panelViewInput = { variables: new Map() };
+  private async getData(stackFrames: DebugProtocol.StackFrame[]): Promise<PanelViewInput> {
+    const panelViewInput = { callstack: [] as PanelViewStackFrame[] };
+    for (const stackFrame of stackFrames) {
+      panelViewInput.callstack.push(await this.getStackFrameData(stackFrame));
+    }
+    return panelViewInput;
+  }
 
+  private async getStackFrameData(stackFrame: DebugProtocol.StackFrame): Promise<PanelViewStackFrame> {
+    const panelViewStackFrame = { name: stackFrame?.name, variables: new Map() };
+    const variables = await this.debugSessionProxy?.getAllVariables(stackFrame?.id);
     // Add primitives of local scope
     for (const variable of variables || []) {
       if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
@@ -51,18 +60,18 @@ export class DebugEventManager {
           value: variable.value,
         };
 
-        panelViewInput.variables.set(panelViewVariable.id, panelViewVariable);
+        panelViewStackFrame.variables.set(panelViewVariable.id, panelViewVariable);
       }
     }
 
-    await this.readDataOfVariables(variables, panelViewInput);
+    await this.readDataOfVariables(variables, panelViewStackFrame);
 
-    return panelViewInput;
+    return panelViewStackFrame;
   }
 
   private async readDataOfVariables(
     variables: DebugProtocol.Variable[] | undefined,
-    panelViewInput: PanelViewInput,
+    panelViewStackFrame: PanelViewStackFrame,
     parentId?: string | undefined,
     maxDepth = this.maxDepth
   ): Promise<void> {
@@ -72,16 +81,20 @@ export class DebugEventManager {
 
     for (const variable of variables) {
       if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
-        this.addPrimitiveValueToParent(variable, parentId, panelViewInput);
+        this.addPrimitiveValueToParent(variable, parentId, panelViewStackFrame);
       } else {
-        await this.prepareObjectData(variable, maxDepth, parentId, panelViewInput);
+        await this.prepareObjectData(variable, maxDepth, parentId, panelViewStackFrame);
       }
     }
   }
 
-  private addPrimitiveValueToParent(variable: DebugProtocol.Variable, parentId: string | undefined, panelViewInput: PanelViewInput): void {
+  private addPrimitiveValueToParent(
+    variable: DebugProtocol.Variable,
+    parentId: string | undefined,
+    panelViewStackFrame: PanelViewStackFrame
+  ): void {
     if (parentId) {
-      const panelViewVariable = panelViewInput.variables.get(parentId);
+      const panelViewVariable = panelViewStackFrame.variables.get(parentId);
       if (panelViewVariable && variable.type) {
         panelViewVariable.primitiveValues = [
           ...(panelViewVariable.primitiveValues || []),
@@ -95,15 +108,15 @@ export class DebugEventManager {
     variable: DebugProtocol.Variable,
     maxDepth: number,
     parentId: string | undefined,
-    panelViewInput: PanelViewInput
+    panelViewStackFrame: PanelViewStackFrame
   ): Promise<void> {
     let isNewAndObject = false;
     const id = variable.value;
-    let panelViewVariable = panelViewInput.variables.get(id);
+    let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
 
-      panelViewInput.variables.set(panelViewVariable.id, panelViewVariable);
+      panelViewStackFrame.variables.set(panelViewVariable.id, panelViewVariable);
     }
 
     if (parentId) {
@@ -111,13 +124,13 @@ export class DebugEventManager {
         ...(panelViewVariable.incomingRelations || []),
         { parentId: parentId, relationName: variable.name },
       ];
-      const parentVariable = panelViewInput.variables.get(parentId);
+      const parentVariable = panelViewStackFrame.variables.get(parentId);
       if (parentVariable) {
         parentVariable.references = [...(parentVariable.references || []), { childId: id, relationName: variable.name }];
       }
     } else {
       const namedVariable = this.createVariableEntryForNamedVariable(variable, id);
-      panelViewInput.variables.set(namedVariable.id, namedVariable);
+      panelViewStackFrame.variables.set(namedVariable.id, namedVariable);
       panelViewVariable.incomingRelations = [
         ...(panelViewVariable.incomingRelations || []),
         { parentId: namedVariable.id, relationName: '' },
@@ -126,7 +139,7 @@ export class DebugEventManager {
 
     if (isNewAndObject && variable.variablesReference) {
       const childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
-      await this.readDataOfVariables(childVariables, panelViewInput, id, maxDepth - 1);
+      await this.readDataOfVariables(childVariables, panelViewStackFrame, id, maxDepth - 1);
     }
   }
 

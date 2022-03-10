@@ -38,7 +38,7 @@ const loadPanelViewInputFromVariablesFile = (filePath: string): PanelViewInput =
   const variables = new Map<string, PanelViewVariable>();
   panelViewVariables.forEach((variable) => variables.set(variable.id, variable));
   return {
-    variables,
+    callstack: [{ name: 'unnamed', variables }],
   };
 };
 

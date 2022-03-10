@@ -243,14 +243,14 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   private createChangelogEntry(panelViewInput: PanelViewInput): VisjsChangelogEntry {
-    const addedVariableIds = Array.from(panelViewInput.variables.keys()).filter(
-      (id: string) => !this.currentPanelViewInput?.variables.has(id)
+    const addedVariableIds = Array.from(panelViewInput.callstack[0].variables.keys()).filter(
+      (id: string) => !this.currentPanelViewInput?.callstack[0].variables.has(id)
     );
-    const deletedVariableIds = Array.from(this.currentPanelViewInput?.variables.keys() || []).filter(
-      (id: string) => !panelViewInput.variables.has(id)
+    const deletedVariableIds = Array.from(this.currentPanelViewInput?.callstack[0].variables.keys() || []).filter(
+      (id: string) => !panelViewInput.callstack[0].variables.has(id)
     );
-    const updatedVariableIds = Array.from(this.currentPanelViewInput?.variables.keys() || []).filter((id: string) =>
-      this.variableChanged(this.currentPanelViewInput?.variables.get(id), panelViewInput.variables.get(id))
+    const updatedVariableIds = Array.from(this.currentPanelViewInput?.callstack[0].variables.keys() || []).filter((id: string) =>
+      this.variableChanged(this.currentPanelViewInput?.callstack[0].variables.get(id), panelViewInput.callstack[0].variables.get(id))
     );
 
     const [newNodes, newEdges] = this.buildCreateChangelogEntry(addedVariableIds, panelViewInput);
@@ -272,8 +272,8 @@ export class VisjsPanelView implements PanelViewProxy {
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of updatedVariableIds) {
-      const oldVariable = this.currentPanelViewInput?.variables.get(variableId);
-      const newVariable = panelViewInput.variables.get(variableId);
+      const oldVariable = this.currentPanelViewInput?.callstack[0].variables.get(variableId);
+      const newVariable = panelViewInput.callstack[0].variables.get(variableId);
       if (oldVariable && newVariable) {
         this.addNodeAndEdgeChanges(oldVariable, newVariable, nodeChanges, edgeChanges);
       }
@@ -344,7 +344,7 @@ export class VisjsPanelView implements PanelViewProxy {
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of addedVariableIds) {
-      const variable = panelViewInput.variables.get(variableId);
+      const variable = panelViewInput.callstack[0].variables.get(variableId);
       if (variable) {
         nodeChanges.push({
           action: ChangeAction.create,
@@ -373,7 +373,7 @@ export class VisjsPanelView implements PanelViewProxy {
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of deletedVariableIds) {
-      const variable = this.currentPanelViewInput?.variables.get(variableId);
+      const variable = this.currentPanelViewInput?.callstack[0].variables.get(variableId);
       if (variable) {
         nodeChanges.push({
           action: ChangeAction.delete,
@@ -405,8 +405,8 @@ export class VisjsPanelView implements PanelViewProxy {
     const nodes: Node[] = [];
     let edges: Edge[] = [];
 
-    if (panelViewInput?.variables) {
-      for (const variable of panelViewInput.variables.values()) {
+    if (panelViewInput?.callstack[0].variables) {
+      for (const variable of panelViewInput.callstack[0].variables.values()) {
         nodes.push(this.createNode(variable));
         edges = [...edges, ...this.createEdges(variable)];
       }
