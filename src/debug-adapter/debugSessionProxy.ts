@@ -2,13 +2,13 @@ import { DebugSession } from 'vscode';
 import { DebugProtocol } from 'vscode-debugprotocol';
 
 export class DebugSessionProxy {
-  private activeStackFrameId: number | undefined;
+  private stackFrames: DebugProtocol.StackFrame[] | undefined;
 
   constructor(private readonly session: DebugSession) {}
 
-  async setActiveStackFrameId(threadId: number): Promise<void> {
-    const stackTrace = await this.getStackTrace(threadId, 0, 1);
-    this.activeStackFrameId = stackTrace.stackFrames.length > 0 ? stackTrace.stackFrames[0].id : undefined;
+  async loadStackFrames(threadId: number): Promise<void> {
+    const stackTrace = await this.getStackTrace(threadId);
+    this.stackFrames = stackTrace.stackFrames;
   }
 
   async getStackTrace(
@@ -28,27 +28,16 @@ export class DebugSessionProxy {
     }
   }
 
-  async getScopes(frameId: number): Promise<DebugProtocol.Scope[]> {
+  async getScopes(frameId?: number): Promise<DebugProtocol.Scope[]> {
+    if (this.stackFrames === undefined || this.stackFrames.length === 0) {
+      return [];
+    }
+    if (frameId === undefined) {
+      frameId = this.stackFrames[0].id;
+    }
+
     try {
       const reply = (await this.session.customRequest('scopes', { frameId })) as { scopes: DebugProtocol.Scope[] };
-      if (!reply) {
-        return [];
-      }
-      return reply.scopes;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-
-  async getAllCurrentScopes(): Promise<DebugProtocol.Scope[]> {
-    if (this.activeStackFrameId === undefined) {
-      return [];
-    }
-    try {
-      const reply = (await this.session.customRequest('scopes', {
-        frameId: this.activeStackFrameId,
-      })) as { scopes: DebugProtocol.Scope[] };
       if (!reply) {
         return [];
       }
@@ -72,9 +61,9 @@ export class DebugSessionProxy {
     }
   }
 
-  async getAllCurrentVariables(): Promise<DebugProtocol.Variable[]> {
+  async getAllVariables(frameId?: number): Promise<DebugProtocol.Variable[]> {
     try {
-      const scopes = await this.getAllCurrentScopes();
+      const scopes = await this.getScopes(frameId);
       const reply = await Promise.all(
         scopes.filter((s) => !s.expensive && s.name !== 'Global').map((s) => this.getVariables(s.variablesReference))
       );
@@ -84,5 +73,9 @@ export class DebugSessionProxy {
       console.error(error);
       return [];
     }
+  }
+
+  getCallStack(): DebugProtocol.StackFrame[] | undefined {
+    return this.stackFrames;
   }
 }

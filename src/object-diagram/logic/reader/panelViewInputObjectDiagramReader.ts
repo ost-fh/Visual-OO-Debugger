@@ -12,9 +12,8 @@ const isUndefinedOrPrimitiveJavaType = (type: string | undefined): type is undef
   type === undefined || isPrimitiveJavaType(type);
 
 export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<PanelViewInput> {
-  read({ variables }: PanelViewInput): ObjectDiagram {
-    //  We don't support multiple stack frames (yet).
-    //  See https://visual-oo-debugger.atlassian.net/browse/VOOD-77 for details.
+  read({ callstack }: PanelViewInput): ObjectDiagram {
+    const variables = callstack[0].variables;
     const stackFrameId = '__stackFrame__';
     const structures: Structure[] = [
       {
