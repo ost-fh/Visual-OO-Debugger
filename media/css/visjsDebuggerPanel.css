@@ -21,9 +21,11 @@ body,
   align-items: center;
 }
 
-.top-row .codicon {
-  padding-left: 16px;
-  font-size: 24px;
-  color: var(--vscode-editor-foreground);
-  cursor: pointer;
+.top-row .progress-button {
+  margin-left: 16px;
+}
+
+.top-row .stack-frames-dropdown {
+  flex-grow: 1;
+  margin: 0 16px;
 }

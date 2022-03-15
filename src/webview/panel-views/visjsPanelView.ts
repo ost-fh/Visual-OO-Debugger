@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
-import { PanelViewInput, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
+import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
@@ -40,7 +40,7 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private changelog: VisjsChangelogEntry[] = [];
 
-  private currentPanelViewInput: PanelViewInput | undefined;
+  private currentPanelViewVariables: PanelViewInputVariableMap | undefined;
 
   private changelogIndex = -1;
 
@@ -59,6 +59,9 @@ export class VisjsPanelView implements PanelViewProxy {
     const codiconsUri = webview.asWebviewUri(
       Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.codiconCss))
     );
+    const webviewUiToolkit = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.webviewUiToolkit))
+    );
     const cssUri = webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'media', 'css', 'visjsDebuggerPanel.css'));
     const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
     return readFileSync(filePath.fsPath, 'utf8')
@@ -66,18 +69,19 @@ export class VisjsPanelView implements PanelViewProxy {
       .replace('{{ffmpeg.min.js}}', ffmpegUri.toString())
       .replace('{{ffmpeg-core.js}}', ffmpegCoreUri.toString())
       .replace('{{visjsDebuggerPanel.css}}', cssUri.toString())
-      .replace('{{codicon.css}}', codiconsUri.toString());
+      .replace('{{codicon.css}}', codiconsUri.toString())
+      .replace('{{toolkit.min.js}}', webviewUiToolkit.toString());
   }
 
   teardownPanelView(): void {
     this.changelog = [];
-    this.currentPanelViewInput = undefined;
+    this.currentPanelViewVariables = undefined;
     this.changelogIndex = -1;
   }
 
-  updatePanel(panelViewInput: PanelViewInput): PanelViewCommand {
-    if (!this.currentPanelViewInput) {
-      this.currentPanelViewInput = panelViewInput;
+  updatePanel(variables: PanelViewInputVariableMap): PanelViewCommand {
+    if (!this.currentPanelViewVariables) {
+      this.currentPanelViewVariables = variables;
 
       const options: Options = {
         nodes: {
@@ -96,11 +100,11 @@ export class VisjsPanelView implements PanelViewProxy {
         },
       };
 
-      return { command: 'initializeVisjs', data: this.parseInputToData(panelViewInput), options };
+      return { command: 'initializeVisjs', data: this.parseInputToData(variables), options };
     }
 
-    const changelogEntry = this.createChangelogEntry(panelViewInput);
-    this.currentPanelViewInput = panelViewInput;
+    const changelogEntry = this.createChangelogEntry(variables);
+    this.currentPanelViewVariables = variables;
     const hasChanges = changelogEntry.edgeChanges?.length > 0 || changelogEntry.nodeChanges?.length > 0;
     if (hasChanges) {
       this.changelog.push(changelogEntry);
@@ -242,20 +246,16 @@ export class VisjsPanelView implements PanelViewProxy {
     return { addNodes, updateNodes, deleteNodeIds, addEdges, deleteEdgeIds };
   }
 
-  private createChangelogEntry(panelViewInput: PanelViewInput): VisjsChangelogEntry {
-    const addedVariableIds = Array.from(panelViewInput.callstack[0].variables.keys()).filter(
-      (id: string) => !this.currentPanelViewInput?.callstack[0].variables.has(id)
-    );
-    const deletedVariableIds = Array.from(this.currentPanelViewInput?.callstack[0].variables.keys() || []).filter(
-      (id: string) => !panelViewInput.callstack[0].variables.has(id)
-    );
-    const updatedVariableIds = Array.from(this.currentPanelViewInput?.callstack[0].variables.keys() || []).filter((id: string) =>
-      this.variableChanged(this.currentPanelViewInput?.callstack[0].variables.get(id), panelViewInput.callstack[0].variables.get(id))
+  private createChangelogEntry(variables: PanelViewInputVariableMap): VisjsChangelogEntry {
+    const addedVariableIds = Array.from(variables.keys()).filter((id: string) => !this.currentPanelViewVariables?.has(id));
+    const deletedVariableIds = Array.from(this.currentPanelViewVariables?.keys() || []).filter((id: string) => !variables.has(id));
+    const updatedVariableIds = Array.from(this.currentPanelViewVariables?.keys() || []).filter((id: string) =>
+      this.variableChanged(this.currentPanelViewVariables?.get(id), variables.get(id))
     );
 
-    const [newNodes, newEdges] = this.buildCreateChangelogEntry(addedVariableIds, panelViewInput);
+    const [newNodes, newEdges] = this.buildCreateChangelogEntry(addedVariableIds, variables);
     const [deletedNodes, deletedEdges] = this.buildDeleteChangelogEntry(deletedVariableIds);
-    const [updateNodes, updatedEdges] = this.buildUpdateChangelogEntry(updatedVariableIds, panelViewInput);
+    const [updateNodes, updatedEdges] = this.buildUpdateChangelogEntry(updatedVariableIds, variables);
 
     // Create a Set to easily remove duplications
     const nodeChanges = new Set([...newNodes, ...deletedNodes, ...updateNodes]);
@@ -266,14 +266,14 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private buildUpdateChangelogEntry(
     updatedVariableIds: string[],
-    panelViewInput: PanelViewInput
+    variables: PanelViewInputVariableMap
   ): [nodes: ChangedNode[], edges: ChangedEdge[]] {
     const nodeChanges: ChangedNode[] = [];
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of updatedVariableIds) {
-      const oldVariable = this.currentPanelViewInput?.callstack[0].variables.get(variableId);
-      const newVariable = panelViewInput.callstack[0].variables.get(variableId);
+      const oldVariable = this.currentPanelViewVariables?.get(variableId);
+      const newVariable = variables.get(variableId);
       if (oldVariable && newVariable) {
         this.addNodeAndEdgeChanges(oldVariable, newVariable, nodeChanges, edgeChanges);
       }
@@ -338,13 +338,13 @@ export class VisjsPanelView implements PanelViewProxy {
 
   private buildCreateChangelogEntry(
     addedVariableIds: string[],
-    panelViewInput: PanelViewInput
+    variables: PanelViewInputVariableMap
   ): [nodes: ChangedNode[], edges: ChangedEdge[]] {
     const nodeChanges: ChangedNode[] = [];
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of addedVariableIds) {
-      const variable = panelViewInput.callstack[0].variables.get(variableId);
+      const variable = variables.get(variableId);
       if (variable) {
         nodeChanges.push({
           action: ChangeAction.create,
@@ -373,7 +373,7 @@ export class VisjsPanelView implements PanelViewProxy {
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of deletedVariableIds) {
-      const variable = this.currentPanelViewInput?.callstack[0].variables.get(variableId);
+      const variable = this.currentPanelViewVariables?.get(variableId);
       if (variable) {
         nodeChanges.push({
           action: ChangeAction.delete,
@@ -401,15 +401,13 @@ export class VisjsPanelView implements PanelViewProxy {
     return Boolean(v1) && Boolean(v2) && !isEqual(v1, v2);
   }
 
-  private parseInputToData(panelViewInput: PanelViewInput): Data {
+  private parseInputToData(variables: PanelViewInputVariableMap): Data {
     const nodes: Node[] = [];
     let edges: Edge[] = [];
 
-    if (panelViewInput?.callstack[0].variables) {
-      for (const variable of panelViewInput.callstack[0].variables.values()) {
-        nodes.push(this.createNode(variable));
-        edges = [...edges, ...this.createEdges(variable)];
-      }
+    for (const variable of variables.values()) {
+      nodes.push(this.createNode(variable));
+      edges = [...edges, ...this.createEdges(variable)];
     }
 
     return { nodes, edges };

@@ -1,5 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { PanelViewInput } from '../model/panelViewInput';
+import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
 import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
@@ -44,8 +45,8 @@ export class DebuggerPanel {
     this.viewPanel.webview.html = this.panelViewProxy.getHtml(this.viewPanel.webview);
 
     this.viewPanel.webview.onDidReceiveMessage(
-      (message) => {
-        switch (message) {
+      (message: WebviewMessage) => {
+        switch (message.command) {
           case 'creatingGif':
             void window.showInformationMessage('Creating GIF. This may take some time.');
             break;
@@ -58,6 +59,9 @@ export class DebuggerPanel {
             if (this.panelViewProxy.stepForward) {
               void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepForward());
             }
+            break;
+          case 'selectStackFrame':
+            this.selectStackFrame(message.content as number);
             break;
           default:
             console.debug(message);
@@ -77,7 +81,11 @@ export class DebuggerPanel {
   updatePanel(panelViewInput: PanelViewInput): void {
     this.currentPanelViewInput = panelViewInput;
     if (panelViewInput !== undefined) {
-      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput));
+      this.postCommandToWebViewIfViewPanelIsDefined(() => ({
+        command: 'updateStackFrames',
+        stackFrames: panelViewInput.callstack.map((frame) => frame.name),
+      }));
+      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput.callstack[0].variables));
     }
   }
 
@@ -101,6 +109,22 @@ export class DebuggerPanel {
     return this.graphVizObjectDiagramFileSaver.saveFile();
   }
 
+  setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
+    const viewPanelVisible = this.viewPanel?.visible;
+    this.teardownPanel();
+    this.panelViewProxy = panelViewProxy;
+    if (viewPanelVisible) {
+      this.openPanel();
+    }
+  }
+
+  private selectStackFrame(index: number): void {
+    const panelViewInput = this.currentPanelViewInput;
+    if (panelViewInput !== undefined) {
+      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput.callstack[index].variables));
+    }
+  }
+
   private createObjectDiagramFileSaverFactory(memento: Memento): ObjectDiagramFileSaverFactory {
     return new ObjectDiagramFileSaverFactory(
       new MementoAccessor<string>(memento, 'visual-oo-debugger.lastObjectDiagramExportDirectoryPath'),
@@ -116,15 +140,6 @@ export class DebuggerPanel {
 
   private postCommandToWebViewIfViewPanelIsDefined(commandFactory: () => PanelViewCommand): void {
     void this.viewPanel?.webview.postMessage(commandFactory());
-  }
-
-  setPanelViewProxy(panelViewProxy: PanelViewProxy): void {
-    const viewPanelVisible = this.viewPanel?.visible;
-    this.teardownPanel();
-    this.panelViewProxy = panelViewProxy;
-    if (viewPanelVisible) {
-      this.openPanel();
-    }
   }
 
   private teardownPanel(): void {

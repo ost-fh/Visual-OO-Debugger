@@ -39,6 +39,14 @@ export class NodeModulesAccessor {
         includeFolder: true,
       },
     ],
+    [
+      NodeModulesKeys.webviewUiToolkit,
+      {
+        sourcePath: ['node_modules', '@vscode', 'webview-ui-toolkit', 'dist'],
+        destinationPath: ['libs', '@vscode', 'webview-ui-toolkit', 'dist'],
+        fileName: 'toolkit.min.js',
+      },
+    ],
   ]);
 
   static getPathToOutputFile(key: NodeModulesKeys): string[] {
