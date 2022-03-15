@@ -6,6 +6,7 @@
     <title>Visual Debugger</title>
     <script type="text/javascript" src="{{vis-network.min.js}}"></script>
     <script type="text/javascript" src="{{ffmpeg.min.js}}"></script>
+    <script type="module" src="{{toolkit.min.js}}"></script>
     <link href="{{visjsDebuggerPanel.css}}" rel="stylesheet" />
     <link href="{{codicon.css}}" rel="stylesheet" />
   </head>
@@ -14,8 +15,13 @@
     <div class="container">
       <div id="visjs-network"></div>
       <div class="top-row">
-        <a class="codicon codicon-debug-reverse-continue" onclick="stepBack()"></a>
-        <a class="codicon codicon-debug-continue" onclick="stepForward()"></a>
+        <vscode-button class="progress-button" appearance="icon" onclick="stepBack()" aria-label="Show previous step">
+          <span class="codicon codicon-debug-reverse-continue"></span>
+        </vscode-button>
+        <vscode-button class="progress-button" appearance="icon" onclick="stepForward()" aria-label="Show next step">
+          <span class="codicon codicon-debug-continue"></span>
+        </vscode-button>
+        <vscode-dropdown id="stackFramesDropdown" class="stack-frames-dropdown"></vscode-dropdown>
       </div>
     </div>
 
@@ -29,6 +35,7 @@
       let chunks;
       let vscode;
       let canvas;
+      let dropdown;
 
       window.addEventListener('message', (event) => {
         const message = event.data;
@@ -47,6 +54,9 @@
             break;
           case 'stopRecordingVisjs':
             stopRecordingVisjs();
+            break;
+          case 'updateStackFrames':
+            updateStackFrames(message);
             break;
           default:
             console.debug(message.command);
@@ -115,7 +125,7 @@
       function stopRecordingVisjs() {
         if (vscode) {
           recorder.stop();
-          vscode.postMessage('creatingGif');
+          vscode.postMessage({ command: 'creatingGif' });
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: 'video/webm',
@@ -154,11 +164,34 @@
       }
 
       function stepBack() {
-        vscode?.postMessage('stepBack');
+        vscode?.postMessage({ command: 'stepBack' });
       }
 
       function stepForward() {
-        vscode?.postMessage('stepForward');
+        vscode?.postMessage({ command: 'stepForward' });
+      }
+
+      function updateStackFrames(message) {
+        if (!dropdown) {
+          setupStackFramesDropdown();
+        }
+        dropdown.innerHTML = '';
+        const stackFrames = message.stackFrames;
+        for (let i = 0; i < stackFrames.length; i++) {
+          const frame = stackFrames[i];
+          const option = document.createElement('vscode-option');
+          option.value = i;
+          option.innerHTML = frame;
+          dropdown.appendChild(option);
+        }
+      }
+
+      function setupStackFramesDropdown() {
+        dropdown = document.querySelector('#stackFramesDropdown');
+        dropdown.addEventListener('change', (element) => {
+          const stackFrameIndex = element.srcElement.value;
+          vscode.postMessage({ command: 'selectStackFrame', content: stackFrameIndex });
+        });
       }
     </script>
   </body>

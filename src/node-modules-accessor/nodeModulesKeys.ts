@@ -3,4 +3,5 @@ export enum NodeModulesKeys {
   ffmpegMinJs,
   ffmpegCoreJs,
   codiconCss,
+  webviewUiToolkit,
 }

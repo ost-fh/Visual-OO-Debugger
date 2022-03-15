@@ -8,7 +8,7 @@ import { PanelViewInputObjectDiagramReader } from './reader/panelViewInputObject
 import { ObjectDiagramWriter } from './writer/objectDiagramWriter';
 import { PlantUmlObjectDiagramWriter } from './writer/plantUmlObjectDiagramWriter';
 import { GraphVizObjectDiagramWriter } from './writer/graphVizObjectDiagramWriter';
-import { PanelViewInput, PanelViewVariable } from '../../model/panelViewInput';
+import { PanelViewInput, PanelViewInputVariableMap, PanelViewVariable } from '../../model/panelViewInput';
 
 interface SuiteConfiguration {
   title: string;
@@ -35,7 +35,7 @@ const createSubPaths = <T extends string[]>(directoryPath: string, ...names: T):
 
 const loadPanelViewInputFromVariablesFile = (filePath: string): PanelViewInput => {
   const [panelViewVariables] = parseJsonFiles<[PanelViewVariable[]]>(filePath);
-  const variables = new Map<string, PanelViewVariable>();
+  const variables: PanelViewInputVariableMap = new Map<string, PanelViewVariable>();
   panelViewVariables.forEach((variable) => variables.set(variable.id, variable));
   return {
     callstack: [{ name: 'unnamed', variables }],

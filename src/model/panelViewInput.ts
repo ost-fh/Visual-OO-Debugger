@@ -2,9 +2,12 @@ export interface PanelViewInput {
   callstack: PanelViewStackFrame[];
 }
 
+// The key is the value of an object or the hash of the variable for primitives
+export type PanelViewInputVariableMap = Map<string, PanelViewVariable>;
+
 export interface PanelViewStackFrame {
   name: string;
-  variables: Map<string, PanelViewVariable>; // The key is the value of an object or the hash of the variable for primitives
+  variables: PanelViewInputVariableMap;
 }
 
 export interface PanelViewVariable {
