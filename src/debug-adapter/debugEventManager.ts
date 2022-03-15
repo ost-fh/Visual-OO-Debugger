@@ -40,7 +40,7 @@ export class DebugEventManager {
   }
 
   private async getData(stackFrames: DebugProtocol.StackFrame[]): Promise<PanelViewInput> {
-    const panelViewInput = { callstack: [] as PanelViewStackFrame[] };
+    const panelViewInput: PanelViewInput = { callstack: [] };
     for (const stackFrame of stackFrames) {
       panelViewInput.callstack.push(await this.getStackFrameData(stackFrame));
     }
