@@ -76,6 +76,65 @@
         network = new vis.Network(container, data, message.options);
         vscode = acquireVsCodeApi();
         canvas = document.querySelector('#visjs-network canvas');
+
+        network.on('selectNode', function (params) {
+          if (params.nodes.length === 1) {
+            if (network.isCluster(params.nodes[0]) == true) {
+              network.openCluster(params.nodes[0]);
+            } else if (params.nodes[0].indexOf('variable_') === 0) {
+              clusterNodes(params.nodes[0]);
+            } else {
+              clusterChildNodes(params.nodes[0]);
+            }
+          }
+        });
+      }
+
+      function clusterChildNodes(id) {
+        nodeList = [id];
+        childNodes = network.getConnectedNodes(id, 'to');
+        childNodes.forEach((childNode) => {
+          nodeList.push(childNode);
+          nodeList.push.apply(getAllConectingNodes(childNode, nodeList));
+        });
+        clusterNodes(id, nodeList);
+      }
+
+      function getAllConectingNodes(id, nodeList) {
+        var childs = network.getConnectedNodes(id).filter((nodeId) => !nodeList.includes(nodeId));
+        if (childs.length !== 0) {
+          childs.forEach((child) => {
+            nodeList.push(child);
+            nodeList.push.apply(getAllConectingNodes(child, nodeList));
+          });
+        }
+        return nodeList;
+      }
+
+      function clusterNodes(id, nodeList) {
+        let joinConditionNodes;
+        if (nodeList != undefined) {
+          joinConditionNodes = function (nodeOptions) {
+            return nodeList.includes(nodeOptions.id);
+          };
+        }
+
+        var options = {
+          joinCondition: joinConditionNodes,
+          processProperties: function (clusterOptions) {
+            clusterOptions.id = 'cluster_' + id;
+            clusterOptions.label = nodes.get(id).label;
+            return clusterOptions;
+          },
+          clusterNodeProperties: {
+            borderWidth: 5,
+          },
+        };
+        if (nodeList != undefined) {
+          network.cluster(options);
+        } else {
+          network.clusterByConnection(id, options);
+        }
       }
 
       function updateVisjs(message) {
@@ -93,9 +152,62 @@
             color: defaultEdgeColor,
           }))
         );
+        const edgesClusterStack = getEdgesClusterStack(message);
         nodes.add(message.data.addNodes);
         nodes.updateOnly(message.data.updateNodes);
         edges.add(message.data.addEdges);
+        reCluster(edgesClusterStack);
+      }
+
+      function getEdgesClusterStack(message) {
+        let edgesClusterStack = [];
+        message.data.addEdges.forEach((edge) => {
+          if (network.findNode(edge.from).length > 1 || network.findNode(edge.to) > 1) {
+            edgesClusterStack.push({ fromCluster: network.findNode(edge.from), toCluster: network.findNode(edge.to) });
+          }
+        });
+        return edgesClusterStack;
+      }
+
+      function reCluster(edgesClusterStack) {
+        edgesClusterStack.forEach((edge) => {
+          if (edge.fromCluster.length < edge.toCluster.length) {
+            openClusterStack(edge.fromCluster.filter((cluster) => !edge.toCluster.includes(cluster)));
+            updateCluster(edge.toCluster);
+          } else {
+            openClusterStack(edge.toCluster.filter((cluster) => !edge.fromCluster.includes(cluster)));
+            updateCluster(edge.fromCluster);
+          }
+        });
+      }
+
+      function openClusterStack(clusterStack) {
+        clusterStack.forEach((cluster) => {
+          if (nodes.get(cluster) !== undefined && network.isCluster(cluster)) {
+            network.openCluster(cluster);
+          }
+        });
+      }
+
+      function updateCluster(clusterStack) {
+        if (clusterStack.length >= 1) {
+          if (clusterStack[0] !== undefined && network.isCluster(clusterStack[0])) {
+            const clusterNodeId = clusterStack[0].substring(8);
+            network.openCluster(clusterStack[0]);
+
+            clusterStack.shift();
+            updateCluster(clusterStack);
+
+            if (clusterNodeId.indexOf('variable_') === 0) {
+              clusterNodes(clusterNodeId);
+            } else {
+              clusterChildNodes(clusterNodeId);
+            }
+          } else {
+            clusterStack.shift();
+            updateCluster(clusterStack);
+          }
+        }
       }
 
       function exportVisjs() {
