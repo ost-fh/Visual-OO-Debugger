@@ -22,6 +22,9 @@
           <span class="codicon codicon-debug-continue"></span>
         </vscode-button>
         <vscode-dropdown id="stackFramesDropdown" class="stack-frames-dropdown"></vscode-dropdown>
+        <vscode-button class="openAllClusters-button" appearance="icon" onclick="openAllClusters()" aria-label="Open all clusters">
+          <span class="codicon codicon-type-hierarchy"></span>
+        </vscode-button>
       </div>
     </div>
 
@@ -300,6 +303,14 @@
           const stackFrameIndex = element.srcElement.value;
           vscode.postMessage({ command: 'selectStackFrame', content: stackFrameIndex });
         });
+      }
+
+      function openAllClusters() {
+        openClusterStack(
+          Object.keys(network.body.nodes).filter((nodeId) => {
+            return nodeId.startsWith('cluster_');
+          })
+        );
       }
     </script>
   </body>

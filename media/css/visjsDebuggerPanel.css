@@ -25,6 +25,10 @@ body,
   margin-left: 16px;
 }
 
+.top-row .openAllClusters-button {
+  margin-right: 16px;
+}
+
 .top-row .stack-frames-dropdown {
   flex-grow: 1;
   margin: 0 16px;
