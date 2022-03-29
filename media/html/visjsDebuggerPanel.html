@@ -114,9 +114,9 @@
 
       function clusterNodes(id, nodeList) {
         const joinConditionNodes = (nodeOptions) => nodeList.has(nodeOptions.id);
- 
+
         var options = {
-          joinCondition: (nodeList != undefined) ? joinConditionNodes:undefined,
+          joinCondition: nodeList != undefined ? joinConditionNodes : undefined,
           processProperties: (clusterOptions) => {
             clusterOptions.id = 'cluster_' + id;
             clusterOptions.label = nodes.get(id).label;
