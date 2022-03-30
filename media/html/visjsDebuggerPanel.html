@@ -80,7 +80,7 @@
         network.on('selectNode', function (params) {
           if (params.nodes.length === 1) {
             const node = params.nodes[0];
-            if (network.isCluster(node) == true) {
+            if (network.isCluster(node)) {
               network.openCluster(node);
             } else if (node.startsWith('variable_')) {
               clusterNodes(node);
@@ -102,9 +102,9 @@
       }
 
       function getAllConnectingNodes(id, nodeList) {
-        var childs = network.getConnectedNodes(id).filter((nodeId) => !nodeList.has(nodeId));
-        if (childs.length !== 0) {
-          childs.forEach((child) => {
+        const children = network.getConnectedNodes(id).filter((nodeId) => !nodeList.has(nodeId));
+        if (children.length !== 0) {
+          children.forEach((child) => {
             nodeList.add(child);
             getAllConnectingNodes(child, nodeList);
           });
@@ -115,7 +115,7 @@
       function clusterNodes(id, nodeList) {
         const joinConditionNodes = (nodeOptions) => nodeList.has(nodeOptions.id);
 
-        var options = {
+        const options = {
           joinCondition: nodeList != undefined ? joinConditionNodes : undefined,
           processProperties: (clusterOptions) => {
             clusterOptions.id = 'cluster_' + id;
