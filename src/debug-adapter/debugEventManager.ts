@@ -26,7 +26,10 @@ export class DebugEventManager {
         this.debugSessionProxy = new DebugSessionProxy(session);
         const onDidSendMessage = async (m: DebugProtocol.ProtocolMessage): Promise<void> => {
           try {
-            if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
+            if (m.type === 'response' && (m as DebugProtocol.Response).command === 'initialize' && (m as DebugProtocol.Response).success) {
+              this.callSeq = undefined;
+              debuggerPanel.reset();
+            } else if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
               this.callSeq = m.seq;
 
               const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
