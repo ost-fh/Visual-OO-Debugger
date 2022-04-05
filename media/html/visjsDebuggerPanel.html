@@ -39,6 +39,7 @@
       let vscode;
       let canvas;
       let dropdown;
+      let emptyOption;
 
       window.addEventListener('message', (event) => {
         const message = event.data;
@@ -61,6 +62,9 @@
           case 'updateStackFrames':
             updateStackFrames(message);
             break;
+          case 'deselectStackFrames':
+            deselectStackFrames();
+            break;
           default:
             console.debug(message.command);
         }
@@ -77,7 +81,7 @@
           nodes,
         };
         network = new vis.Network(container, data, message.options);
-        vscode = acquireVsCodeApi();
+        vscode = vscode ?? acquireVsCodeApi();
         canvas = document.querySelector('#visjs-network canvas');
 
         network.on('selectNode', function (params) {
@@ -295,6 +299,7 @@
           option.innerHTML = frame;
           dropdown.appendChild(option);
         }
+        dropdown.appendChild(emptyOption);
       }
 
       function setupStackFramesDropdown() {
@@ -303,6 +308,16 @@
           const stackFrameIndex = element.srcElement.value;
           vscode.postMessage({ command: 'selectStackFrame', content: stackFrameIndex });
         });
+
+        emptyOption = document.createElement('vscode-option');
+        emptyOption.innerHTML = '';
+        emptyOption.value = '';
+        emptyOption.disabled = true;
+        emptyOption.hidden = true;
+      }
+
+      function deselectStackFrames() {
+        dropdown.value = '';
       }
 
       function openAllClusters() {

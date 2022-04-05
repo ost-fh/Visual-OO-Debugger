@@ -1,6 +1,6 @@
 import { Edge, Node } from 'vis-network';
 
-export interface VisjsChangelogEntry {
+export interface VisjsChanges {
   nodeChanges: ChangedNode[];
   edgeChanges: ChangedEdge[];
 }

@@ -1,5 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
-import { PanelViewInput } from '../model/panelViewInput';
+import { isEqual } from 'lodash';
+import { PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
 import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
@@ -13,6 +14,12 @@ export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
 
   private currentPanelViewInput: PanelViewInput | undefined;
+
+  private inputHistory: PanelViewInputVariableMap[] = [];
+
+  private currentVariables: PanelViewInputVariableMap | undefined;
+
+  private historyIndex = -1;
 
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
@@ -51,14 +58,10 @@ export class DebuggerPanel {
             void window.showInformationMessage('Creating GIF. This may take some time.');
             break;
           case 'stepBack':
-            if (this.panelViewProxy.stepBack) {
-              void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepBack());
-            }
+            this.stepBack();
             break;
           case 'stepForward':
-            if (this.panelViewProxy.stepForward) {
-              void this.viewPanel?.webview.postMessage(this.panelViewProxy.stepForward());
-            }
+            this.stepForward();
             break;
           case 'selectStackFrame':
             this.selectStackFrame(message.content as number);
@@ -85,7 +88,16 @@ export class DebuggerPanel {
         command: 'updateStackFrames',
         stackFrames: panelViewInput.callstack.map((frame) => frame.name),
       }));
-      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput.callstack[0].variables));
+
+      const topFrameVariables = panelViewInput.callstack[0].variables;
+      const hasChanges = this.addToHistory(topFrameVariables);
+      if (hasChanges && (this.historyIndex === -1 || this.historyIndex >= this.inputHistory.length - 2)) {
+        this.postCommandToWebViewIfViewPanelIsDefined(() => {
+          const command = this.delegateUpdate(topFrameVariables);
+          this.historyIndex = -1;
+          return command;
+        });
+      }
     }
   }
 
@@ -118,10 +130,56 @@ export class DebuggerPanel {
     }
   }
 
+  reset(): void {
+    this.currentPanelViewInput = undefined;
+    this.currentVariables = undefined;
+    this.inputHistory = [];
+    this.historyIndex = -1;
+  }
+
+  private stepBack(): void {
+    if (this.inputHistory.length === 1 || this.historyIndex === 0) {
+      return;
+    }
+    if (this.historyIndex === -1) {
+      this.historyIndex = this.inputHistory.length - 2;
+    } else {
+      this.historyIndex--;
+    }
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.delegateUpdate(this.inputHistory[this.historyIndex]));
+    this.postCommandToWebViewIfViewPanelIsDefined(() => ({ command: 'deselectStackFrames' }));
+  }
+
+  private stepForward(): void {
+    if (this.historyIndex === -1 || this.historyIndex === this.inputHistory.length - 1) {
+      return;
+    }
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.delegateUpdate(this.inputHistory[++this.historyIndex]));
+    this.postCommandToWebViewIfViewPanelIsDefined(() => ({ command: 'deselectStackFrames' }));
+  }
+
+  private addToHistory(variables: PanelViewInputVariableMap): boolean {
+    if (isEqual(variables, this.inputHistory[this.inputHistory.length - 1])) {
+      return false;
+    }
+    this.inputHistory.push(variables);
+    return true;
+  }
+
+  private delegateUpdate(variables: PanelViewInputVariableMap): PanelViewCommand {
+    const command = this.panelViewProxy.updatePanel(variables, this.currentVariables);
+    this.currentVariables = variables;
+    return command;
+  }
+
   private selectStackFrame(index: number): void {
     const panelViewInput = this.currentPanelViewInput;
     if (panelViewInput !== undefined) {
-      this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.updatePanel(panelViewInput.callstack[index].variables));
+      this.postCommandToWebViewIfViewPanelIsDefined(() => {
+        const command = this.delegateUpdate(panelViewInput.callstack[index].variables);
+        this.historyIndex = -1;
+        return command;
+      });
     }
   }
 
@@ -147,7 +205,10 @@ export class DebuggerPanel {
       this.viewPanel.dispose();
       this.viewPanel = undefined;
     }
-    this.panelViewProxy.teardownPanelView();
+    this.inputHistory = [];
+    if (typeof this.panelViewProxy.teardownPanelView === 'function') {
+      this.panelViewProxy.teardownPanelView();
+    }
     void commands.executeCommand('setContext', 'viewPanel.exists', false);
   }
 }

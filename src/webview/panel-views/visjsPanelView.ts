@@ -3,7 +3,7 @@ import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
 import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
-import { ChangeAction, ChangedEdge, ChangedNode, VisjsChangelogEntry } from '../../model/visjsChangelogEntry';
+import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
@@ -38,12 +38,6 @@ export class VisjsPanelView implements PanelViewProxy {
     highlight: '#c6a700',
   };
 
-  private changelog: VisjsChangelogEntry[] = [];
-
-  private currentPanelViewVariables: PanelViewInputVariableMap | undefined;
-
-  private changelogIndex = -1;
-
   constructor(private readonly context: ExtensionContext) {}
 
   getHtml(webview: Webview): string {
@@ -73,16 +67,8 @@ export class VisjsPanelView implements PanelViewProxy {
       .replace('{{toolkit.min.js}}', webviewUiToolkit.toString());
   }
 
-  teardownPanelView(): void {
-    this.changelog = [];
-    this.currentPanelViewVariables = undefined;
-    this.changelogIndex = -1;
-  }
-
-  updatePanel(variables: PanelViewInputVariableMap): PanelViewCommand {
-    if (!this.currentPanelViewVariables) {
-      this.currentPanelViewVariables = variables;
-
+  updatePanel(newVariables: PanelViewInputVariableMap, prevVariables?: PanelViewInputVariableMap): PanelViewCommand {
+    if (!prevVariables) {
       const options: Options = {
         nodes: {
           color: this.defaultNodeColor,
@@ -100,21 +86,11 @@ export class VisjsPanelView implements PanelViewProxy {
         },
       };
 
-      return { command: 'initializeVisjs', data: this.parseInputToData(variables), options };
+      return { command: 'initializeVisjs', data: this.parseInputToData(newVariables), options };
     }
 
-    const changelogEntry = this.createChangelogEntry(variables);
-    this.currentPanelViewVariables = variables;
-    const hasChanges = changelogEntry.edgeChanges?.length > 0 || changelogEntry.nodeChanges?.length > 0;
-    if (hasChanges) {
-      this.changelog.push(changelogEntry);
-    }
-
-    if (!hasChanges || (this.changelogIndex !== -1 && this.changelogIndex < this.changelog.length - 1)) {
-      return { command: 'noop' };
-    }
-    this.changelogIndex = -1;
-    return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(changelogEntry) };
+    const changes = this.createChanges(newVariables, prevVariables);
+    return { command: 'updateVisjs', data: this.parseChangesToUpdateInput(changes) };
   }
 
   exportPanel(): PanelViewCommand {
@@ -129,94 +105,14 @@ export class VisjsPanelView implements PanelViewProxy {
     return { command: 'stopRecordingVisjs' };
   }
 
-  stepForward(): PanelViewCommand {
-    if (this.changelogIndex === -1 || this.changelogIndex === this.changelog.length) {
-      return { command: 'noop' };
-    }
-    return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(this.changelog[this.changelogIndex++]) };
-  }
-
-  stepBack(): PanelViewCommand {
-    if (this.changelog.length === 0 || this.changelogIndex === 0) {
-      return { command: 'noop' };
-    }
-    if (this.changelogIndex === -1) {
-      this.changelogIndex = this.changelog.length - 1;
-    } else {
-      this.changelogIndex--;
-    }
-    const invertedChangelogEntry = this.invertChangelogEntry(this.changelog[this.changelogIndex]);
-    return { command: 'updateVisjs', data: this.parseChangelogEntryToUpdateInput(invertedChangelogEntry) };
-  }
-
-  private invertChangelogEntry(entry: VisjsChangelogEntry): VisjsChangelogEntry {
-    return {
-      nodeChanges: this.invertNodeChanges(entry.nodeChanges),
-      edgeChanges: this.invertEdgeChanges(entry.edgeChanges),
-    };
-  }
-
-  private invertNodeChanges(nodeChanges: ChangedNode[]): ChangedNode[] {
-    const invertedNodeChanges: ChangedNode[] = [];
-    for (const nodeChange of nodeChanges) {
-      let invertedChange: ChangedNode;
-      switch (nodeChange.action) {
-        case ChangeAction.create:
-          invertedChange = {
-            action: ChangeAction.delete,
-            node: nodeChange.node,
-          };
-          break;
-        case ChangeAction.delete:
-          invertedChange = {
-            action: ChangeAction.create,
-            node: nodeChange.node,
-          };
-          break;
-        case ChangeAction.update:
-          invertedChange = {
-            action: ChangeAction.update,
-            newNode: nodeChange.oldNode,
-            oldNode: nodeChange.newNode,
-          };
-          break;
-      }
-      invertedNodeChanges.push(invertedChange);
-    }
-    return invertedNodeChanges;
-  }
-
-  private invertEdgeChanges(edgeChanges: ChangedEdge[]): ChangedEdge[] {
-    const invertedEdgeChanges: ChangedEdge[] = [];
-    for (const edgeChange of edgeChanges) {
-      let invertedChange: ChangedEdge;
-      switch (edgeChange.action) {
-        case ChangeAction.create:
-          invertedChange = {
-            action: ChangeAction.delete,
-            edge: edgeChange.edge,
-          };
-          break;
-        case ChangeAction.delete:
-          invertedChange = {
-            action: ChangeAction.create,
-            edge: edgeChange.edge,
-          };
-          break;
-      }
-      invertedEdgeChanges.push(invertedChange);
-    }
-    return invertedEdgeChanges;
-  }
-
-  private parseChangelogEntryToUpdateInput(changelogEntry: VisjsChangelogEntry): VisjsUpdateInput {
+  private parseChangesToUpdateInput(changes: VisjsChanges): VisjsUpdateInput {
     const addNodes: Node[] = [];
     const updateNodes: Node[] = [];
     const deleteNodeIds: string[] = [];
     const addEdges: Edge[] = [];
     const deleteEdgeIds: string[] = [];
 
-    for (const nodeChange of changelogEntry.nodeChanges) {
+    for (const nodeChange of changes.nodeChanges) {
       switch (nodeChange.action) {
         case ChangeAction.create:
           addNodes.push({ ...nodeChange.node, color: this.changedNodeColor });
@@ -231,7 +127,7 @@ export class VisjsPanelView implements PanelViewProxy {
       }
     }
 
-    for (const edgeChange of changelogEntry.edgeChanges) {
+    for (const edgeChange of changes.edgeChanges) {
       switch (edgeChange.action) {
         case ChangeAction.create:
           addEdges.push({ ...edgeChange.edge, color: this.changedEdgeColor });
@@ -246,16 +142,16 @@ export class VisjsPanelView implements PanelViewProxy {
     return { addNodes, updateNodes, deleteNodeIds, addEdges, deleteEdgeIds };
   }
 
-  private createChangelogEntry(variables: PanelViewInputVariableMap): VisjsChangelogEntry {
-    const addedVariableIds = Array.from(variables.keys()).filter((id: string) => !this.currentPanelViewVariables?.has(id));
-    const deletedVariableIds = Array.from(this.currentPanelViewVariables?.keys() || []).filter((id: string) => !variables.has(id));
-    const updatedVariableIds = Array.from(this.currentPanelViewVariables?.keys() || []).filter((id: string) =>
-      this.variableChanged(this.currentPanelViewVariables?.get(id), variables.get(id))
+  private createChanges(newVariables: PanelViewInputVariableMap, prevVariables: PanelViewInputVariableMap): VisjsChanges {
+    const addedVariableIds = Array.from(newVariables.keys()).filter((id: string) => !prevVariables?.has(id));
+    const deletedVariableIds = Array.from(prevVariables?.keys() || []).filter((id: string) => !newVariables.has(id));
+    const updatedVariableIds = Array.from(prevVariables?.keys() || []).filter((id: string) =>
+      this.variableChanged(prevVariables?.get(id), newVariables.get(id))
     );
 
-    const [newNodes, newEdges] = this.buildCreateChangelogEntry(addedVariableIds, variables);
-    const [deletedNodes, deletedEdges] = this.buildDeleteChangelogEntry(deletedVariableIds);
-    const [updateNodes, updatedEdges] = this.buildUpdateChangelogEntry(updatedVariableIds, variables);
+    const [newNodes, newEdges] = this.buildCreateChanges(addedVariableIds, newVariables);
+    const [deletedNodes, deletedEdges] = this.buildDeleteChanges(deletedVariableIds, prevVariables);
+    const [updateNodes, updatedEdges] = this.buildUpdateChanges(updatedVariableIds, newVariables, prevVariables);
 
     // Create a Set to easily remove duplications
     const nodeChanges = new Set([...newNodes, ...deletedNodes, ...updateNodes]);
@@ -264,16 +160,17 @@ export class VisjsPanelView implements PanelViewProxy {
     return { nodeChanges: [...nodeChanges], edgeChanges: [...edgeChanges] };
   }
 
-  private buildUpdateChangelogEntry(
+  private buildUpdateChanges(
     updatedVariableIds: string[],
-    variables: PanelViewInputVariableMap
+    newVariables: PanelViewInputVariableMap,
+    prevVariables: PanelViewInputVariableMap
   ): [nodes: ChangedNode[], edges: ChangedEdge[]] {
     const nodeChanges: ChangedNode[] = [];
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of updatedVariableIds) {
-      const oldVariable = this.currentPanelViewVariables?.get(variableId);
-      const newVariable = variables.get(variableId);
+      const oldVariable = prevVariables?.get(variableId);
+      const newVariable = newVariables.get(variableId);
       if (oldVariable && newVariable) {
         this.addNodeAndEdgeChanges(oldVariable, newVariable, nodeChanges, edgeChanges);
       }
@@ -336,7 +233,7 @@ export class VisjsPanelView implements PanelViewProxy {
     }
   }
 
-  private buildCreateChangelogEntry(
+  private buildCreateChanges(
     addedVariableIds: string[],
     variables: PanelViewInputVariableMap
   ): [nodes: ChangedNode[], edges: ChangedEdge[]] {
@@ -368,12 +265,15 @@ export class VisjsPanelView implements PanelViewProxy {
     return [nodeChanges, edgeChanges];
   }
 
-  private buildDeleteChangelogEntry(deletedVariableIds: string[]): [nodes: ChangedNode[], edges: ChangedEdge[]] {
+  private buildDeleteChanges(
+    deletedVariableIds: string[],
+    prevVariables: PanelViewInputVariableMap
+  ): [nodes: ChangedNode[], edges: ChangedEdge[]] {
     const nodeChanges: ChangedNode[] = [];
     const edgeChanges: ChangedEdge[] = [];
 
     for (const variableId of deletedVariableIds) {
-      const variable = this.currentPanelViewVariables?.get(variableId);
+      const variable = prevVariables?.get(variableId);
       if (variable) {
         nodeChanges.push({
           action: ChangeAction.delete,
