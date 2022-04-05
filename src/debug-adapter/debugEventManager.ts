@@ -1,5 +1,5 @@
 import * as hash from 'object-hash';
-import { debug } from 'vscode';
+import { debug, window } from 'vscode';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
 import { DebuggerPanel } from '../webview/debuggerPanel';
@@ -25,18 +25,23 @@ export class DebugEventManager {
       createDebugAdapterTracker: (session) => {
         this.debugSessionProxy = new DebugSessionProxy(session);
         const onDidSendMessage = async (m: DebugProtocol.ProtocolMessage): Promise<void> => {
-          if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
-            this.callSeq = m.seq;
+          try {
+            if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
+              this.callSeq = m.seq;
 
-            const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
-            await this.debugSessionProxy?.loadStackFrames(threadId ?? 0);
-            const currentCallStack = this.debugSessionProxy?.getCallStack();
-            if (currentCallStack !== undefined) {
-              const data = await this.getData(currentCallStack);
-              if (this.callSeq === m.seq) {
-                debuggerPanel.updatePanel(data);
+              const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
+              await this.debugSessionProxy?.loadStackFrames(threadId ?? 0);
+              const currentCallStack = this.debugSessionProxy?.getCallStack();
+              if (currentCallStack !== undefined) {
+                const data = await this.getData(currentCallStack);
+                if (this.callSeq === m.seq) {
+                  debuggerPanel.updatePanel(data);
+                }
               }
             }
+          } catch (e) {
+            void window.showErrorMessage('Visual OO Debugger lost connection to the debugger');
+            throw e;
           }
         };
         return { onDidSendMessage };
