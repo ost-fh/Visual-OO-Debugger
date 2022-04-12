@@ -1,6 +1,6 @@
 import * as hash from 'object-hash';
 import { debug, window } from 'vscode';
-import { DebugProtocol } from 'vscode-debugprotocol';
+import { DebugProtocol } from '@vscode/debugprotocol';
 import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
@@ -151,7 +151,10 @@ export class DebugEventManager {
     }
 
     if (isNewAndObject && variable.variablesReference) {
-      const childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
+      let childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
+      if (variable.presentationHint?.lazy && childVariables && childVariables.length > 0) {
+        childVariables = await this.debugSessionProxy?.getVariables(childVariables[0].variablesReference);
+      }
       await this.readDataOfVariables(childVariables, panelViewStackFrame, id, maxDepth - 1);
     }
   }

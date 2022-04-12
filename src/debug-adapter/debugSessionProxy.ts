@@ -1,5 +1,5 @@
 import { DebugSession } from 'vscode';
-import { DebugProtocol } from 'vscode-debugprotocol';
+import { DebugProtocol } from '@vscode/debugprotocol';
 
 export class DebugSessionProxy {
   private stackFrames: DebugProtocol.StackFrame[] | undefined;
