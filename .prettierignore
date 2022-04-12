@@ -1,9 +1,12 @@
+.github
+
 # Based on .gitignore:
 out
 dist
 node_modules
 .vscode-test/
 *.vsix
+.idea
 
 # Based on .eslintignore:
 #   N/A
