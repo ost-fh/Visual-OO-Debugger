@@ -1,0 +1,83 @@
+# Contribution
+
+When contributing to this repository, please first discuss the change you wish to make via issue,
+email, or any other method with the owners of this repository before making a change.
+
+Please note we have a [Code of Conduct](CODE-OF-CONDUCT.md), please follow it in all your interactions with the project.
+
+## Getting Started
+
+### Issues
+
+Issues should be used to report problems with the library, request a new feature, or to discuss potential changes
+before a PR is created. When you create a new issue, a template will be loaded that will guide you through collecting
+and providing the information we need to investigate.
+
+If you find an issue that addresses the problem you're having, please add your own reproduction information to the
+existing issue rather than creating a new one. Adding a [reaction][github-reaction] can also help to indicate to our
+maintainers that a particular problem is affecting more than just the reporter.
+
+[github-reaction]: https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments
+
+### Pull Requests
+
+PRs to our extension are always welcome and can be a quick way to get your fix or improvement slated for the next
+release. In general, PRs should:
+
+- Only fix/add the functionality in question **OR** address wide-spread whitespace/style issues, not both.
+- Address a single concern in the least number of changed lines as possible.
+- Be accompanied by a complete Pull Request template (loaded automatically when a PR is created).
+
+In general, we follow the ["fork-and-pull" Git workflow](https://github.com/susam/gitpr):
+
+1. Fork the repository to your own GitHub account
+2. Clone the project to your machine
+3. Create a branch locally with a succinct but descriptive name
+4. Commit changes to the branch
+5. Following the [code quality](#code-quality-tools) and [testing](#testing) guidelines
+6. Push changes to your fork
+7. Open a PR in our repository and follow the PR template so we can efficiently review the changes
+
+## Documentation
+
+If changes are made to the user interface, document the changes in the [README.md](README.md).
+
+## IDE Setup
+
+We highly recommend using [Visual Studio Code](https://code.visualstudio.com/) for developing this extension.
+The following instructions are for development in VS Code.
+
+When opening the project, you should get recommendations for three extensions (if not already installed). These
+extensions are `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode` and `amodio.tsl-problem-matcher`. If you don't get
+the recommendations, install them manually from the Marketplace.
+
+Launch the extension by pressing F5 or by running the `Run Extension` launch configuration.
+
+## Testing
+
+### Adding Tests
+
+**TODO** General information about the test suite and how to format and structure tests.
+
+### Running Tests
+
+To run all test, execute the command `npm run test:ext`.
+
+## Code Quality Tools
+
+We use [Prettier](https://prettier.io/) for code formatting and [ESLint](https://eslint.org/) for linting.
+
+### Prettier
+
+Before you make a commit, execute `npm run format:write` to fix all issues found by Prettier. Alternatively run
+`npm run format:check` to identify which files have issues and resolve them manually.
+
+### ESLint
+
+Before you make a commit, execute `npm run lint:fix` to fix all issues found by ESLint. Alternatively run
+`npm run lint:check` to identify all issues and resolve them manually.
+
+## CI Information
+
+The GitHub CI pipeline runs Prettier and ESLint, and executes the tests. Follow the instructions described in
+[Testing](#testing) and [Code quality tools](#code-quality-tools) for a successful CI.
