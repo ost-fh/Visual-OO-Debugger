@@ -57,11 +57,45 @@ Launch the extension by pressing F5 or by running the `Run Extension` launch con
 
 ### Adding Tests
 
-**TODO** General information about the test suite and how to format and structure tests.
+We use [mocha](https://mochajs.org/) as test runner library and [chai](https://www.chaijs.com/) as assertion library.
+
+#### Installation and Integration
+
+Installation and integration test files are expected to be located in the [test suite][test-suite] directory and to
+have the file name extension `.test.ts` (e.g. [src/test/suite/extension.test.ts][extension-test]).
+
+Please refer to the [official VS Code extension testing documentation][testing-doc] for guidelines and examples.
+
+Please use this type of tests to test migrations between versions and interactions with other extensions as well.
+
+[test-suite]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/tree/master/src/test/suite
+[extension-test]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/test/suite/extension.test.ts
+[testing-doc]: https://code.visualstudio.com/api/working-with-extensions/testing-extension
+
+#### Units
+
+Unit test files are expected to be located in the [source][src] directory and to have the file name extension
+`.spec.ts` (e.g. [src/object-diagram/model/escapedString.spec.ts][escaped-string-test]).
+
+In most cases, a unit test file tests an implementation located in the same directory with a file of the same name, but
+with the `.ts` file name extension (e.g. the file[src/object-diagram/model/escapedString.spec.ts][escaped-string-test]
+tests the implementations in the file [src/object-diagram/model/escapedString.ts][escaped-string]).
+
+[src]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/tree/master/src
+[escaped-string-test]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.spec.ts
+[escaped-string]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.ts
 
 ### Running Tests
 
-To run all test, execute the command `npm run test:ext`.
+#### Installation and Integration
+
+To run all extension installation and integration tests, execute the command `npm run test:ext`.
+Use a virtual framebuffer such as Xvfb, if your environment does not provide a graphical interface
+(e.g. `xvfb-run -a npm run test:ext`).
+
+#### Units
+
+To run all unit tests, execute the command `npm run test:spec`.
 
 ## Code Quality Tools
 
