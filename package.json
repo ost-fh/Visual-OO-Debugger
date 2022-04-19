@@ -111,6 +111,21 @@
       ],
       "editor/title": [
         {
+          "command": "visual-oo-debugger.exportPNG",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.startGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.exportAsPlantUml",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportAsMarkUp"
