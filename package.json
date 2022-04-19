@@ -85,15 +85,18 @@
       "commandPalette": [
         {
           "command": "visual-oo-debugger.exportPNG",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.startGIF",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.stopGIF",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.exportAsPlantUml",
