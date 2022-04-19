@@ -48,12 +48,14 @@
       {
         "command": "visual-oo-debugger.startGIF",
         "title": "Start recording a GIF",
-        "category": "VOOD"
+        "category": "VOOD",
+        "enablement": "!viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.stopGIF",
         "title": "Stop recording a GIF",
-        "category": "VOOD"
+        "category": "VOOD",
+        "enablement": "viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.exportAsPlantUml",

@@ -106,11 +106,13 @@ export class DebuggerPanel {
   }
 
   startRecordingPanel(): void {
+    void commands.executeCommand('setContext', 'viewPanel.recordingGif', true);
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanel());
   }
 
   stopRecordingPanel(): void {
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanel());
+    void commands.executeCommand('setContext', 'viewPanel.recordingGif', false);
   }
 
   exportAsPlantUml(): Promise<void> {
