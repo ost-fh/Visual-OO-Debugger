@@ -109,11 +109,13 @@
       "editor/title": [
         {
           "command": "visual-oo-debugger.exportAsPlantUml",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
         },
         {
           "command": "visual-oo-debugger.exportAsGraphViz",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
         }
       ]
     }
