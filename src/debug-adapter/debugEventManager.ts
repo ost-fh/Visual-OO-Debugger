@@ -24,7 +24,7 @@ export class DebugEventManager {
     debug.registerDebugAdapterTrackerFactory('*', {
       createDebugAdapterTracker: (session) => {
         this.debugSessionProxy = new DebugSessionProxy(session);
-        const onDidSendMessage = async (m: DebugProtocol.ProtocolMessage): Promise<void> => {
+        const onDidSendMessage = (m: DebugProtocol.ProtocolMessage): void => {
           try {
             if (m.type === 'response' && (m as DebugProtocol.Response).command === 'initialize' && (m as DebugProtocol.Response).success) {
               this.callSeq = undefined;
@@ -33,14 +33,16 @@ export class DebugEventManager {
               this.callSeq = m.seq;
 
               const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
-              await this.debugSessionProxy?.loadStackFrames(threadId ?? 0);
-              const currentCallStack = this.debugSessionProxy?.getCallStack();
-              if (currentCallStack !== undefined) {
-                const data = await this.getData(currentCallStack);
-                if (this.callSeq === m.seq) {
-                  debuggerPanel.updatePanel(data);
+              void this.debugSessionProxy?.loadStackFrames(threadId ?? 0).then(() => {
+                const currentCallStack = this.debugSessionProxy?.getCallStack();
+                if (currentCallStack !== undefined) {
+                  void this.getData(currentCallStack).then((data: PanelViewInput) => {
+                    if (this.callSeq === m.seq) {
+                      debuggerPanel.updatePanel(data);
+                    }
+                  });
                 }
-              }
+              });
             }
           } catch (e) {
             void window.showErrorMessage('Visual OO Debugger lost connection to the debugger');
@@ -139,7 +141,13 @@ export class DebugEventManager {
       ];
       const parentVariable = panelViewStackFrame.variables.get(parentId);
       if (parentVariable) {
-        parentVariable.references = [...(parentVariable.references || []), { childId: id, relationName: variable.name }];
+        parentVariable.references = [
+          ...(parentVariable.references || []),
+          {
+            childId: id,
+            relationName: variable.name,
+          },
+        ];
       }
     } else {
       const namedVariable = this.createVariableEntryForNamedVariable(variable, id);
