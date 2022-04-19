@@ -45,6 +45,18 @@ Use the buttons in the top left-hand corner of the view to load the previous or 
 Note that this will only change the state of the visualization and is not a way to step back/forward in the debugger.
 Only states that have been visualized before may be loaded that way.
 
+Only the states of the top stack frame are added to the history at each step.
+
+### Stack Frame selection
+
+Select a stack frame from the call stack in the dropdown at the top of the debugger view. The visualization will then
+update and visualize the variables of the selected stack frame.
+
+### Cluster Nodes
+
+Left-click on a node to collapse it along with its references to other nodes. Left-click on the cluster to expand it again.
+To expand all clusters at once, click on the 'Open all clusters' button in the top right-hand corner of the view.
+
 ## Extension Settings
 
 By default, [vis.js](https://visjs.org/) is used to visualize the debug information. The preferred view can be changed
