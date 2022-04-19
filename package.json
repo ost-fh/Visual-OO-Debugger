@@ -58,14 +58,12 @@
       {
         "command": "visual-oo-debugger.exportAsPlantUml",
         "title": "Export as PlantUML",
-        "category": "VOOD",
-        "enablement": "viewPanel.exists"
+        "category": "VOOD"
       },
       {
         "command": "visual-oo-debugger.exportAsGraphViz",
         "title": "Export as GraphViz",
-        "category": "VOOD",
-        "enablement": "viewPanel.exists"
+        "category": "VOOD"
       }
     ],
     "configuration": {
