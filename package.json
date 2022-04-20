@@ -48,24 +48,24 @@
       {
         "command": "visual-oo-debugger.startGIF",
         "title": "Start recording a GIF",
-        "category": "VOOD"
+        "category": "VOOD",
+        "enablement": "!viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.stopGIF",
         "title": "Stop recording a GIF",
-        "category": "VOOD"
+        "category": "VOOD",
+        "enablement": "viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.exportAsPlantUml",
         "title": "Export as PlantUML",
-        "category": "VOOD",
-        "enablement": "viewPanel.exists"
+        "category": "VOOD"
       },
       {
         "command": "visual-oo-debugger.exportAsGraphViz",
         "title": "Export as GraphViz",
-        "category": "VOOD",
-        "enablement": "viewPanel.exists"
+        "category": "VOOD"
       }
     ],
     "configuration": {
@@ -85,15 +85,18 @@
       "commandPalette": [
         {
           "command": "visual-oo-debugger.exportPNG",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.startGIF",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.stopGIF",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
           "command": "visual-oo-debugger.exportAsPlantUml",
@@ -108,12 +111,29 @@
       ],
       "editor/title": [
         {
+          "command": "visual-oo-debugger.exportPNG",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.startGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.exportAsPlantUml",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
         },
         {
           "command": "visual-oo-debugger.exportAsGraphViz",
-          "when": "viewPanel.exists"
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportAsMarkUp"
         }
       ]
     }
