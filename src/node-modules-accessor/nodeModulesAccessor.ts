@@ -30,6 +30,14 @@ export class NodeModulesAccessor {
         fileName: 'toolkit.min.js',
       },
     ],
+    [
+      NodeModulesKeys.jointCss,
+      {
+        sourcePath: ['node_modules', 'jointjs', 'dist'],
+        destinationPath: ['libs', 'jointjs'],
+        fileName: 'joint.css',
+      },
+    ],
   ]);
 
   static getPathToOutputFile(key: NodeModulesKeys): string[] {
