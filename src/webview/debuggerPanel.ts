@@ -109,14 +109,24 @@ export class DebuggerPanel {
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.exportPanel());
   }
 
-  startRecordingPanel(): void {
+  startRecordingPanelGif(): void {
     void commands.executeCommand('setContext', 'viewPanel.recordingGif', true);
-    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanel());
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanelGif());
   }
 
-  stopRecordingPanel(): void {
-    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanel());
+  startRecordingPanelWebm(): void {
+    void commands.executeCommand('setContext', 'viewPanel.recordingWebm', true);
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanelWebm());
+  }
+
+  stopRecordingPanelGif(): void {
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanelGif());
     void commands.executeCommand('setContext', 'viewPanel.recordingGif', false);
+  }
+
+  stopRecordingPanelWebm(): void {
+    this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanelWebm());
+    void commands.executeCommand('setContext', 'viewPanel.recordingWebm', false);
   }
 
   exportAsPlantUml(): Promise<void> {
