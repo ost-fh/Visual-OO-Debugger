@@ -23,8 +23,10 @@ class Extension {
 
     this.registerCommand('visual-oo-debugger.openDebugger', () => debuggerPanel.openPanel());
     this.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel());
-    this.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanel());
-    this.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanel());
+    this.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanelGif());
+    this.registerCommand('visual-oo-debugger.startWEBM', () => debuggerPanel.startRecordingPanelWebm());
+    this.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanelGif());
+    this.registerCommand('visual-oo-debugger.stopWEBM', () => debuggerPanel.stopRecordingPanelWebm());
     this.registerCommand('visual-oo-debugger.exportAsPlantUml', () => debuggerPanel.exportAsPlantUml());
     this.registerCommand('visual-oo-debugger.exportAsGraphViz', () => debuggerPanel.exportAsGraphViz());
 

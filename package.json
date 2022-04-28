@@ -52,10 +52,22 @@
         "enablement": "!viewPanel.recordingGif"
       },
       {
+        "command": "visual-oo-debugger.startWEBM",
+        "title": "Start recording a WEBM",
+        "category": "VOOD",
+        "enablement": "!viewPanel.recordingWebm"
+      },
+      {
         "command": "visual-oo-debugger.stopGIF",
         "title": "Stop recording a GIF",
         "category": "VOOD",
         "enablement": "viewPanel.recordingGif"
+      },
+      {
+        "command": "visual-oo-debugger.stopWEBM",
+        "title": "Stop recording a WEBM",
+        "category": "VOOD",
+        "enablement": "viewPanel.recordingWebm"
       },
       {
         "command": "visual-oo-debugger.exportAsPlantUml",
@@ -94,7 +106,17 @@
           "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
+          "command": "visual-oo-debugger.startWEBM",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopWEBM",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
@@ -121,7 +143,17 @@
           "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
+          "command": "visual-oo-debugger.startWEBM",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopWEBM",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
@@ -189,6 +221,7 @@
     "@ffmpeg/ffmpeg": "^0.10.1",
     "@vscode/codicons": "^0.0.29",
     "@vscode/webview-ui-toolkit": "^1.0.0",
+    "gif.js": "^0.2.0",
     "lodash": "^4.17.21",
     "object-hash": "^3.0.0",
     "vis-network": "^9.1.2"

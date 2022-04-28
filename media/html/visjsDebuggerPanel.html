@@ -53,11 +53,17 @@
           case 'exportVisjs':
             exportVisjs();
             break;
-          case 'startRecordingVisjs':
-            startRecordingVisjs();
+          case 'startRecordingVisjsGif':
+            startRecordingVisjsGif();
             break;
-          case 'stopRecordingVisjs':
-            stopRecordingVisjs();
+          case 'startRecordingVisjsWebm':
+            startRecordingVisjsWebm();
+            break;
+          case 'stopRecordingVisjsGif':
+            stopRecordingVisjsGif();
+            break;
+          case 'stopRecordingVisjsWebm':
+            stopRecordingVisjsWebm();
             break;
           case 'updateStackFrames':
             updateStackFrames(message);
@@ -220,7 +226,7 @@
         }
       }
 
-      function startRecordingVisjs() {
+      function startRecordingVisjsGif() {
         if (canvas) {
           chunks = [];
           const stream = canvas.captureStream();
@@ -237,10 +243,26 @@
         }
       }
 
-      function stopRecordingVisjs() {
+      function startRecordingVisjsWebm() {
+        if (canvas) {
+          chunks = [];
+          const stream = canvas.captureStream();
+          recorder = new MediaRecorder(stream, {
+            mimeType: 'video/webm;codecs=vp9',
+            ignoreMutedMedia: true,
+          });
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+              chunks.push(e.data);
+            }
+          };
+          recorder.start();
+        }
+      }
+
+      function stopRecordingVisjsGif(render) {
         if (vscode) {
           recorder.stop();
-          vscode.postMessage({ command: 'creatingGif' });
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: 'video/webm',
@@ -251,7 +273,20 @@
         }
       }
 
+      function stopRecordingVisjsWebm(render) {
+        if (vscode) {
+          recorder.stop();
+          setTimeout(() => {
+            const blob = new Blob(chunks, {
+              type: 'video/webm',
+            });
+            downloadFile('export.webm',URL.createObjectURL(blob));
+          }, 0);
+        }
+      }
+
       function convertWebmToGif(file) {
+        vscode.postMessage({ command: 'creatingGif' });
         const { createFFmpeg, fetchFile } = FFmpeg;
         const ffmpeg = createFFmpeg({
           corePath: '{{ffmpeg-core.js}}',

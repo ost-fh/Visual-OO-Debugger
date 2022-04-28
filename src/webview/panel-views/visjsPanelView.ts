@@ -97,12 +97,20 @@ export class VisjsPanelView implements PanelViewProxy {
     return { command: 'exportVisjs' };
   }
 
-  startRecordingPanel(): PanelViewCommand {
-    return { command: 'startRecordingVisjs' };
+  startRecordingPanelGif(): PanelViewCommand {
+    return { command: 'startRecordingVisjsGif' };
   }
 
-  stopRecordingPanel(): PanelViewCommand {
-    return { command: 'stopRecordingVisjs' };
+  startRecordingPanelWebm(): PanelViewCommand {
+    return { command: 'startRecordingVisjsWebm' };
+  }
+
+  stopRecordingPanelGif(): PanelViewCommand {
+    return { command: 'stopRecordingVisjsGif' };
+  }
+
+  stopRecordingPanelWebm(): PanelViewCommand {
+    return { command: 'stopRecordingVisjsWebm' };
   }
 
   private parseChangesToUpdateInput(changes: VisjsChanges): VisjsUpdateInput {

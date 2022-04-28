@@ -5,8 +5,10 @@ export interface PanelViewProxy {
   getHtml: (webview: Webview) => string;
   updatePanel: (newVariables: PanelViewInputVariableMap, prevVariables?: PanelViewInputVariableMap) => PanelViewCommand;
   exportPanel: () => PanelViewCommand;
-  startRecordingPanel: () => PanelViewCommand;
-  stopRecordingPanel: () => PanelViewCommand;
+  startRecordingPanelGif: () => PanelViewCommand;
+  startRecordingPanelWebm: () => PanelViewCommand;
+  stopRecordingPanelGif: () => PanelViewCommand;
+  stopRecordingPanelWebm: () => PanelViewCommand;
   teardownPanelView?: () => void;
 }
 
