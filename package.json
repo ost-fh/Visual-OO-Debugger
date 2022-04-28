@@ -49,13 +49,25 @@
         "command": "visual-oo-debugger.startGIF",
         "title": "Start recording a GIF",
         "category": "VOOD",
-        "enablement": "!viewPanel.recordingGif"
+        "enablement": "!viewPanel.recordingGif && !viewPanel.recordingWebm"
+      },
+      {
+        "command": "visual-oo-debugger.startWEBM",
+        "title": "Start recording a WEBM",
+        "category": "VOOD",
+        "enablement": "!viewPanel.recordingWebm && !viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.stopGIF",
         "title": "Stop recording a GIF",
         "category": "VOOD",
         "enablement": "viewPanel.recordingGif"
+      },
+      {
+        "command": "visual-oo-debugger.stopWEBM",
+        "title": "Stop recording a WEBM",
+        "category": "VOOD",
+        "enablement": "viewPanel.recordingWebm"
       },
       {
         "command": "visual-oo-debugger.exportAsPlantUml",
@@ -123,7 +135,17 @@
           "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
+          "command": "visual-oo-debugger.startWEBM",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopWEBM",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
@@ -150,7 +172,17 @@
           "group": "visual-oo-debugger.exportFromCanvas"
         },
         {
+          "command": "visual-oo-debugger.startWEBM",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
           "command": "visual-oo-debugger.stopGIF",
+          "when": "viewPanel.exists",
+          "group": "visual-oo-debugger.exportFromCanvas"
+        },
+        {
+          "command": "visual-oo-debugger.stopWEBM",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
