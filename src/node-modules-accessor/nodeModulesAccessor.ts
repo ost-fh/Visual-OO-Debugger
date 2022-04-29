@@ -14,23 +14,6 @@ export class NodeModulesAccessor {
       },
     ],
     [
-      NodeModulesKeys.ffmpegMinJs,
-      {
-        sourcePath: ['node_modules', '@ffmpeg', 'ffmpeg', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'ffmpeg', 'dist'],
-        fileName: 'ffmpeg.min.js',
-      },
-    ],
-    [
-      NodeModulesKeys.ffmpegCoreJs,
-      {
-        sourcePath: ['node_modules', '@ffmpeg', 'core', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'core', 'dist'],
-        fileName: 'ffmpeg-core.js',
-        includeFolder: true,
-      },
-    ],
-    [
       NodeModulesKeys.codiconCss,
       {
         sourcePath: ['node_modules', '@vscode', 'codicons', 'dist'],
