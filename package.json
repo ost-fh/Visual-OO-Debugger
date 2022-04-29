@@ -247,8 +247,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@ffmpeg/core": "^0.10.0",
-    "@ffmpeg/ffmpeg": "^0.10.1",
     "@vscode/codicons": "^0.0.29",
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "lodash": "^4.17.21",
