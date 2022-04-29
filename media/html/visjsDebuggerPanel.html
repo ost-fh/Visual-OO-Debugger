@@ -232,7 +232,7 @@
             type: 'canvas',
             recorderType: GifRecorder,
             frameRate: 30,
-            quality: 100
+            quality: 100,
           });
           recorder.startRecording();
         }
@@ -257,9 +257,9 @@
 
       function stopRecordingVisjsGif(render) {
         if (vscode) {
-          recorder.stopRecording().then(function() {
-            recorder.getBlob().then(function(blob) {
-              downloadFile('export.gif',URL.createObjectURL(blob));
+          recorder.stopRecording().then(function () {
+            recorder.getBlob().then(function (blob) {
+              downloadFile('export.gif', URL.createObjectURL(blob));
             });
           });
         }
@@ -272,7 +272,7 @@
             const blob = new Blob(chunks, {
               type: 'video/webm',
             });
-            downloadFile('export.webm',URL.createObjectURL(blob));
+            downloadFile('export.webm', URL.createObjectURL(blob));
           }, 0);
         }
       }
