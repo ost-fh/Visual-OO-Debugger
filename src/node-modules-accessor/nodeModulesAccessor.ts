@@ -14,19 +14,11 @@ export class NodeModulesAccessor {
       },
     ],
     [
-      NodeModulesKeys.ffmpegMinJs,
+      NodeModulesKeys.recordrtcMinJs,
       {
-        sourcePath: ['node_modules', '@ffmpeg', 'ffmpeg', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'ffmpeg', 'dist'],
-        fileName: 'ffmpeg.min.js',
-      },
-    ],
-    [
-      NodeModulesKeys.ffmpegCoreJs,
-      {
-        sourcePath: ['node_modules', '@ffmpeg', 'core', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'core', 'dist'],
-        fileName: 'ffmpeg-core.js',
+        sourcePath: ['node_modules', 'recordrtc'],
+        destinationPath: ['libs', 'recordrtc'],
+        fileName: 'RecordRTC.min.js',
         includeFolder: true,
       },
     ],
