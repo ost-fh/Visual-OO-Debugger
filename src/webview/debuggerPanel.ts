@@ -54,9 +54,6 @@ export class DebuggerPanel {
     this.viewPanel.webview.onDidReceiveMessage(
       (message: WebviewMessage) => {
         switch (message.command) {
-          case 'creatingGif':
-            void window.showInformationMessage('Creating GIF. This may take some time.');
-            break;
           case 'stepBack':
             this.stepBack();
             break;
