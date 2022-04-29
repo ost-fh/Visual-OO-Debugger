@@ -19,6 +19,15 @@ export class VisjsPanelView implements PanelViewProxy {
     },
   };
 
+  private readonly variableNodeColor: Color = {
+    border: '#003B73',
+    background: '#005cb2',
+    highlight: {
+      border: '#003B73',
+      background: '#005cb2',
+    },
+  };
+
   private readonly defaultEdgeColor: { color?: string; highlight?: string } = {
     color: '#005cb2',
     highlight: '#005cb2',
@@ -30,6 +39,15 @@ export class VisjsPanelView implements PanelViewProxy {
     highlight: {
       border: '#c6a700',
       background: '#fdd835',
+    },
+  };
+
+  private readonly changedVariableNodeColor: Color = {
+    border: '#473D00',
+    background: '#c6a700',
+    highlight: {
+      border: '#473D00',
+      background: '#c6a700',
     },
   };
 
@@ -71,7 +89,6 @@ export class VisjsPanelView implements PanelViewProxy {
     if (!prevVariables) {
       const options: Options = {
         nodes: {
-          color: this.defaultNodeColor,
           shape: 'box',
         },
         edges: {
@@ -82,6 +99,20 @@ export class VisjsPanelView implements PanelViewProxy {
           solver: 'repulsion',
           repulsion: {
             nodeDistance: 100,
+          },
+        },
+        groups: {
+          default: {
+            color: this.defaultNodeColor,
+          },
+          variable: {
+            color: this.variableNodeColor,
+          },
+          changedDefault: {
+            color: this.changedNodeColor,
+          },
+          changedVariable: {
+            color: this.changedVariableNodeColor,
           },
         },
       };
@@ -115,10 +146,16 @@ export class VisjsPanelView implements PanelViewProxy {
     for (const nodeChange of changes.nodeChanges) {
       switch (nodeChange.action) {
         case ChangeAction.create:
-          addNodes.push({ ...nodeChange.node, color: this.changedNodeColor });
+          addNodes.push({
+            ...nodeChange.node,
+            color: nodeChange.node.group === 'variable' ? this.changedVariableNodeColor : this.changedNodeColor,
+          });
           break;
         case ChangeAction.update:
-          updateNodes.push({ ...nodeChange.newNode, color: this.changedNodeColor });
+          updateNodes.push({
+            ...nodeChange.newNode,
+            color: nodeChange.newNode.group === 'variable' ? this.changedVariableNodeColor : this.changedNodeColor,
+          });
           break;
         case ChangeAction.delete:
           deleteNodeIds.push(nodeChange.node.id as string);
@@ -316,6 +353,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
     const variableType = variable.type ? `(${variable.type})` : '';
+    const group = !variable.type && variable.name ? 'variable' : 'default';
     const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
@@ -334,7 +372,7 @@ export class VisjsPanelView implements PanelViewProxy {
       label = bottomSection;
     }
 
-    return { id: variable.id, label, title: variable.tooltip };
+    return { id: variable.id, label, title: variable.tooltip, group };
   }
 
   private createEdges(variable: PanelViewVariable): Edge[] {
