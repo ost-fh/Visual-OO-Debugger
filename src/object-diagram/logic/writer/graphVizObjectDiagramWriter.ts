@@ -7,9 +7,9 @@ export class GraphVizObjectDiagramWriter extends ObjectDiagramWriter {
     yield 'digraph ObjectDiagram {';
     yield '  node [shape=plaintext]';
   }
-  protected *generateStructureHeaderLines({ id, type, name }: Structure): Generator<string> {
+  protected *generateStructureHeaderLines({ id, type }: Structure): Generator<string> {
     yield `  ${id} [label=<<table border="0" cellborder="1" cellspacing="0">`;
-    yield `    <th><td colspan="2"><b>${name}</b><br/><i>&lt;&lt;${type}&gt;&gt;</i></td></th>`;
+    yield `    <th><td colspan="2"><i>&lt;&lt;${type}&gt;&gt;</i></td></th>`;
   }
   protected *generateStructureValueLines(value: string): Generator<string> {
     yield `    <tr><td colspan="2">${value}</td></tr>`;
@@ -21,7 +21,7 @@ export class GraphVizObjectDiagramWriter extends ObjectDiagramWriter {
     yield '  </table>>]';
   }
   protected *generateReferenceDeclarationLines({ startId, endId, name }: Reference): Generator<string> {
-    yield `  ${startId}:${name} -> ${endId} [label="${name}"]`;
+    yield `  ${startId}:${name} -> ${endId}`;
   }
   protected *generateFooterLines(): Generator<string> {
     yield '}';

@@ -1,5 +1,5 @@
-import { PanelViewInput, VariableRelation } from '../../../model/panelViewInput';
-import { EscapedString, escapeString } from '../../model/escapedString';
+import { PanelViewInputVariableMap, VariableRelation } from '../../../model/panelViewInput';
+import { escapeString } from '../../model/escapedString';
 import { Field } from '../../model/field';
 import { ObjectDiagram } from '../../model/objectDiagram';
 import { isPrimitiveJavaType, PrimitiveJavaType } from '../../model/primitiveJavaType';
@@ -11,14 +11,12 @@ import { ObjectDiagramReader } from './objectDiagramReader';
 const isUndefinedOrPrimitiveJavaType = (type: string | undefined): type is undefined | PrimitiveJavaType =>
   type === undefined || isPrimitiveJavaType(type);
 
-export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<PanelViewInput> {
-  read({ callstack }: PanelViewInput): ObjectDiagram {
-    const variables = callstack[0].variables;
+export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<PanelViewInputVariableMap> {
+  read(variables: PanelViewInputVariableMap): ObjectDiagram {
     const stackFrameId = '__stackFrame__';
     const structures: Structure[] = [
       {
         id: createStructureId(stackFrameId),
-        name: '[StackFrame]' as EscapedString,
         type: '[StackFrame]',
       },
     ];
@@ -30,8 +28,6 @@ export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<Pa
         const structure: Structure = {
           id: structureId,
           type,
-          //  Escape string representations that contain field values (e.g. for Java records)
-          name: escapeString(id),
         };
         switch (value) {
           case undefined:
@@ -98,7 +94,7 @@ export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<Pa
           references.push({
             startId: createStructureId(relationName ? parentId : stackFrameId),
             endId: structureId,
-            name: relationName || parentId,
+            name: relationName || (variables.get(parentId)?.name as string),
           });
         });
       }
