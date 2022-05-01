@@ -1,7 +1,7 @@
 digraph ObjectDiagram {
   node [shape=plaintext]
   _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>[StackFrame]</b><br/><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;[StackFrame]&gt;&gt;</i></td></th>
     <tr><td align="left">borderWidth</td><td align="left" port="borderWidth">5 (int)</td></tr>
     <tr><td align="left">args</td><td align="left" port="args"></td></tr>
     <tr><td align="left">topLeft</td><td align="left" port="topLeft"></td></tr>
@@ -10,44 +10,44 @@ digraph ObjectDiagram {
     <tr><td align="left">background</td><td align="left" port="background"></td></tr>
   </table>>]
   _482d9dec6ff954d68d94793f765be61dbc59cb47 [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>String[0]@8</b><br/><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
     <tr><td colspan="2">[]</td></tr>
   </table>>]
   _782d99bf989d0a8059bfc0b89707b5fecd44189a [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>Point@9 "x: 1 y: 1"</b><br/><i>&lt;&lt;Point&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;Point&gt;&gt;</i></td></th>
     <tr><td align="left">x</td><td align="left" port="x">1 (int)</td></tr>
     <tr><td align="left">y</td><td align="left" port="y">1 (int)</td></tr>
   </table>>]
   _a4085fe64a34efdca9c495374ced14d982a9fcf0 [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>Point@10 "x: 5 y: 7"</b><br/><i>&lt;&lt;Point&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;Point&gt;&gt;</i></td></th>
     <tr><td align="left">x</td><td align="left" port="x">5 (int)</td></tr>
     <tr><td align="left">y</td><td align="left" port="y">7 (int)</td></tr>
   </table>>]
   _c782cb251d54e777f73ba090318ea4549ea0154c [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>Color@11 "BLUE"</b><br/><i>&lt;&lt;Color&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;Color&gt;&gt;</i></td></th>
     <tr><td align="left">ordinal</td><td align="left" port="ordinal">2 (int)</td></tr>
     <tr><td align="left">hexValue</td><td align="left" port="hexValue"></td></tr>
     <tr><td align="left">name</td><td align="left" port="name"></td></tr>
     <tr><td align="left">textValue</td><td align="left" port="textValue"></td></tr>
   </table>>]
   _ddc022e583fa6f700df84118a557f6ee593d0896 [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>"#0000FF"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"#0000FF"</td></tr>
   </table>>]
   _68f417e07413646bc6802be73fa896ef65e71986 [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>"BLUE"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"BLUE"</td></tr>
   </table>>]
   _2fc96ff8cf245465ff831587cf4c032a1fee1ecb [label=<<table border="0" cellborder="1" cellspacing="0">
-    <th><td colspan="2"><b>"blue"</b><br/><i>&lt;&lt;String&gt;&gt;</i></td></th>
+    <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"blue"</td></tr>
   </table>>]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47 [label="args"]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeft -> _782d99bf989d0a8059bfc0b89707b5fecd44189a [label="topLeft"]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeftCopy -> _782d99bf989d0a8059bfc0b89707b5fecd44189a [label="topLeftCopy"]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:bottomRight -> _a4085fe64a34efdca9c495374ced14d982a9fcf0 [label="bottomRight"]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:background -> _c782cb251d54e777f73ba090318ea4549ea0154c [label="background"]
-  _c782cb251d54e777f73ba090318ea4549ea0154c:hexValue -> _ddc022e583fa6f700df84118a557f6ee593d0896 [label="hexValue"]
-  _c782cb251d54e777f73ba090318ea4549ea0154c:name -> _68f417e07413646bc6802be73fa896ef65e71986 [label="name"]
-  _c782cb251d54e777f73ba090318ea4549ea0154c:textValue -> _2fc96ff8cf245465ff831587cf4c032a1fee1ecb [label="textValue"]
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeft -> _782d99bf989d0a8059bfc0b89707b5fecd44189a
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeftCopy -> _782d99bf989d0a8059bfc0b89707b5fecd44189a
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:bottomRight -> _a4085fe64a34efdca9c495374ced14d982a9fcf0
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:background -> _c782cb251d54e777f73ba090318ea4549ea0154c
+  _c782cb251d54e777f73ba090318ea4549ea0154c:hexValue -> _ddc022e583fa6f700df84118a557f6ee593d0896
+  _c782cb251d54e777f73ba090318ea4549ea0154c:name -> _68f417e07413646bc6802be73fa896ef65e71986
+  _c782cb251d54e777f73ba090318ea4549ea0154c:textValue -> _2fc96ff8cf245465ff831587cf4c032a1fee1ecb
 }

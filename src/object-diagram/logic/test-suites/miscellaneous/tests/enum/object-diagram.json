@@ -2,46 +2,38 @@
   "structures": [
     {
       "id": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "name": "[StackFrame]",
       "type": "[StackFrame]"
     },
     {
       "id": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
       "type": "String[]",
-      "name": "String[0]@8",
       "value": "[]"
     },
     {
       "id": "_782d99bf989d0a8059bfc0b89707b5fecd44189a",
-      "type": "Point",
-      "name": "Point@9 \"x: 1 y: 1\""
+      "type": "Point"
     },
     {
       "id": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
-      "type": "Point",
-      "name": "Point@10 \"x: 5 y: 7\""
+      "type": "Point"
     },
     {
       "id": "_c782cb251d54e777f73ba090318ea4549ea0154c",
-      "type": "Color",
-      "name": "Color@11 \"BLUE\""
+      "type": "Color"
     },
     {
       "id": "_ddc022e583fa6f700df84118a557f6ee593d0896",
       "type": "String",
-      "name": "\"#0000FF\"",
       "value": "\"#0000FF\""
     },
     {
       "id": "_68f417e07413646bc6802be73fa896ef65e71986",
       "type": "String",
-      "name": "\"BLUE\"",
       "value": "\"BLUE\""
     },
     {
       "id": "_2fc96ff8cf245465ff831587cf4c032a1fee1ecb",
       "type": "String",
-      "name": "\"blue\"",
       "value": "\"blue\""
     }
   ],
