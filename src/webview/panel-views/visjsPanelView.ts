@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
-import { Color, Data, Edge, Node, Options } from 'vis-network';
+import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
 import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
@@ -10,51 +10,17 @@ import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
-  private readonly defaultNodeColor: Color = {
-    border: '#005cb2',
-    background: '#1e88e5',
-    highlight: {
-      border: '#005cb2',
-      background: '#1e88e5',
-    },
-  };
-
-  private readonly variableNodeColor: Color = {
-    border: '#003B73',
-    background: '#005cb2',
-    highlight: {
-      border: '#003B73',
-      background: '#005cb2',
-    },
-  };
-
-  private readonly defaultEdgeColor: { color?: string; highlight?: string } = {
-    color: '#005cb2',
-    highlight: '#005cb2',
-  };
-
-  private readonly changedNodeColor: Color = {
-    border: '#c6a700',
-    background: '#fdd835',
-    highlight: {
-      border: '#c6a700',
-      background: '#fdd835',
-    },
-  };
-
-  private readonly changedVariableNodeColor: Color = {
-    border: '#473D00',
-    background: '#c6a700',
-    highlight: {
-      border: '#473D00',
-      background: '#c6a700',
-    },
-  };
-
-  private readonly changedEdgeColor: { color?: string; highlight?: string } = {
-    color: '#c6a700',
-    highlight: '#c6a700',
-  };
+  private defaultNodeColor: Color = {};
+  private defaultNodeFont: Font = {};
+  private variableNodeColor: Color = {};
+  private variableNodeFont: Font = {};
+  private defaultEdgeColor: { color?: string; highlight?: string } = {};
+  private changedNodeColor: Color = {};
+  private changedNodeFont: Font = {};
+  private changedVariableColor: Color = {};
+  private changedVariableFont: Font = {};
+  private changedEdgeColor: { color?: string; highlight?: string } = {};
+  private updateColor = false;
 
   constructor(private readonly context: ExtensionContext) {}
 
@@ -86,7 +52,8 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   updatePanel(newVariables: PanelViewInputVariableMap, prevVariables?: PanelViewInputVariableMap): PanelViewCommand {
-    if (!prevVariables) {
+    if (!prevVariables || this.updateColor) {
+      this.updateColor = false;
       const options: Options = {
         nodes: {
           shape: 'box',
@@ -104,15 +71,19 @@ export class VisjsPanelView implements PanelViewProxy {
         groups: {
           default: {
             color: this.defaultNodeColor,
+            font: this.defaultNodeFont,
           },
           variable: {
             color: this.variableNodeColor,
+            font: this.variableNodeFont,
           },
-          changedDefault: {
+          changed: {
             color: this.changedNodeColor,
+            font: this.changedNodeFont,
           },
           changedVariable: {
-            color: this.changedVariableNodeColor,
+            color: this.changedVariableColor,
+            font: this.changedVariableFont,
           },
         },
       };
@@ -148,13 +119,13 @@ export class VisjsPanelView implements PanelViewProxy {
         case ChangeAction.create:
           addNodes.push({
             ...nodeChange.node,
-            color: nodeChange.node.group === 'variable' ? this.changedVariableNodeColor : this.changedNodeColor,
+            group: nodeChange.node.group === 'variable' ? 'changedVariable' : 'changed',
           });
           break;
         case ChangeAction.update:
           updateNodes.push({
             ...nodeChange.newNode,
-            color: nodeChange.newNode.group === 'variable' ? this.changedVariableNodeColor : this.changedNodeColor,
+            group: nodeChange.newNode.group === 'variable' ? 'changedVariable' : 'changed',
           });
           break;
         case ChangeAction.delete:
@@ -388,5 +359,70 @@ export class VisjsPanelView implements PanelViewProxy {
     }
 
     return edges;
+  }
+
+  public setPanelStyles(colorMap: Map<string, string>): void {
+    this.updateColor = true;
+    this.defaultNodeColor = {
+      border: colorMap.get('defaultColorBorder'),
+      background: colorMap.get('defaultColor'),
+      highlight: {
+        border: colorMap.get('defaultColorBorder'),
+        background: colorMap.get('defaultColor'),
+      },
+    };
+
+    this.defaultNodeFont = {
+      color: colorMap.get('defaultColorFont'),
+    };
+
+    this.variableNodeColor = {
+      border: colorMap.get('variableColorBorder'),
+      background: colorMap.get('variableColor'),
+      highlight: {
+        border: colorMap.get('variableColorBorder'),
+        background: colorMap.get('variableColor'),
+      },
+    };
+
+    this.variableNodeFont = {
+      color: colorMap.get('variableColorFont'),
+    };
+
+    this.defaultEdgeColor = {
+      color: colorMap.get('defaultColorBorder'),
+      highlight: colorMap.get('defaultColorBorder'),
+    };
+
+    this.changedNodeColor = {
+      border: colorMap.get('changedColorBorder'),
+      background: colorMap.get('changedColor'),
+      highlight: {
+        border: colorMap.get('changedColorBorder'),
+        background: colorMap.get('changedColor'),
+      },
+    };
+
+    this.changedNodeFont = {
+      color: colorMap.get('changedColorFont'),
+    };
+
+    this.changedVariableColor = {
+      border: colorMap.get('changedVariableColorBorder'),
+      background: colorMap.get('changedVariableColor'),
+      highlight: {
+        border: colorMap.get('changedVariableColorBorder'),
+        background: colorMap.get('changedVariableColor'),
+      },
+    };
+
+    this.changedVariableFont = {
+      color: colorMap.get('changedVariableColorFont'),
+    };
+
+    this.changedEdgeColor = {
+      color: colorMap.get('changedColorBorder'),
+      highlight: colorMap.get('changedColorBorder'),
+    };
   }
 }

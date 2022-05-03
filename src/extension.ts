@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, workspace } from 'vscode';
+import { commands, ExtensionContext, workspace, WorkspaceConfiguration } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
@@ -18,6 +18,7 @@ class Extension {
 
   registerCommands(): void {
     const debuggerPanel = new DebuggerPanel(this.context, this.getPanelViewByConfiguration());
+    debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
     const debugEventManager = new DebugEventManager();
     debugEventManager.registerDebuggerPanel(debuggerPanel);
 
@@ -31,6 +32,13 @@ class Extension {
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
+      } else if (
+        e.affectsConfiguration('visual-oo-debugger.defaultColor') ||
+        e.affectsConfiguration('visual-oo-debugger.variableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
+      ) {
+        debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
       }
     });
   }
@@ -40,12 +48,35 @@ class Extension {
   }
 
   getPanelViewByConfiguration(): PanelViewProxy {
-    const preferredView = workspace.getConfiguration('visual-oo-debugger');
-    switch (preferredView.get('preferredView')) {
+    const configuration = workspace.getConfiguration('visual-oo-debugger');
+    switch (configuration.get('preferredView')) {
       case 'vis.js':
         return new VisjsPanelView(this.context);
       default:
         return new VisjsPanelView(this.context);
     }
+  }
+  getPanelStylesByConfiguration(): Map<string, string[]> {
+    const configuration = workspace.getConfiguration('visual-oo-debugger');
+    const baseColorMap = new Map<string, string[]>();
+
+    baseColorMap.set('defaultColor', [
+      configuration.get('defaultColor') as string,
+      configuration.inspect('defaultColor')?.defaultValue as string,
+    ]);
+    baseColorMap.set('variableColor', [
+      configuration.get('variableColor') as string,
+      configuration.inspect('variableColor')?.defaultValue as string,
+    ]);
+    baseColorMap.set('changedColor', [
+      configuration.get('changedColor') as string,
+      configuration.inspect('changedColor')?.defaultValue as string,
+    ]);
+    baseColorMap.set('changedVariableColor', [
+      configuration.get('changedVariableColor') as string,
+      configuration.inspect('changedVariableColor')?.defaultValue as string,
+    ]);
+
+    return baseColorMap;
   }
 }

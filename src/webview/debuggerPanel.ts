@@ -9,6 +9,7 @@ import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
+import tinycolor = require('tinycolor2');
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -24,6 +25,8 @@ export class DebuggerPanel {
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
   private readonly graphVizObjectDiagramFileSaver: FileSaver;
+
+  private colorMap: Map<string, string> | undefined;
 
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
     const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
@@ -127,6 +130,9 @@ export class DebuggerPanel {
     const viewPanelVisible = this.viewPanel?.visible;
     this.teardownPanel();
     this.panelViewProxy = panelViewProxy;
+    if (this.colorMap) {
+      this.panelViewProxy.setPanelStyles(this.colorMap);
+    }
     if (viewPanelVisible) {
       this.openPanel();
     }
@@ -137,6 +143,22 @@ export class DebuggerPanel {
     this.currentVariables = undefined;
     this.inputHistory = [];
     this.historyIndex = -1;
+  }
+
+  setPanelStyles(baseColorMap: Map<string, string[]>): void {
+    const colorMap = new Map<string, string>();
+    baseColorMap.forEach((colors: string[], key: string) => {
+      let color = tinycolor(colors[0]);
+      if (!color.isValid()) {
+        color = tinycolor(colors[1]);
+      }
+      colorMap.set(key, color.toHexString());
+      colorMap.set(key + 'Border', color.darken(10).toHexString());
+      colorMap.set(key + 'Font', tinycolor.mostReadable(color, ['#000'], { includeFallbackColors: true }).toHexString());
+    });
+
+    this.colorMap = colorMap;
+    this.panelViewProxy.setPanelStyles(colorMap);
   }
 
   private stepBack(): void {

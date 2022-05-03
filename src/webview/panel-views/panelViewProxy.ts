@@ -8,6 +8,7 @@ export interface PanelViewProxy {
   startRecordingPanel: () => PanelViewCommand;
   stopRecordingPanel: () => PanelViewCommand;
   teardownPanelView?: () => void;
+  setPanelStyles: (colorMap: Map<string, string>) => void;
 }
 
 export interface PanelViewCommand {
