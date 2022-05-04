@@ -189,7 +189,7 @@ export class DebuggerPanel {
     return new ObjectDiagramFileSaverFactory(
       new MementoAccessor<string>(memento, 'visual-oo-debugger.lastObjectDiagramExportDirectoryPath'),
       (): ObjectDiagram => {
-        const input = this.currentPanelViewInput;
+        const input = this.currentVariables;
         if (!input) {
           throw new Error('Could not export (no panel view input available)');
         }

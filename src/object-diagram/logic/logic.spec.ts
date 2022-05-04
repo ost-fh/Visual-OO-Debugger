@@ -116,7 +116,7 @@ describe('Object diagram logic', () => {
               shouldReadTheObjectDiagramCorrectlyFromSource(
                 'a panel view input',
                 new PanelViewInputObjectDiagramReader(),
-                panelViewInput,
+                panelViewInput.callstack[0].variables,
                 objectDiagram
               );
               //  Writer tests

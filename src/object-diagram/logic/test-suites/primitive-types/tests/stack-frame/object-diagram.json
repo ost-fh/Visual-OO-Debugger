@@ -2,13 +2,11 @@
   "structures": [
     {
       "id": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "name": "[StackFrame]",
       "type": "[StackFrame]"
     },
     {
       "id": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
       "type": "String[]",
-      "name": "String[0]@8",
       "value": "[]"
     }
   ],

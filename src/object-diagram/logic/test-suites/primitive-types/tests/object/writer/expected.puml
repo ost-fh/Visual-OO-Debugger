@@ -1,8 +1,8 @@
 @startuml
-map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+map "<<[StackFrame]>>" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 {
   fieldContainer =>
 }
-map "PrimitiveTypesDemo$FieldContainer@11 <U+0022>FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]<U+0022>" as _ea0aca3bedbad950e9d8b35c1bab07af352d76c4 <<PrimitiveTypesDemo$FieldContainer>> {
+map "<<PrimitiveTypesDemo$FieldContainer>>" as _ea0aca3bedbad950e9d8b35c1bab07af352d76c4 {
   _boolean => false (boolean)
   _byte => 0 (byte)
   _char => \u0000 (char)
@@ -12,5 +12,5 @@ map "PrimitiveTypesDemo$FieldContainer@11 <U+0022>FieldContainer[_boolean=false,
   _long => 0 (long)
   _short => 0 (short)
 }
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::fieldContainer => _ea0aca3bedbad950e9d8b35c1bab07af352d76c4 : fieldContainer
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::fieldContainer => _ea0aca3bedbad950e9d8b35c1bab07af352d76c4
 @enduml

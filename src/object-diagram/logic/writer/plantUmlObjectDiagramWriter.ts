@@ -2,14 +2,12 @@ import { Reference } from '../../model/reference';
 import { Structure } from '../../model/structure';
 import { ObjectDiagramWriter } from './objectDiagramWriter';
 
-const escapeDoubleQuotes = (name: string): string => name.replace(/"/g, '<U+0022>');
-
 export class PlantUmlObjectDiagramWriter extends ObjectDiagramWriter {
   protected *generateHeaderLines(): Generator<string> {
     yield '@startuml';
   }
-  protected *generateStructureHeaderLines({ id, type, name, value }: Structure): Generator<string> {
-    yield `${value ? 'object' : 'map'} "${escapeDoubleQuotes(name)}" as ${id} <<${type}>> {`;
+  protected *generateStructureHeaderLines({ id, type, value }: Structure): Generator<string> {
+    yield `${value ? 'object' : 'map'} "<<${type}>>" as ${id} {`;
   }
   protected *generateStructureValueLines(value: string): Generator<string> {
     yield `  ${value}`;
@@ -22,7 +20,7 @@ export class PlantUmlObjectDiagramWriter extends ObjectDiagramWriter {
     yield '}';
   }
   protected *generateReferenceDeclarationLines({ startId, endId, name }: Reference): Generator<string> {
-    yield `${startId}::${name} => ${endId} : ${name}`;
+    yield `${startId}::${name} => ${endId}`;
   }
   protected *generateFooterLines(): Generator<string> {
     yield '@enduml';
