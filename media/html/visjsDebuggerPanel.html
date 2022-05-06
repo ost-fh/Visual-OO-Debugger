@@ -129,9 +129,9 @@
           },
           clusterNodeProperties: {
             borderWidth: 5,
-            group:nodes.get(id).group,
-            color:nodes.get(id).color,
-            font:nodes.get(id).font,
+            group: nodes.get(id).group,
+            color: nodes.get(id).color,
+            font: nodes.get(id).font,
           },
         };
         if (nodeList != undefined) {
@@ -147,7 +147,7 @@
         nodes.updateOnly(
           nodes.map((node) => ({
             ...node,
-            group: (node.group === 'changedVariable' || node.group === 'variable') ? 'variable' : 'default',
+            group: node.group === 'changedVariable' || node.group === 'variable' ? 'variable' : 'default',
           }))
         );
         edges.updateOnly(
