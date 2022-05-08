@@ -26,4 +26,5 @@ const controlCodeReplacer = CharacterReplacer.fromRanges([
   },
 ]);
 
-export const escapeString = (string: string): EscapedString => controlCodeReplacer.replaceCharacters(string) as EscapedString;
+export const escapeString = (string: string | undefined): EscapedString =>
+  controlCodeReplacer.replaceCharacters(string || '') as EscapedString;

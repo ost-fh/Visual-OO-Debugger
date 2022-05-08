@@ -126,7 +126,10 @@ export class DebugEventManager {
     panelViewStackFrame: PanelViewStackFrame
   ): Promise<void> {
     let isNewAndObject = false;
-    const id = variable.value === 'null' ? variable.value : `${DebugEventManager.objectPrefix}${variable.value.split(this.sizeSuffix)[0]}`;
+    const id =
+      variable.type === 'null'
+        ? `${DebugEventManager.nullPrefix}${hash(variable)}`
+        : `${DebugEventManager.objectPrefix}${variable.value.split(this.sizeSuffix)[0]}`;
     let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
@@ -172,11 +175,10 @@ export class DebugEventManager {
     variable: DebugProtocol.Variable
   ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
-    const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : `${DebugEventManager.variablePrefix}${hash(variable)}` };
+    const panelViewVariable: PanelViewVariable = { id };
 
     if (variable.type === 'null') {
       panelViewVariable.value = 'null';
-      panelViewVariable.id = `${DebugEventManager.nullPrefix}${hash(variable)}`;
       return [panelViewVariable, isNewAndObject];
     }
 
