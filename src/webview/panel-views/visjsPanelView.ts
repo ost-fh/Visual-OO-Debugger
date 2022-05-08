@@ -44,11 +44,14 @@ export class VisjsPanelView implements PanelViewProxy {
     const visNetworkUri = webview.asWebviewUri(
       Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.visNetworkMinJs))
     );
-    const ffmpegUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.ffmpegMinJs))
+    const lzwEncoderJsUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.lzwEncoderJs))
     );
-    const ffmpegCoreUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.ffmpegCoreJs))
+    const neuQuantJsUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.neuQuantJs))
+    );
+    const gifEncoderJsUri = webview.asWebviewUri(
+      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.gifEncoderJs))
     );
     const codiconsUri = webview.asWebviewUri(
       Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.codiconCss))
@@ -60,8 +63,9 @@ export class VisjsPanelView implements PanelViewProxy {
     const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
     return readFileSync(filePath.fsPath, 'utf8')
       .replace('{{vis-network.min.js}}', visNetworkUri.toString())
-      .replace('{{ffmpeg.min.js}}', ffmpegUri.toString())
-      .replace('{{ffmpeg-core.js}}', ffmpegCoreUri.toString())
+      .replace('{{LZWEncoder.js}}', lzwEncoderJsUri.toString())
+      .replace('{{NeuQuant.js}}', neuQuantJsUri.toString())
+      .replace('{{GIFEncoder.js}}', gifEncoderJsUri.toString())
       .replace('{{visjsDebuggerPanel.css}}', cssUri.toString())
       .replace('{{codicon.css}}', codiconsUri.toString())
       .replace('{{toolkit.min.js}}', webviewUiToolkit.toString());

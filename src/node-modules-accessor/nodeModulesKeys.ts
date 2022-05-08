@@ -1,7 +1,8 @@
 export enum NodeModulesKeys {
   visNetworkMinJs,
-  ffmpegMinJs,
-  ffmpegCoreJs,
+  lzwEncoderJs,
+  neuQuantJs,
+  gifEncoderJs,
   codiconCss,
   webviewUiToolkit,
 }

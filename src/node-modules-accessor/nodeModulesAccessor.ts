@@ -14,19 +14,29 @@ export class NodeModulesAccessor {
       },
     ],
     [
-      NodeModulesKeys.ffmpegMinJs,
+      NodeModulesKeys.lzwEncoderJs,
       {
-        sourcePath: ['node_modules', '@ffmpeg', 'ffmpeg', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'ffmpeg', 'dist'],
-        fileName: 'ffmpeg.min.js',
+        sourcePath: ['node_modules', 'jsgif'],
+        destinationPath: ['libs', 'jsgif'],
+        fileName: 'LZWEncoder.js',
+        includeFolder: true,
       },
     ],
     [
-      NodeModulesKeys.ffmpegCoreJs,
+      NodeModulesKeys.neuQuantJs,
       {
-        sourcePath: ['node_modules', '@ffmpeg', 'core', 'dist'],
-        destinationPath: ['libs', '@ffmpeg', 'core', 'dist'],
-        fileName: 'ffmpeg-core.js',
+        sourcePath: ['node_modules', 'jsgif'],
+        destinationPath: ['libs', 'jsgif'],
+        fileName: 'NeuQuant.js',
+        includeFolder: true,
+      },
+    ],
+    [
+      NodeModulesKeys.gifEncoderJs,
+      {
+        sourcePath: ['node_modules', 'jsgif'],
+        destinationPath: ['libs', 'jsgif'],
+        fileName: 'GIFEncoder.js',
         includeFolder: true,
       },
     ],

@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visual Debugger</title>
     <script type="text/javascript" src="{{vis-network.min.js}}"></script>
-    <script type="text/javascript" src="{{ffmpeg.min.js}}"></script>
+    <script type="text/javascript" src="{{LZWEncoder.js}}"></script>
+    <script type="text/javascript" src="{{NeuQuant.js}}"></script>
+    <script type="text/javascript" src="{{GIFEncoder.js}}"></script>
     <script type="module" src="{{toolkit.min.js}}"></script>
     <link href="{{visjsDebuggerPanel.css}}" rel="stylesheet" />
     <link href="{{codicon.css}}" rel="stylesheet" />
@@ -34,6 +36,9 @@
       let nodes;
       let defaultNodeColor;
       let defaultEdgeColor;
+      let gifFrames;
+      let gifFrameCount;
+      let gifRecording;
       let recorder;
       let chunks;
       let vscode;
@@ -228,18 +233,17 @@
 
       function startRecordingVisjsGif() {
         if (canvas) {
-          chunks = [];
-          const stream = canvas.captureStream();
-          recorder = new MediaRecorder(stream, {
-            mimeType: 'video/webm;codecs=vp9',
-            ignoreMutedMedia: true,
-          });
-          recorder.ondataavailable = (e) => {
-            if (e.data.size > 0) {
-              chunks.push(e.data);
-            }
-          };
-          recorder.start();
+          gifFrames = [];
+          gifFrameCount = 0;
+          gifRecording = true;
+          count = 0;
+          encoder = new GIFEncoder();
+          encoder.setRepeat(0); 
+          encoder.setQuality(20);
+          encoder.setDelay(90); 
+          encoder.setSize(canvas.width, canvas.height);
+          window.requestAnimationFrame(drawFrame);
+          encoder.start();
         }
       }
 
@@ -262,14 +266,14 @@
 
       function stopRecordingVisjsGif(render) {
         if (vscode) {
-          recorder.stop();
-          setTimeout(() => {
-            const blob = new Blob(chunks, {
-              type: 'video/webm',
-            });
-            const webmVideo = URL.createObjectURL(blob);
-            convertWebmToGif(webmVideo);
-          }, 0);
+          gifRecording = false;
+          vscode.postMessage({ command: 'creatingGif'});
+          gifFrames.forEach(gifFrame => {
+            encoder.addFrame(gifFrame,true);
+          });
+
+          encoder.finish();
+          encoder.download("export.gif");
         }
       }
 
@@ -285,25 +289,14 @@
         }
       }
 
-      function convertWebmToGif(file) {
-        vscode.postMessage({ command: 'creatingGif' });
-        const { createFFmpeg, fetchFile } = FFmpeg;
-        const ffmpeg = createFFmpeg({
-          corePath: '{{ffmpeg-core.js}}',
-          log: true,
-        });
-        (async () => {
-          await ffmpeg.load();
-          ffmpeg.FS('writeFile', 'export.webm', await fetchFile(file));
-          await ffmpeg.run('-i', 'export.webm', 'export.gif');
-          const data = ffmpeg.FS('readFile', 'export.gif');
-          var gifVideo = URL.createObjectURL(
-            new Blob([data.buffer], {
-              type: 'image/gif',
-            })
-          );
-          downloadFile('export.gif', gifVideo);
-        })();
+      function drawFrame(){
+        if(gifRecording){
+          if(gifFrameCount % 3 === 0) {
+            gifFrames.push(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data);
+          }
+          gifFrameCount++;
+          window.requestAnimationFrame(drawFrame);
+        }
       }
 
       function downloadFile(filename, file) {
