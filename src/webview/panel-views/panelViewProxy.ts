@@ -1,5 +1,5 @@
 import { Webview } from 'vscode';
-import { PanelViewInputVariableMap } from '../../model/panelViewInput';
+import { PanelViewColors, PanelViewInputVariableMap } from '../../model/panelViewInput';
 
 export interface PanelViewProxy {
   getHtml: (webview: Webview) => string;
@@ -8,7 +8,7 @@ export interface PanelViewProxy {
   startRecordingPanel: () => PanelViewCommand;
   stopRecordingPanel: () => PanelViewCommand;
   teardownPanelView?: () => void;
-  setPanelStyles: (colorMap: Map<string, string>) => void;
+  setPanelStyles: (viewColors: PanelViewColors) => void;
 }
 
 export interface PanelViewCommand {

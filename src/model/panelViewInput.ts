@@ -37,12 +37,16 @@ export interface PrimitiveValue {
   value: string;
 }
 
-export interface PanelViewStyles {
-  colors: PanelViewColor[];
+export interface PanelViewColors {
+  defaultColor: NodeColor;
+  variableColor: NodeColor;
+  changedColor: NodeColor;
+  changedVariableColor: NodeColor;
 }
 
-export interface PanelViewColor {
-  name: string;
-  value: string;
-  default: string;
+export interface NodeColor {
+  background: string;
+  fallback: string;
+  border?: string;
+  font?: string;
 }

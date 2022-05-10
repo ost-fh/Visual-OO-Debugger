@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { isEqual } from 'lodash';
-import { PanelViewColor, PanelViewInput, PanelViewInputVariableMap, PanelViewStyles } from '../model/panelViewInput';
+import { NodeColor, PanelViewColors, PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
 import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
@@ -26,7 +26,7 @@ export class DebuggerPanel {
 
   private readonly graphVizObjectDiagramFileSaver: FileSaver;
 
-  private colorMap: Map<string, string> | undefined;
+  private viewColors: PanelViewColors | undefined;
 
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
     const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
@@ -130,8 +130,8 @@ export class DebuggerPanel {
     const viewPanelVisible = this.viewPanel?.visible;
     this.teardownPanel();
     this.panelViewProxy = panelViewProxy;
-    if (this.colorMap) {
-      this.panelViewProxy.setPanelStyles(this.colorMap);
+    if (this.viewColors) {
+      this.panelViewProxy.setPanelStyles(this.viewColors);
     }
     if (viewPanelVisible) {
       this.openPanel();
@@ -145,20 +145,20 @@ export class DebuggerPanel {
     this.historyIndex = -1;
   }
 
-  setPanelStyles(panelViewStyle: PanelViewStyles): void {
-    const colorMap = new Map<string, string>();
-    panelViewStyle.colors.forEach((panelViewColor: PanelViewColor) => {
-      let color = tinycolor(panelViewColor.value);
-      if (!color.isValid()) {
-        color = tinycolor(panelViewColor.default);
-      }
-      colorMap.set(panelViewColor.name, color.toHexString());
-      colorMap.set(panelViewColor.name + 'Border', color.darken(10).toHexString());
-      colorMap.set(panelViewColor.name + 'Font', tinycolor.mostReadable(color, ['#000'], { includeFallbackColors: true }).toHexString());
-    });
+  setPanelStyles(panelViewColors: PanelViewColors): void {
+    this.setNodeColor(panelViewColors.defaultColor);
+    this.setNodeColor(panelViewColors.variableColor);
+    this.setNodeColor(panelViewColors.changedColor);
+    this.setNodeColor(panelViewColors.changedVariableColor);
+    this.viewColors = panelViewColors;
+    this.panelViewProxy.setPanelStyles(panelViewColors);
+  }
 
-    this.colorMap = colorMap;
-    this.panelViewProxy.setPanelStyles(colorMap);
+  private setNodeColor(nodecolor: NodeColor): void {
+    const color = tinycolor(nodecolor.background).isValid() ? tinycolor(nodecolor.background) : tinycolor(nodecolor.fallback);
+    nodecolor.background = color.toHexString();
+    nodecolor.border = color.darken(10).toHexString();
+    nodecolor.font = tinycolor.mostReadable(nodecolor.background, ['#000'], { includeFallbackColors: true }).toHexString();
   }
 
   private stepBack(): void {

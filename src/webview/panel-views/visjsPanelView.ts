@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
-import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
+import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
@@ -361,68 +361,68 @@ export class VisjsPanelView implements PanelViewProxy {
     return edges;
   }
 
-  public setPanelStyles(colorMap: Map<string, string>): void {
+  public setPanelStyles(viewColors: PanelViewColors): void {
     this.updateColor = true;
     this.defaultNodeColor = {
-      border: colorMap.get('defaultColorBorder'),
-      background: colorMap.get('defaultColor'),
+      border: viewColors.defaultColor.border,
+      background: viewColors.defaultColor.background,
       highlight: {
-        border: colorMap.get('defaultColorBorder'),
-        background: colorMap.get('defaultColor'),
+        border: viewColors.defaultColor.border,
+        background: viewColors.defaultColor.background,
       },
     };
 
     this.defaultNodeFont = {
-      color: colorMap.get('defaultColorFont'),
+      color: viewColors.defaultColor.font,
     };
 
     this.variableNodeColor = {
-      border: colorMap.get('variableColorBorder'),
-      background: colorMap.get('variableColor'),
+      border: viewColors.variableColor.border,
+      background: viewColors.variableColor.background,
       highlight: {
-        border: colorMap.get('variableColorBorder'),
-        background: colorMap.get('variableColor'),
+        border: viewColors.variableColor.border,
+        background: viewColors.variableColor.background,
       },
     };
 
     this.variableNodeFont = {
-      color: colorMap.get('variableColorFont'),
+      color: viewColors.variableColor.font,
     };
 
     this.defaultEdgeColor = {
-      color: colorMap.get('defaultColorBorder'),
-      highlight: colorMap.get('defaultColorBorder'),
+      color: viewColors.defaultColor.border,
+      highlight: viewColors.defaultColor.border,
     };
 
     this.changedNodeColor = {
-      border: colorMap.get('changedColorBorder'),
-      background: colorMap.get('changedColor'),
+      border: viewColors.changedColor.border,
+      background: viewColors.changedColor.background,
       highlight: {
-        border: colorMap.get('changedColorBorder'),
-        background: colorMap.get('changedColor'),
+        border: viewColors.changedColor.border,
+        background: viewColors.changedColor.background,
       },
     };
 
     this.changedNodeFont = {
-      color: colorMap.get('changedColorFont'),
+      color: viewColors.changedColor.font,
     };
 
     this.changedVariableColor = {
-      border: colorMap.get('changedVariableColorBorder'),
-      background: colorMap.get('changedVariableColor'),
+      border: viewColors.changedVariableColor.border,
+      background: viewColors.changedVariableColor.background,
       highlight: {
-        border: colorMap.get('changedVariableColorBorder'),
-        background: colorMap.get('changedVariableColor'),
+        border: viewColors.changedVariableColor.border,
+        background: viewColors.changedVariableColor.background,
       },
     };
 
     this.changedVariableFont = {
-      color: colorMap.get('changedVariableColorFont'),
+      color: viewColors.changedVariableColor.font,
     };
 
     this.changedEdgeColor = {
-      color: colorMap.get('changedColorBorder'),
-      highlight: colorMap.get('changedColorBorder'),
+      color: viewColors.changedColor.border,
+      highlight: viewColors.changedColor.border,
     };
   }
 }

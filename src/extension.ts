@@ -3,7 +3,7 @@ import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
-import { PanelViewStyles, PanelViewColor } from './model/panelViewInput';
+import { PanelViewColors } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -57,32 +57,26 @@ class Extension {
         return new VisjsPanelView(this.context);
     }
   }
-  getPanelStylesByConfiguration(): PanelViewStyles {
+  getPanelStylesByConfiguration(): PanelViewColors {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
 
-    const panelViewStyles: PanelViewStyles = {
-      colors: [
-        {
-          name: 'defaultColor',
-          value: configuration.get('defaultColor') as string,
-          default: configuration.inspect('defaultColor')?.defaultValue as string,
-        },
-        {
-          name: 'variableColor',
-          value: configuration.get('variableColor') as string,
-          default: configuration.inspect('variableColor')?.defaultValue as string,
-        },
-        {
-          name: 'changedColor',
-          value: configuration.get('changedColor') as string,
-          default: configuration.inspect('changedColor')?.defaultValue as string,
-        },
-        {
-          name: 'changedVariableColor',
-          value: configuration.get('changedVariableColor') as string,
-          default: configuration.inspect('changedVariableColor')?.defaultValue as string,
-        },
-      ],
+    const panelViewStyles: PanelViewColors = {
+      defaultColor: {
+        background: configuration.get('defaultColor') as string,
+        fallback: configuration.inspect('defaultColor')?.defaultValue as string,
+      },
+      variableColor: {
+        background: configuration.get('variableColor') as string,
+        fallback: configuration.inspect('variableColor')?.defaultValue as string,
+      },
+      changedColor: {
+        background: configuration.get('changedColor') as string,
+        fallback: configuration.inspect('changedColor')?.defaultValue as string,
+      },
+      changedVariableColor: {
+        background: configuration.get('changedVariableColor') as string,
+        fallback: configuration.inspect('changedVariableColor')?.defaultValue as string,
+      },
     };
     return panelViewStyles;
   }
