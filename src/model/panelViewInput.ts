@@ -36,3 +36,13 @@ export interface PrimitiveValue {
   name: string;
   value: string;
 }
+
+export interface PanelViewStyles {
+  colors: PanelViewColor[];
+}
+
+export interface PanelViewColor {
+  name: string;
+  value: string;
+  default: string;
+}

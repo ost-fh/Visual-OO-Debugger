@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { isEqual } from 'lodash';
-import { PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
+import { PanelViewColor, PanelViewInput, PanelViewInputVariableMap, PanelViewStyles } from '../model/panelViewInput';
 import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
@@ -145,16 +145,16 @@ export class DebuggerPanel {
     this.historyIndex = -1;
   }
 
-  setPanelStyles(baseColorMap: Map<string, string[]>): void {
+  setPanelStyles(panelViewStyle: PanelViewStyles): void {
     const colorMap = new Map<string, string>();
-    baseColorMap.forEach((colors: string[], key: string) => {
-      let color = tinycolor(colors[0]);
+    panelViewStyle.colors.forEach((panelViewColor: PanelViewColor) => {
+      let color = tinycolor(panelViewColor.value);
       if (!color.isValid()) {
-        color = tinycolor(colors[1]);
+        color = tinycolor(panelViewColor.default);
       }
-      colorMap.set(key, color.toHexString());
-      colorMap.set(key + 'Border', color.darken(10).toHexString());
-      colorMap.set(key + 'Font', tinycolor.mostReadable(color, ['#000'], { includeFallbackColors: true }).toHexString());
+      colorMap.set(panelViewColor.name, color.toHexString());
+      colorMap.set(panelViewColor.name + 'Border', color.darken(10).toHexString());
+      colorMap.set(panelViewColor.name + 'Font', tinycolor.mostReadable(color, ['#000'], { includeFallbackColors: true }).toHexString());
     });
 
     this.colorMap = colorMap;

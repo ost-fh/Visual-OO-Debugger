@@ -1,8 +1,9 @@
-import { commands, ExtensionContext, workspace, WorkspaceConfiguration } from 'vscode';
+import { commands, ExtensionContext, workspace } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
+import { PanelViewStyles, PanelViewColor } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -56,27 +57,33 @@ class Extension {
         return new VisjsPanelView(this.context);
     }
   }
-  getPanelStylesByConfiguration(): Map<string, string[]> {
+  getPanelStylesByConfiguration(): PanelViewStyles {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
-    const baseColorMap = new Map<string, string[]>();
 
-    baseColorMap.set('defaultColor', [
-      configuration.get('defaultColor') as string,
-      configuration.inspect('defaultColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('variableColor', [
-      configuration.get('variableColor') as string,
-      configuration.inspect('variableColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('changedColor', [
-      configuration.get('changedColor') as string,
-      configuration.inspect('changedColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('changedVariableColor', [
-      configuration.get('changedVariableColor') as string,
-      configuration.inspect('changedVariableColor')?.defaultValue as string,
-    ]);
-
-    return baseColorMap;
+    const panelViewStyles: PanelViewStyles = {
+      colors: [
+        {
+          name: 'defaultColor',
+          value: configuration.get('defaultColor') as string,
+          default: configuration.inspect('defaultColor')?.defaultValue as string,
+        },
+        {
+          name: 'variableColor',
+          value: configuration.get('variableColor') as string,
+          default: configuration.inspect('variableColor')?.defaultValue as string,
+        },
+        {
+          name: 'changedColor',
+          value: configuration.get('changedColor') as string,
+          default: configuration.inspect('changedColor')?.defaultValue as string,
+        },
+        {
+          name: 'changedVariableColor',
+          value: configuration.get('changedVariableColor') as string,
+          default: configuration.inspect('changedVariableColor')?.defaultValue as string,
+        },
+      ],
+    };
+    return panelViewStyles;
   }
 }
