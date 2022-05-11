@@ -1,15 +1,12 @@
+import { DebugProtocol } from '@vscode/debugprotocol';
 import * as hash from 'object-hash';
 import { debug, window } from 'vscode';
-import { DebugProtocol } from '@vscode/debugprotocol';
 import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
+import { addNullPrefix, addObjectPrefix, addVariablePrefix } from '../util/nodePrefixHandler';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
 
 export class DebugEventManager {
-  public static readonly variablePrefix = 'variable_';
-  public static readonly objectPrefix = 'object_';
-  public static readonly nullPrefix = 'null_';
-
   private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
   private readonly primitiveDataTypes = ['boolean', 'char', 'byte', 'short', 'int', 'long', 'float', 'double'];
   private readonly sizeSuffix = 'size=';
@@ -69,7 +66,7 @@ export class DebugEventManager {
     for (const variable of variables || []) {
       if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
         const panelViewVariable: PanelViewVariable = {
-          id: `${DebugEventManager.variablePrefix}${hash(variable)}`,
+          id: addVariablePrefix(hash(variable)),
           name: variable.name,
           type: variable.type,
           value: variable.value,
@@ -126,10 +123,7 @@ export class DebugEventManager {
     panelViewStackFrame: PanelViewStackFrame
   ): Promise<void> {
     let isNewAndObject = false;
-    const id =
-      variable.type === 'null'
-        ? `${DebugEventManager.nullPrefix}${hash(variable)}`
-        : `${DebugEventManager.objectPrefix}${variable.value.split(this.sizeSuffix)[0]}`;
+    const id = variable.type === 'null' ? addNullPrefix(hash(variable)) : addObjectPrefix(variable.value.split(this.sizeSuffix)[0]);
     let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
@@ -198,7 +192,7 @@ export class DebugEventManager {
 
   private createVariableEntryForNamedVariable(variable: DebugProtocol.Variable, referencedObjectId: string): PanelViewVariable {
     return {
-      id: `${DebugEventManager.variablePrefix}${variable.name}`,
+      id: addVariablePrefix(variable.name),
       name: variable.name,
       references: [{ childId: referencedObjectId, relationName: '' }],
     };

@@ -1,4 +1,4 @@
-import { DebugEventManager } from '../../../debug-adapter/debugEventManager';
+import { hasNullPrefix, hasObjectPrefix, hasVariablePrefix } from '../../../util/nodePrefixHandler';
 import { PanelViewInputVariableMap, PanelViewVariable, PrimitiveValue, VariableRelation } from '../../../model/panelViewInput';
 import { escapeString } from '../../model/escapedString';
 import { Field } from '../../model/field';
@@ -8,7 +8,16 @@ import { Structure } from '../../model/structure';
 import { createStructureId, StructureId } from '../../model/structureId';
 import { ObjectDiagramReader } from './objectDiagramReader';
 
-const isObject = (variable: PanelViewVariable): boolean => variable.id.startsWith(DebugEventManager.objectPrefix);
+const isObject = (variable: PanelViewVariable): boolean => hasObjectPrefix(variable.id);
+
+const isNullOfObject = (variable: PanelViewVariable): boolean =>
+  hasNullPrefix(variable.id) && variable.incomingRelations !== undefined && Boolean(variable.incomingRelations[0].relationName);
+
+const isNullOfVariable = (variable: PanelViewVariable): boolean =>
+  hasNullPrefix(variable.id) && variable.incomingRelations !== undefined && !variable.incomingRelations[0].relationName;
+
+const isPrimitiveVariable = (variable: PanelViewVariable): boolean =>
+  hasVariablePrefix(variable.id) && Boolean(variable.value) && Boolean(variable.type);
 
 export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<PanelViewInputVariableMap> {
   read(variables: PanelViewInputVariableMap): ObjectDiagram {
@@ -22,19 +31,22 @@ export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<Pa
     const fields: Field[] = [];
     const references: Reference[] = [];
     for (const variable of variables.values()) {
-      const structureId = createStructureId(variable.id);
+      const relations = this.getRelationsOfVariable(variable, stackFrameId);
       if (isObject(variable)) {
+        const structureId = createStructureId(variable.id);
         structures.push(this.createStructure(variable, structureId));
         fields.push(...this.createFieldsFromPrimitiveValues(variable.primitiveValues, structureId));
-      }
-
-      const relations = this.getRelationsOfVariable(variable, stackFrameId);
-      if (!isObject(variable)) {
-        if (this.validateVariable(variable)) {
-          fields.push(...this.createFieldsFromRelations(relations, variable));
-        }
-      } else {
         references.push(...this.createReferencesFromRelations(relations, stackFrameId, structureId, variables));
+      } else if (isPrimitiveVariable(variable) || isNullOfObject(variable)) {
+        fields.push(...this.createFieldsFromRelations(relations, variable));
+      } else if (isNullOfVariable(variable)) {
+        const parentVariable = variables.get(relations[0].parentId) as PanelViewVariable;
+        const variableName = parentVariable.name as string;
+        fields.push({
+          name: variableName,
+          parentId: createStructureId(stackFrameId),
+          value: escapeString('null'),
+        });
       }
     }
     return {
@@ -65,28 +77,29 @@ export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<Pa
     // We can safely ignore the references here as we already process the incoming relations
     if (variable.incomingRelations) {
       return variable.incomingRelations;
-    } else {
-      if (!variable.name) {
-        throw new Error('Anonymous object references not supported');
-      }
-      return [
-        {
-          relationName: variable.name,
-          parentId: stackFrameId,
-        },
-      ];
+    } else if (!variable.name) {
+      throw new Error('Anonymous object references not supported');
     }
+    return [
+      {
+        relationName: variable.name,
+        parentId: stackFrameId,
+      },
+    ];
   }
 
   private createFieldsFromRelations(relations: VariableRelation[], variable: PanelViewVariable): Field[] {
-    return relations.map(
-      ({ relationName, parentId }): Field => ({
+    return relations.map(({ relationName, parentId }): Field => {
+      const field: Field = {
         parentId: createStructureId(parentId),
         name: relationName,
         value: escapeString(variable.value),
-        type: variable.type,
-      })
-    );
+      };
+      if (variable.type) {
+        field.type = variable.type;
+      }
+      return field;
+    });
   }
 
   private createFieldsFromPrimitiveValues(primitiveValues: PrimitiveValue[] | undefined, structureId: StructureId): Field[] {
@@ -112,26 +125,5 @@ export class PanelViewInputObjectDiagramReader implements ObjectDiagramReader<Pa
         name: relationName || (variables.get(parentId)?.name as string),
       })
     );
-  }
-
-  private validateVariable(variable: PanelViewVariable): boolean {
-    switch (variable.value) {
-      case undefined:
-        if (variable.type === undefined) {
-          return false;
-        }
-        throw new Error('Cannot register attributes without values');
-      case 'null':
-        if (variable.type !== undefined) {
-          throw new Error('Unexpected type for null value');
-        }
-        break;
-      default:
-        if (variable.type === undefined) {
-          throw new Error('Type missing for primitive value');
-        }
-        break;
-    }
-    return true;
   }
 }

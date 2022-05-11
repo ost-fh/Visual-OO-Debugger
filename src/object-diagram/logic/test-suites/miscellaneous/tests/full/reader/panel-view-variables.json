@@ -1,57 +1,57 @@
 [
   {
-    "id": "cd2f970123cde75d8e0bacee9a091d07031591b1",
+    "id": "variable_cd2f970123cde75d8e0bacee9a091d07031591b1",
     "name": "borderWidth",
     "type": "int",
     "value": "3"
   },
   {
-    "id": "String[0]@8",
+    "id": "object_String[0]@8",
     "type": "String[]",
     "value": "[]",
     "incomingRelations": [
       {
-        "parentId": "args",
+        "parentId": "variable_args",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "args",
+    "id": "variable_args",
     "name": "args",
     "references": [
       {
-        "childId": "String[0]@8",
+        "childId": "object_String[0]@8",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "6377100ba7b07ef8ee4f62943cb437b3a7f6bcd8",
+    "id": "null_6377100ba7b07ef8ee4f62943cb437b3a7f6bcd8",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "topLeft",
+        "parentId": "variable_topLeft",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "topLeft",
+    "id": "variable_topLeft",
     "name": "topLeft",
     "references": [
       {
-        "childId": "null",
+        "childId": "null_6377100ba7b07ef8ee4f62943cb437b3a7f6bcd8",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Point@9 \"x: 42 y: 1\"",
+    "id": "object_Point@9 \"x: 42 y: 1\"",
     "type": "Point",
     "incomingRelations": [
       {
-        "parentId": "topLeftCopy",
+        "parentId": "variable_topLeftCopy",
         "relationName": ""
       }
     ],
@@ -69,33 +69,33 @@
     ]
   },
   {
-    "id": "topLeftCopy",
+    "id": "variable_topLeftCopy",
     "name": "topLeftCopy",
     "references": [
       {
-        "childId": "Point@9 \"x: 42 y: 1\"",
+        "childId": "object_Point@9 \"x: 42 y: 1\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Point@10 \"x: 5 y: 7\"",
+    "id": "object_Point@10 \"x: 5 y: 7\"",
     "type": "Point",
     "incomingRelations": [
       {
-        "parentId": "bottomRight",
+        "parentId": "variable_bottomRight",
         "relationName": ""
       },
       {
-        "parentId": "Rectangle@39 \"topLeft\"",
+        "parentId": "object_Rectangle@39 \"topLeft\"",
         "relationName": "bottomRight"
       },
       {
-        "parentId": "HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
+        "parentId": "object_HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
         "relationName": "value"
       },
       {
-        "parentId": "Point[3]@43",
+        "parentId": "object_Point[3]@43",
         "relationName": "1"
       }
     ],
@@ -113,39 +113,39 @@
     ]
   },
   {
-    "id": "bottomRight",
+    "id": "variable_bottomRight",
     "name": "bottomRight",
     "references": [
       {
-        "childId": "Point@10 \"x: 5 y: 7\"",
+        "childId": "object_Point@10 \"x: 5 y: 7\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Color@11 \"BLUE\"",
+    "id": "object_Color@11 \"BLUE\"",
     "type": "Color",
     "incomingRelations": [
       {
-        "parentId": "background",
+        "parentId": "variable_background",
         "relationName": ""
       },
       {
-        "parentId": "Rectangle@39 \"topLeft\"",
+        "parentId": "object_Rectangle@39 \"topLeft\"",
         "relationName": "backgroundColor"
       }
     ],
     "references": [
       {
-        "childId": "\"#0000FF\"",
+        "childId": "object_\"#0000FF\"",
         "relationName": "hexValue"
       },
       {
-        "childId": "\"BLUE\"",
+        "childId": "object_\"BLUE\"",
         "relationName": "name"
       },
       {
-        "childId": "\"blue\"",
+        "childId": "object_\"blue\"",
         "relationName": "textValue"
       }
     ],
@@ -158,72 +158,72 @@
     ]
   },
   {
-    "id": "background",
+    "id": "variable_background",
     "name": "background",
     "references": [
       {
-        "childId": "Color@11 \"BLUE\"",
+        "childId": "object_Color@11 \"BLUE\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "\"#0000FF\"",
+    "id": "object_\"#0000FF\"",
     "type": "String",
     "value": "\"#0000FF\"",
     "incomingRelations": [
       {
-        "parentId": "Color@11 \"BLUE\"",
+        "parentId": "object_Color@11 \"BLUE\"",
         "relationName": "hexValue"
       }
     ]
   },
   {
-    "id": "\"BLUE\"",
+    "id": "object_\"BLUE\"",
     "type": "String",
     "value": "\"BLUE\"",
     "incomingRelations": [
       {
-        "parentId": "Color@11 \"BLUE\"",
+        "parentId": "object_Color@11 \"BLUE\"",
         "relationName": "name"
       }
     ]
   },
   {
-    "id": "\"blue\"",
+    "id": "object_\"blue\"",
     "type": "String",
     "value": "\"blue\"",
     "incomingRelations": [
       {
-        "parentId": "Color@11 \"BLUE\"",
+        "parentId": "object_Color@11 \"BLUE\"",
         "relationName": "textValue"
       }
     ]
   },
   {
-    "id": "Color@37 \"GREEN\"",
+    "id": "object_Color@37 \"GREEN\"",
     "type": "Color",
     "incomingRelations": [
       {
-        "parentId": "border",
+        "parentId": "variable_border",
         "relationName": ""
       },
       {
-        "parentId": "Rectangle@39 \"topLeft\"",
+        "parentId": "object_Rectangle@39 \"topLeft\"",
         "relationName": "borderColor"
       }
     ],
     "references": [
       {
-        "childId": "\"#00FF00\"",
+        "childId": "object_\"#00FF00\"",
         "relationName": "hexValue"
       },
       {
-        "childId": "\"GREEN\"",
+        "childId": "object_\"GREEN\"",
         "relationName": "name"
       },
       {
-        "childId": "\"green\"",
+        "childId": "object_\"green\"",
         "relationName": "textValue"
       }
     ],
@@ -236,101 +236,101 @@
     ]
   },
   {
-    "id": "border",
+    "id": "variable_border",
     "name": "border",
     "references": [
       {
-        "childId": "Color@37 \"GREEN\"",
+        "childId": "object_Color@37 \"GREEN\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "\"#00FF00\"",
+    "id": "object_\"#00FF00\"",
     "type": "String",
     "value": "\"#00FF00\"",
     "incomingRelations": [
       {
-        "parentId": "Color@37 \"GREEN\"",
+        "parentId": "object_Color@37 \"GREEN\"",
         "relationName": "hexValue"
       }
     ]
   },
   {
-    "id": "\"GREEN\"",
+    "id": "object_\"GREEN\"",
     "type": "String",
     "value": "\"GREEN\"",
     "incomingRelations": [
       {
-        "parentId": "Color@37 \"GREEN\"",
+        "parentId": "object_Color@37 \"GREEN\"",
         "relationName": "name"
       }
     ]
   },
   {
-    "id": "\"green\"",
+    "id": "object_\"green\"",
     "type": "String",
     "value": "\"green\"",
     "incomingRelations": [
       {
-        "parentId": "Color@37 \"GREEN\"",
+        "parentId": "object_Color@37 \"GREEN\"",
         "relationName": "textValue"
       }
     ]
   },
   {
-    "id": "\"topLeft\"",
+    "id": "object_\"topLeft\"",
     "type": "String",
     "value": "\"topLeft\"",
     "incomingRelations": [
       {
-        "parentId": "text",
+        "parentId": "variable_text",
         "relationName": ""
       },
       {
-        "parentId": "Rectangle@39 \"topLeft\"",
+        "parentId": "object_Rectangle@39 \"topLeft\"",
         "relationName": "text"
       }
     ]
   },
   {
-    "id": "text",
+    "id": "variable_text",
     "name": "text",
     "references": [
       {
-        "childId": "\"topLeft\"",
+        "childId": "object_\"topLeft\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Rectangle@39 \"topLeft\"",
+    "id": "object_Rectangle@39 \"topLeft\"",
     "type": "Rectangle",
     "incomingRelations": [
       {
-        "parentId": "rect",
+        "parentId": "variable_rect",
         "relationName": ""
       }
     ],
     "references": [
       {
-        "childId": "Color@11 \"BLUE\"",
+        "childId": "object_Color@11 \"BLUE\"",
         "relationName": "backgroundColor"
       },
       {
-        "childId": "Color@37 \"GREEN\"",
+        "childId": "object_Color@37 \"GREEN\"",
         "relationName": "borderColor"
       },
       {
-        "childId": "Point@10 \"x: 5 y: 7\"",
+        "childId": "object_Point@10 \"x: 5 y: 7\"",
         "relationName": "bottomRight"
       },
       {
-        "childId": "\"topLeft\"",
+        "childId": "object_\"topLeft\"",
         "relationName": "text"
       },
       {
-        "childId": "null",
+        "childId": "null_f4d2f333f3b49eaee1f828edd8e483469fde6c1f",
         "relationName": "topLeft"
       }
     ],
@@ -343,275 +343,275 @@
     ]
   },
   {
-    "id": "rect",
+    "id": "variable_rect",
     "name": "rect",
     "references": [
       {
-        "childId": "Rectangle@39 \"topLeft\"",
+        "childId": "object_Rectangle@39 \"topLeft\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "f4d2f333f3b49eaee1f828edd8e483469fde6c1f",
+    "id": "null_f4d2f333f3b49eaee1f828edd8e483469fde6c1f",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "Rectangle@39 \"topLeft\"",
+        "parentId": "object_Rectangle@39 \"topLeft\"",
         "relationName": "topLeft"
       }
     ]
   },
   {
-    "id": "d19ff4bb5595644b23d93fa86b7dcb2b03fc97ce",
+    "id": "null_d19ff4bb5595644b23d93fa86b7dcb2b03fc97ce",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "pNull",
+        "parentId": "variable_pNull",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "pNull",
+    "id": "variable_pNull",
     "name": "pNull",
     "references": [
       {
-        "childId": "null",
+        "childId": "null_d19ff4bb5595644b23d93fa86b7dcb2b03fc97ce",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "HashMap@40 size=3",
+    "id": "object_HashMap@40 size=3",
     "type": "HashMap",
     "incomingRelations": [
       {
-        "parentId": "map",
+        "parentId": "variable_map",
         "relationName": ""
       }
     ],
     "references": [
       {
-        "childId": "HashMap$Node@68 \"top left\":null",
+        "childId": "object_HashMap$Node@68 \"top left\":null",
         "relationName": "0"
       },
       {
-        "childId": "HashMap$Node@69 \"middle\":null",
+        "childId": "object_HashMap$Node@69 \"middle\":null",
         "relationName": "1"
       },
       {
-        "childId": "HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
+        "childId": "object_HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
         "relationName": "2"
       }
     ]
   },
   {
-    "id": "map",
+    "id": "variable_map",
     "name": "map",
     "references": [
       {
-        "childId": "HashMap@40 size=3",
+        "childId": "object_HashMap@40 size=3",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "HashMap$Node@68 \"top left\":null",
+    "id": "object_HashMap$Node@68 \"top left\":null",
     "type": "HashMap$Node",
     "incomingRelations": [
       {
-        "parentId": "HashMap@40 size=3",
+        "parentId": "object_HashMap@40 size=3",
         "relationName": "0"
       }
     ],
     "references": [
       {
-        "childId": "\"top left\"",
+        "childId": "object_\"top left\"",
         "relationName": "key"
       },
       {
-        "childId": "null",
+        "childId": "null_c50e2cecb865f6857cb34606f42209a051333305",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "\"top left\"",
+    "id": "object_\"top left\"",
     "type": "String",
     "value": "\"top left\"",
     "incomingRelations": [
       {
-        "parentId": "HashMap$Node@68 \"top left\":null",
+        "parentId": "object_HashMap$Node@68 \"top left\":null",
         "relationName": "key"
       }
     ]
   },
   {
-    "id": "c50e2cecb865f6857cb34606f42209a051333305",
+    "id": "null_c50e2cecb865f6857cb34606f42209a051333305",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "HashMap$Node@68 \"top left\":null",
+        "parentId": "object_HashMap$Node@68 \"top left\":null",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "HashMap$Node@69 \"middle\":null",
+    "id": "object_HashMap$Node@69 \"middle\":null",
     "type": "HashMap$Node",
     "incomingRelations": [
       {
-        "parentId": "HashMap@40 size=3",
+        "parentId": "object_HashMap@40 size=3",
         "relationName": "1"
       }
     ],
     "references": [
       {
-        "childId": "\"middle\"",
+        "childId": "object_\"middle\"",
         "relationName": "key"
       },
       {
-        "childId": "null",
+        "childId": "null_a34707ae8c401520146d005369632043f33ffa42",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "\"middle\"",
+    "id": "object_\"middle\"",
     "type": "String",
     "value": "\"middle\"",
     "incomingRelations": [
       {
-        "parentId": "HashMap$Node@69 \"middle\":null",
+        "parentId": "object_HashMap$Node@69 \"middle\":null",
         "relationName": "key"
       }
     ]
   },
   {
-    "id": "a34707ae8c401520146d005369632043f33ffa42",
+    "id": "null_a34707ae8c401520146d005369632043f33ffa42",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "HashMap$Node@69 \"middle\":null",
+        "parentId": "object_HashMap$Node@69 \"middle\":null",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
+    "id": "object_HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
     "type": "HashMap$Node",
     "incomingRelations": [
       {
-        "parentId": "HashMap@40 size=3",
+        "parentId": "object_HashMap@40 size=3",
         "relationName": "2"
       }
     ],
     "references": [
       {
-        "childId": "\"bottom right\"",
+        "childId": "object_\"bottom right\"",
         "relationName": "key"
       },
       {
-        "childId": "Point@10 \"x: 5 y: 7\"",
+        "childId": "object_Point@10 \"x: 5 y: 7\"",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "\"bottom right\"",
+    "id": "object_\"bottom right\"",
     "type": "String",
     "value": "\"bottom right\"",
     "incomingRelations": [
       {
-        "parentId": "HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
+        "parentId": "object_HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\"",
         "relationName": "key"
       }
     ]
   },
   {
-    "id": "int[58]@41",
+    "id": "object_int[58]@41",
     "type": "int[]",
     "value": "[2,3,5,7,11,13,17,19,23,29,…]",
     "tooltip": "[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271]",
     "incomingRelations": [
       {
-        "parentId": "intArray",
+        "parentId": "variable_intArray",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "intArray",
+    "id": "variable_intArray",
     "name": "intArray",
     "references": [
       {
-        "childId": "int[58]@41",
+        "childId": "object_int[58]@41",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "String[2]@42",
+    "id": "object_String[2]@42",
     "type": "String[]",
     "value": "[\"one\",\"two\"]",
     "incomingRelations": [
       {
-        "parentId": "stringArray",
+        "parentId": "variable_stringArray",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "stringArray",
+    "id": "variable_stringArray",
     "name": "stringArray",
     "references": [
       {
-        "childId": "String[2]@42",
+        "childId": "object_String[2]@42",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Point[3]@43",
+    "id": "object_Point[3]@43",
     "type": "Point[]",
     "incomingRelations": [
       {
-        "parentId": "points",
+        "parentId": "variable_points",
         "relationName": ""
       }
     ],
     "references": [
       {
-        "childId": "Point@80 \"x: 1337 y: 7331\"",
+        "childId": "object_Point@80 \"x: 1337 y: 7331\"",
         "relationName": "0"
       },
       {
-        "childId": "Point@10 \"x: 5 y: 7\"",
+        "childId": "object_Point@10 \"x: 5 y: 7\"",
         "relationName": "1"
       },
       {
-        "childId": "null",
+        "childId": "null_5334b01d00f7621edca9759e0c216c4591cc3397",
         "relationName": "2"
       }
     ]
   },
   {
-    "id": "points",
+    "id": "variable_points",
     "name": "points",
     "references": [
       {
-        "childId": "Point[3]@43",
+        "childId": "object_Point[3]@43",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "Point@80 \"x: 1337 y: 7331\"",
+    "id": "object_Point@80 \"x: 1337 y: 7331\"",
     "type": "Point",
     "incomingRelations": [
       {
-        "parentId": "Point[3]@43",
+        "parentId": "object_Point[3]@43",
         "relationName": "0"
       }
     ],
@@ -629,11 +629,11 @@
     ]
   },
   {
-    "id": "5334b01d00f7621edca9759e0c216c4591cc3397",
+    "id": "null_5334b01d00f7621edca9759e0c216c4591cc3397",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "Point[3]@43",
+        "parentId": "object_Point[3]@43",
         "relationName": "2"
       }
     ]

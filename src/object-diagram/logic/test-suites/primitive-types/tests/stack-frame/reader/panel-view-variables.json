@@ -1,69 +1,69 @@
 [
   {
-    "id": "00d0531515e0fe737ffdf0aeb61c6763f2723bf2",
+    "id": "variable_00d0531515e0fe737ffdf0aeb61c6763f2723bf2",
     "name": "_boolean",
     "type": "boolean",
     "value": "false"
   },
   {
-    "id": "b796d62cade5c2cad085eb033775da57f5cb01e0",
+    "id": "variable_b796d62cade5c2cad085eb033775da57f5cb01e0",
     "name": "_byte",
     "type": "byte",
     "value": "0"
   },
   {
-    "id": "b1b463c21d5790ccc2666de2caeefb08fa35f428",
+    "id": "variable_b1b463c21d5790ccc2666de2caeefb08fa35f428",
     "name": "_char",
     "type": "char",
     "value": "\u0000"
   },
   {
-    "id": "50b241331278c917917d8db4f81cd6170483f7d0",
+    "id": "variable_50b241331278c917917d8db4f81cd6170483f7d0",
     "name": "_short",
     "type": "short",
     "value": "0"
   },
   {
-    "id": "2ce99e89ec131d357f6d6e2f94dd4a57e7bf4d12",
+    "id": "variable_2ce99e89ec131d357f6d6e2f94dd4a57e7bf4d12",
     "name": "_int",
     "type": "int",
     "value": "0"
   },
   {
-    "id": "a420859b90229268f2f066214ba0d2657ca3c250",
+    "id": "variable_a420859b90229268f2f066214ba0d2657ca3c250",
     "name": "_long",
     "type": "long",
     "value": "0"
   },
   {
-    "id": "17e8fa5af1c77d0afe809ae066f14b5a11148ce6",
+    "id": "variable_17e8fa5af1c77d0afe809ae066f14b5a11148ce6",
     "name": "_float",
     "type": "float",
     "value": "0.000000"
   },
   {
-    "id": "beef4ccffea8e1854bff0e011e8e25b1edd08c31",
+    "id": "variable_beef4ccffea8e1854bff0e011e8e25b1edd08c31",
     "name": "_double",
     "type": "double",
     "value": "0.000000"
   },
   {
-    "id": "String[0]@8",
+    "id": "object_String[0]@8",
     "type": "String[]",
     "value": "[]",
     "incomingRelations": [
       {
-        "parentId": "args",
+        "parentId": "variable_args",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "args",
+    "id": "variable_args",
     "name": "args",
     "references": [
       {
-        "childId": "String[0]@8",
+        "childId": "object_String[0]@8",
         "relationName": ""
       }
     ]

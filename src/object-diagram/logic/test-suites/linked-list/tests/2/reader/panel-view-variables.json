@@ -1,119 +1,119 @@
 [
   {
-    "id": "String[0]@8",
+    "id": "object_String[0]@8",
     "type": "String[]",
     "value": "[]",
     "incomingRelations": [
       {
-        "parentId": "args",
+        "parentId": "variable_args",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "args",
+    "id": "variable_args",
     "name": "args",
     "references": [
       {
-        "childId": "String[0]@8",
+        "childId": "object_String[0]@8",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "LinkedList@9",
+    "id": "object_LinkedList@9",
     "type": "LinkedList",
     "incomingRelations": [
       {
-        "parentId": "list",
+        "parentId": "variable_list",
         "relationName": ""
       }
     ],
     "references": [
       {
-        "childId": "LinkedList$Node@17",
+        "childId": "object_LinkedList$Node@17",
         "relationName": "head"
       }
     ]
   },
   {
-    "id": "list",
+    "id": "variable_list",
     "name": "list",
     "references": [
       {
-        "childId": "LinkedList@9",
+        "childId": "object_LinkedList@9",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "LinkedList$Node@17",
+    "id": "object_LinkedList$Node@17",
     "type": "LinkedList$Node",
     "incomingRelations": [
       {
-        "parentId": "LinkedList@9",
+        "parentId": "object_LinkedList@9",
         "relationName": "head"
       }
     ],
     "references": [
       {
-        "childId": "LinkedList$Node@26",
+        "childId": "object_LinkedList$Node@26",
         "relationName": "next"
       },
       {
-        "childId": "\"1\"",
+        "childId": "object_\"1\"",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "LinkedList$Node@26",
+    "id": "object_LinkedList$Node@26",
     "type": "LinkedList$Node",
     "incomingRelations": [
       {
-        "parentId": "LinkedList$Node@17",
+        "parentId": "object_LinkedList$Node@17",
         "relationName": "next"
       }
     ],
     "references": [
       {
-        "childId": "null",
+        "childId": "null_bcc4cb476e2aba935cf6bbe9cff2e99722f7f47e",
         "relationName": "next"
       },
       {
-        "childId": "\"2\"",
+        "childId": "object_\"2\"",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "bcc4cb476e2aba935cf6bbe9cff2e99722f7f47e",
+    "id": "null_bcc4cb476e2aba935cf6bbe9cff2e99722f7f47e",
     "value": "null",
     "incomingRelations": [
       {
-        "parentId": "LinkedList$Node@26",
+        "parentId": "object_LinkedList$Node@26",
         "relationName": "next"
       }
     ]
   },
   {
-    "id": "\"2\"",
+    "id": "object_\"2\"",
     "type": "String",
     "value": "\"2\"",
     "incomingRelations": [
       {
-        "parentId": "LinkedList$Node@26",
+        "parentId": "object_LinkedList$Node@26",
         "relationName": "value"
       }
     ]
   },
   {
-    "id": "\"1\"",
+    "id": "object_\"1\"",
     "type": "String",
     "value": "\"1\"",
     "incomingRelations": [
       {
-        "parentId": "LinkedList$Node@17",
+        "parentId": "object_LinkedList$Node@17",
         "relationName": "value"
       }
     ]
