@@ -25,7 +25,15 @@
         <vscode-button class="open-all-clusters-button" appearance="icon" onclick="openAllClusters()" aria-label="Open all clusters">
           <span class="codicon codicon-type-hierarchy"></span>
         </vscode-button>
-        <vscode-button class="hide-node-button" appearance="icon" onmouseenter="setOpacity(event,0.8)" onmouseleave="setOpacity(event,1)" onmouseup="hideNode(event)" aria-label="Hides node dragged on to it">
+        <vscode-button
+          class="hide-node-button"
+          appearance="icon"
+          onclick="showAllNodes()"
+          onmouseenter="setOpacity(event,0.8)"
+          onmouseleave="setOpacity(event,1)"
+          onmouseup="hideNode(event)"
+          aria-label="Hides node dragged on to it"
+        >
           <span class="codicon codicon-eye-closed"></span>
         </vscode-button>
       </div>
@@ -156,13 +164,18 @@
           edges.map((edge) => ({
             ...edge,
             color: defaultEdgeColor,
+            hidden: network.body.nodes[edge.to].options.hidden && network.body.nodes[edge.from].options.hidden,
+            physics: network.body.nodes[edge.to].options.physics && network.body.nodes[edge.from].options.physics,
           }))
         );
         const edgesClusterStack = getEdgesClusterStack(message);
         nodes.add(message.data.addNodes);
         nodes.updateOnly(message.data.updateNodes);
+        message.data.addEdges.forEach((edge) => {
+          edge.hidden = network.body.nodes[edge.to].options.hidden && network.body.nodes[edge.from].options.hidden;
+          edge.physics = network.body.nodes[edge.to].options.physics && network.body.nodes[edge.from].options.physics;
+        });
         edges.add(message.data.addEdges);
-        showAllNodes();
         reCluster(edgesClusterStack);
       }
 
@@ -199,8 +212,10 @@
       function updateCluster(clusterStack) {
         if (clusterStack.length >= 1) {
           if (clusterStack[0] !== undefined && network.isCluster(clusterStack[0])) {
-            const clusterNodeId = clusterStack[0].substring(8);
-            network.openCluster(clusterStack[0]);
+            const clusterId = clusterStack[0];
+            const clusterNodeId = clusterId.substring(8);
+            const visibility = !network.body.nodes[clusterId].options.hidden;
+            network.openCluster(clusterId);
 
             clusterStack.shift();
             updateCluster(clusterStack);
@@ -210,6 +225,7 @@
             } else {
               clusterChildNodes(clusterNodeId);
             }
+            setVisibility(clusterId, visibility);
           } else {
             clusterStack.shift();
             updateCluster(clusterStack);
@@ -335,44 +351,44 @@
       function showAllNodes() {
         let nodeIds = Object.keys(network.body.nodes).filter((nodeId) => {
           return !nodeId.startsWith('edge');
-        })
+        });
 
-        nodeIds.forEach(nodeId => {
-          if(network.body.nodes[nodeId].options.hidden){
-            setVisibility(nodeId,true);
+        nodeIds.forEach((nodeId) => {
+          if (network.body.nodes[nodeId].options.hidden) {
+            setVisibility(nodeId, true);
           }
         });
       }
 
-      function hideNode(event){
-        const nodeId = network.getNodeAt({x: event.pageX, y: event.pageY});
-        if(nodeId!== undefined){
-          setVisibility(nodeId,false)
+      function hideNode(event) {
+        const nodeId = network.getNodeAt({ x: event.pageX, y: event.pageY });
+        if (nodeId !== undefined) {
+          setVisibility(nodeId, false);
         }
       }
 
-      function setVisibility(nodeId,visibility){
-        const nodeEdgeId =nodeId.startsWith('cluster_')? nodeId.slice(8) : nodeId;
+      function setVisibility(nodeId, visibility) {
+        const nodeEdgeId = nodeId.startsWith('cluster_') ? nodeId.slice(8) : nodeId;
         const nodeEdges = network.getConnectedEdges(nodeEdgeId);
 
         network.clustering.updateClusteredNode(nodeId, {
-          hidden: !visibility, 
+          hidden: !visibility,
           physics: visibility,
-          opacity: 1
+          opacity: 1,
         });
-        nodeEdges.forEach(edgeId => {
+        nodeEdges.forEach((edgeId) => {
           network.clustering.updateEdge(edgeId, {
-            hidden: !visibility, 
-            physics: visibility
+            hidden: !visibility,
+            physics: visibility,
           });
         });
       }
-      
-      function setOpacity(event, opacityValue){
-        const nodeId = network.getNodeAt({x: event.pageX, y: event.pageY});
-        if(nodeId!== undefined){
+
+      function setOpacity(event, opacityValue) {
+        const nodeId = network.getNodeAt({ x: event.pageX, y: event.pageY });
+        if (nodeId !== undefined) {
           network.clustering.updateClusteredNode(nodeId, {
-            opacity: opacityValue
+            opacity: opacityValue,
           });
         }
       }
