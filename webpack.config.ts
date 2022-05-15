@@ -2,7 +2,7 @@ import * as path from 'path';
 import { NodeModulesAccessor } from './src/node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from './src/node-modules-accessor/nodeModulesKeys';
 import { Configuration } from 'webpack';
-import CopyPlugin = require('copy-webpack-plugin');
+import * as CopyPlugin from 'copy-webpack-plugin';
 
 const outputPath = NodeModulesAccessor.outputPath;
 
