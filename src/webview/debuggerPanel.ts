@@ -9,7 +9,7 @@ import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
-import tinycolor = require('tinycolor2');
+import * as tinycolor from 'tinycolor2';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
