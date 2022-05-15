@@ -8,6 +8,19 @@ import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
+type VisjsGroupName = 'default' | 'variable' | 'changed' | 'changedVariable';
+
+interface VisjsGroup {
+  color: Color;
+  font?: string;
+}
+
+type VisjsGroupsByName = Record<VisjsGroupName, VisjsGroup>;
+
+interface EdgeColor {
+  color?: string;
+  highlight?: string;
+}
 
 export class VisjsPanelView implements PanelViewProxy {
   private visjsGroupsByName?: VisjsGroupsByName;
