@@ -10,16 +10,9 @@ import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
 
 export class VisjsPanelView implements PanelViewProxy {
-  private defaultNodeColor: Color = {};
-  private defaultNodeFont: Font = {};
-  private variableNodeColor: Color = {};
-  private variableNodeFont: Font = {};
-  private defaultEdgeColor: { color?: string; highlight?: string } = {};
-  private changedNodeColor: Color = {};
-  private changedNodeFont: Font = {};
-  private changedVariableColor: Color = {};
-  private changedVariableFont: Font = {};
-  private changedEdgeColor: { color?: string; highlight?: string } = {};
+  private visjsGroupsByName?: VisjsGroupsByName;
+  private defaultEdgeColor: EdgeColor = {};
+  private changedEdgeColor: EdgeColor = {};
   private updateColor = false;
 
   constructor(private readonly context: ExtensionContext) {}
