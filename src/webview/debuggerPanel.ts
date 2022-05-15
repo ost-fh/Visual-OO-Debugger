@@ -146,20 +146,21 @@ export class DebuggerPanel {
   }
 
   setPanelStyles(panelViewColors: PanelViewColors): void {
-    this.setNodeColor(panelViewColors.defaultColor);
-    this.setNodeColor(panelViewColors.variableColor);
-    this.setNodeColor(panelViewColors.changedColor);
-    this.setNodeColor(panelViewColors.changedVariableColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.variableColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.changedColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.changedVariableColor);
     this.viewColors = panelViewColors;
     this.panelViewProxy.setPanelStyles(panelViewColors);
   }
 
-  private setNodeColor(nodecolor: NodeColor): void {
+  private static normalizeNodeColor(nodecolor: NodeColor): void {
     const color = tinycolor(nodecolor.background).isValid() ? tinycolor(nodecolor.background) : tinycolor(nodecolor.fallback);
     nodecolor.background = color.toHexString();
     nodecolor.border = color.darken(10).toHexString();
     nodecolor.font = tinycolor.mostReadable(nodecolor.background, ['#000'], { includeFallbackColors: true }).toHexString();
   }
+
 
   private stepBack(): void {
     if (this.inputHistory.length === 1 || this.historyIndex === 0) {
