@@ -74,24 +74,7 @@ export class VisjsPanelView implements PanelViewProxy {
             nodeDistance: 100,
           },
         },
-        groups: {
-          default: {
-            color: this.defaultNodeColor,
-            font: this.defaultNodeFont,
-          },
-          variable: {
-            color: this.variableNodeColor,
-            font: this.variableNodeFont,
-          },
-          changed: {
-            color: this.changedNodeColor,
-            font: this.changedNodeFont,
-          },
-          changedVariable: {
-            color: this.changedVariableColor,
-            font: this.changedVariableFont,
-          },
-        },
+        groups: this.visjsGroupsByName,
       };
 
       return { command: 'initializeVisjs', data: this.parseInputToData(newVariables), options };
