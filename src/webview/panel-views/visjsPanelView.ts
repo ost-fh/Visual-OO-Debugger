@@ -351,67 +351,39 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   public setPanelStyles(viewColors: PanelViewColors): void {
-    this.updateColor = true;
-    this.defaultNodeColor = {
-      border: viewColors.defaultColor.border,
-      background: viewColors.defaultColor.background,
+    this.visjsGroupsByName = (['default', 'variable', 'changed', 'changedVariable'] as const).reduce(
+      (groups, name) => ({
+        ...groups,
+        [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
+      }),
+      {}
+    ) as VisjsGroupsByName;
+    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultColor);
+    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedColor);
+  }
+
+  private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
+    return {
+      color: VisjsPanelView.getColor(nodeColor),
+      font: nodeColor.font,
+    };
+  }
+
+  private static getColor(nodeColor: NodeColor): Color {
+    return {
+      border: nodeColor.border,
+      background: nodeColor.background,
       highlight: {
-        border: viewColors.defaultColor.border,
-        background: viewColors.defaultColor.background,
+        border: nodeColor.border,
+        background: nodeColor.background,
       },
     };
+  }
 
-    this.defaultNodeFont = {
-      color: viewColors.defaultColor.font,
-    };
-
-    this.variableNodeColor = {
-      border: viewColors.variableColor.border,
-      background: viewColors.variableColor.background,
-      highlight: {
-        border: viewColors.variableColor.border,
-        background: viewColors.variableColor.background,
-      },
-    };
-
-    this.variableNodeFont = {
-      color: viewColors.variableColor.font,
-    };
-
-    this.defaultEdgeColor = {
-      color: viewColors.defaultColor.border,
-      highlight: viewColors.defaultColor.border,
-    };
-
-    this.changedNodeColor = {
-      border: viewColors.changedColor.border,
-      background: viewColors.changedColor.background,
-      highlight: {
-        border: viewColors.changedColor.border,
-        background: viewColors.changedColor.background,
-      },
-    };
-
-    this.changedNodeFont = {
-      color: viewColors.changedColor.font,
-    };
-
-    this.changedVariableColor = {
-      border: viewColors.changedVariableColor.border,
-      background: viewColors.changedVariableColor.background,
-      highlight: {
-        border: viewColors.changedVariableColor.border,
-        background: viewColors.changedVariableColor.background,
-      },
-    };
-
-    this.changedVariableFont = {
-      color: viewColors.changedVariableColor.font,
-    };
-
-    this.changedEdgeColor = {
-      color: viewColors.changedColor.border,
-      highlight: viewColors.changedColor.border,
+  private static getEdgeColor(nodeColor: NodeColor): EdgeColor {
+    return {
+      color: nodeColor.border,
+      highlight: nodeColor.border,
     };
   }
 }
