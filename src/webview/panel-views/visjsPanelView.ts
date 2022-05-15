@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
-import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
+import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation, NodeColor } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
@@ -12,7 +12,7 @@ type VisjsGroupName = 'default' | 'variable' | 'changed' | 'changedVariable';
 
 interface VisjsGroup {
   color: Color;
-  font?: string;
+  font?: Font;
 }
 
 type VisjsGroupsByName = Record<VisjsGroupName, VisjsGroup>;
@@ -365,7 +365,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
     return {
       color: VisjsPanelView.getColor(nodeColor),
-      font: nodeColor.font,
+      font: VisjsPanelView.getFont(nodeColor),
     };
   }
 
@@ -377,6 +377,12 @@ export class VisjsPanelView implements PanelViewProxy {
         border: nodeColor.border,
         background: nodeColor.background,
       },
+    };
+  }
+
+  private static getFont(nodeColor: NodeColor): Font {
+    return {
+      color: nodeColor.font,
     };
   }
 
