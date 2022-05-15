@@ -161,7 +161,6 @@ export class DebuggerPanel {
     nodecolor.font = tinycolor.mostReadable(nodecolor.background, ['#000'], { includeFallbackColors: true }).toHexString();
   }
 
-
   private stepBack(): void {
     if (this.inputHistory.length === 1 || this.historyIndex === 0) {
       return;
