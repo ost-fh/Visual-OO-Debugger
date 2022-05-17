@@ -61,8 +61,7 @@ class Extension {
   getPanelStylesByConfiguration(): PanelViewColors {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
 
-    return ['default', 'variable', 'changed', 'changedVariable']
-      .map((prefix) => `${prefix}Color`)
+    return ['defaultColor', 'variableColor', 'changedColor', 'changedVariableColor']
       .reduce(
         (styles, name) => ({
           ...styles,
