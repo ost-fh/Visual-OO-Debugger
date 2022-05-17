@@ -35,9 +35,9 @@ class Extension {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
       }
       if (
-        e.affectsConfiguration('visual-oo-debugger.defaultColor') ||
-        e.affectsConfiguration('visual-oo-debugger.variableColor') ||
-        e.affectsConfiguration('visual-oo-debugger.changedColor') ||
+        e.affectsConfiguration('visual-oo-debugger.defaultObjectColor') ||
+        e.affectsConfiguration('visual-oo-debugger.defaultVariableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedObjectColor') ||
         e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
       ) {
         debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
