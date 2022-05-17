@@ -87,7 +87,7 @@
           "css.lint.hexColorLength": "error",
           "order": 2
         },
-        "visual-oo-debugger.variableColor": {
+        "visual-oo-debugger.defaultVariableColor": {
           "description": "Default background color of variable nodes in the dynamic visualization",
           "type": "string",
           "default": "#005cb2",
