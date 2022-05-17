@@ -64,9 +64,7 @@ describe('Object diagram logic', () => {
     oldChaiConfigTruncateThreshold = config.truncateThreshold;
     config.truncateThreshold = 0;
   });
-  after(() => {
-    config.truncateThreshold = oldChaiConfigTruncateThreshold;
-  });
+  after(() => (config.truncateThreshold = oldChaiConfigTruncateThreshold));
   const [testSuitesDirectoryPath] = createSubPaths(__dirname, 'test-suites');
   readdirSync(testSuitesDirectoryPath, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
@@ -75,7 +73,7 @@ describe('Object diagram logic', () => {
       const [testSuiteDirectoryPath] = createSubPaths(testSuitesDirectoryPath, testSuiteDirectoryName);
       const [testSuiteFilePath, testsDirectoryPath] = createSubPaths(testSuiteDirectoryPath, 'test-suite.json', 'tests');
       const [testSuite] = parseJsonFiles<[SuiteConfiguration]>(testSuiteFilePath);
-      getSuiteFunction(testSuite)(testSuite.title, () => {
+      getSuiteFunction(testSuite)(testSuite.title, () =>
         readdirSync(testsDirectoryPath, { withFileTypes: true })
           .filter((dirent) => dirent.isDirectory())
           .map((dirent) => dirent.name)
@@ -133,7 +131,7 @@ describe('Object diagram logic', () => {
                 expectedGraphViz
               );
             });
-          });
-      });
+          })
+      );
     });
 });

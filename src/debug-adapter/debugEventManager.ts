@@ -208,8 +208,8 @@ export class DebugEventManager {
     let value = fullLengthArray;
     let tooltip;
     if (fullLengthArray.length > this.maxValueLength) {
-      const shorterVersion = fullLengthArray.substr(0, this.maxValueLength - 2);
-      value = `[${shorterVersion.substr(1, shorterVersion.lastIndexOf(delimiter))}\u2026]`;
+      const shorterVersion = fullLengthArray.substring(0, this.maxValueLength - 1);
+      value = `[${shorterVersion.substring(1, shorterVersion.lastIndexOf(delimiter) + 1)}\u2026]`;
       tooltip = fullLengthArray;
     }
 
@@ -220,8 +220,8 @@ export class DebugEventManager {
     let tooltip;
     let value = variable.value;
     if (value.length > this.maxValueLength) {
-      const shorterVersion = value.substr(0, this.maxValueLength - 2);
-      value = `"${shorterVersion.substr(1, shorterVersion.lastIndexOf(' '))}\u2026"`;
+      const shorterVersion = value.substring(0, this.maxValueLength - 1);
+      value = `"${shorterVersion.substring(1, shorterVersion.lastIndexOf(' ') + 1)}\u2026"`;
       tooltip = variable.value;
     }
 

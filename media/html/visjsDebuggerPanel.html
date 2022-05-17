@@ -321,11 +321,7 @@
       }
 
       function openAllClusters() {
-        openClusterStack(
-          Object.keys(network.body.nodes).filter((nodeId) => {
-            return nodeId.startsWith('cluster_');
-          })
-        );
+        openClusterStack(Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')));
       }
     </script>
   </body>
