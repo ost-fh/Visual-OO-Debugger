@@ -80,7 +80,7 @@
           ],
           "order": 1
         },
-        "visual-oo-debugger.defaultObjectColor": {
+        "visual-oo-debugger.defaultNodeColor": {
           "description": "Default background color of object nodes in the dynamic visualization",
           "type": "string",
           "default": "#1e88e5",
@@ -94,7 +94,7 @@
           "css.lint.hexColorLength": "error",
           "order": 3
         },
-        "visual-oo-debugger.changedObjectColor": {
+        "visual-oo-debugger.changedNodeColor": {
           "description": "Background color of newly changed object nodes in the dynamic visualization",
           "type": "string",
           "default": "#fdd835",

@@ -3,7 +3,7 @@ import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
-import { PanelViewColors } from './model/panelViewInput';
+import { panelViewColorKeys, PanelViewColors } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -35,9 +35,9 @@ class Extension {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
       }
       if (
-        e.affectsConfiguration('visual-oo-debugger.defaultObjectColor') ||
+        e.affectsConfiguration('visual-oo-debugger.defaultNodeColor') ||
         e.affectsConfiguration('visual-oo-debugger.defaultVariableColor') ||
-        e.affectsConfiguration('visual-oo-debugger.changedObjectColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedNodeColor') ||
         e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
       ) {
         debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
@@ -61,16 +61,15 @@ class Extension {
   getPanelStylesByConfiguration(): PanelViewColors {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
 
-    return ['defaultColor', 'variableColor', 'changedColor', 'changedVariableColor']
-      .reduce(
-        (styles, name) => ({
-          ...styles,
-          [name]: {
-            background: configuration.get(name) as string,
-            fallback: configuration.inspect(name)?.defaultValue as string,
-          },
-        }),
-        {}
-      ) as PanelViewColors;
+    return panelViewColorKeys.reduce(
+      (styles, name) => ({
+        ...styles,
+        [name]: {
+          background: configuration.get(name) as string,
+          fallback: configuration.inspect(name)?.defaultValue as string,
+        },
+      }),
+      {}
+    ) as PanelViewColors;
   }
 }

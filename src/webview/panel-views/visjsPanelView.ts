@@ -8,7 +8,7 @@ import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
-type VisjsGroupName = 'defaultObject' | 'defaultVariable' | 'changedObject' | 'changedVariable';
+type VisjsGroupName = 'defaultNode' | 'defaultVariable' | 'changedNode' | 'changedVariable';
 
 interface VisjsGroup {
   color: Color;
@@ -108,13 +108,15 @@ export class VisjsPanelView implements PanelViewProxy {
         case ChangeAction.create:
           addNodes.push({
             ...nodeChange.node,
-            group: (nodeChange.node.group as VisjsGroupName === 'defaultVariable' ? 'changedVariable' : 'changedObject') as VisjsGroupName,
+            group: ((nodeChange.node.group as VisjsGroupName) === 'defaultVariable' ? 'changedVariable' : 'changedNode') as VisjsGroupName,
           });
           break;
         case ChangeAction.update:
           updateNodes.push({
             ...nodeChange.newNode,
-            group: (nodeChange.newNode.group as VisjsGroupName === 'defaultVariable' ? 'changedVariable' : 'changedObject') as VisjsGroupName,
+            group: ((nodeChange.newNode.group as VisjsGroupName) === 'defaultVariable'
+              ? 'changedVariable'
+              : 'changedNode') as VisjsGroupName,
           });
           break;
         case ChangeAction.delete:
@@ -313,7 +315,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
     const variableType = variable.type ? `(${variable.type})` : '';
-    const group: VisjsGroupName = !variable.type && variable.name ? 'defaultVariable' : 'defaultObject';
+    const group: VisjsGroupName = !variable.type && variable.name ? 'defaultVariable' : 'defaultNode';
     const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
@@ -351,15 +353,15 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   public setPanelStyles(viewColors: PanelViewColors): void {
-    this.visjsGroupsByName = (['defaultObject', 'defaultVariable', 'changedObject', 'changedVariable'] as VisjsGroupName[]).reduce(
+    this.visjsGroupsByName = (['defaultNode', 'defaultVariable', 'changedNode', 'changedVariable'] as VisjsGroupName[]).reduce(
       (groups, name) => ({
         ...groups,
         [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
       }),
       {}
     ) as VisjsGroupsByName;
-    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultObjectColor);
-    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedObjectColor);
+    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultNodeColor);
+    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedNodeColor);
   }
 
   private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {

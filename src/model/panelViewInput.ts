@@ -38,16 +38,16 @@ export interface PrimitiveValue {
 }
 
 export interface PanelViewColors {
-  defaultObjectColor: NodeColor;
+  defaultNodeColor: NodeColor;
   defaultVariableColor: NodeColor;
-  changedObjectColor: NodeColor;
+  changedNodeColor: NodeColor;
   changedVariableColor: NodeColor;
 }
 
 export const panelViewColorKeys = Object.freeze<(keyof PanelViewColors)[]>([
-  'defaultObjectColor',
+  'defaultNodeColor',
   'defaultVariableColor',
-  'changedObjectColor',
+  'changedNodeColor',
   'changedVariableColor',
 ]);
 

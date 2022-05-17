@@ -147,7 +147,7 @@
         nodes.updateOnly(
           nodes.map((node) => ({
             ...node,
-            group: node.group === 'changedVariable' || node.group === 'defaultVariable' ? 'defaultVariable' : 'defaultObject',
+            group: node.group === 'changedVariable' || node.group === 'defaultVariable' ? 'defaultVariable' : 'defaultNode',
           }))
         );
         edges.updateOnly(
