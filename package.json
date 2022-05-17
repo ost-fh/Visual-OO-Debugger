@@ -94,7 +94,7 @@
           "css.lint.hexColorLength": "error",
           "order": 3
         },
-        "visual-oo-debugger.changedColor": {
+        "visual-oo-debugger.changedObjectColor": {
           "description": "Background color of newly changed object nodes in the dynamic visualization",
           "type": "string",
           "default": "#fdd835",
