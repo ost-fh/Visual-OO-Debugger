@@ -313,7 +313,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
     const variableType = variable.type ? `(${variable.type})` : '';
-    const group = !variable.type && variable.name ? 'variable' : 'default';
+    const group: VisjsGroupName = !variable.type && variable.name ? 'defaultVariable' : 'defaultObject';
     const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
