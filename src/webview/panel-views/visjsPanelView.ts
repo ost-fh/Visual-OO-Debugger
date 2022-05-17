@@ -358,8 +358,8 @@ export class VisjsPanelView implements PanelViewProxy {
       }),
       {}
     ) as VisjsGroupsByName;
-    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultColor);
-    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedColor);
+    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultObjectColor);
+    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedObjectColor);
   }
 
   private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
