@@ -146,9 +146,9 @@ export class DebuggerPanel {
   }
 
   setPanelStyles(panelViewColors: PanelViewColors): void {
-    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultColor);
-    DebuggerPanel.normalizeNodeColor(panelViewColors.variableColor);
-    DebuggerPanel.normalizeNodeColor(panelViewColors.changedColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultObjectColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultVariableColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.changedObjectColor);
     DebuggerPanel.normalizeNodeColor(panelViewColors.changedVariableColor);
     this.viewColors = panelViewColors;
     this.panelViewProxy.setPanelStyles(panelViewColors);
