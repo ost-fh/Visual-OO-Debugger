@@ -80,7 +80,7 @@
           ],
           "order": 1
         },
-        "visual-oo-debugger.defaultColor": {
+        "visual-oo-debugger.defaultObjectColor": {
           "description": "Default background color of object nodes in the dynamic visualization",
           "type": "string",
           "default": "#1e88e5",
