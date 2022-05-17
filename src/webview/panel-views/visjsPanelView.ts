@@ -351,7 +351,7 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   public setPanelStyles(viewColors: PanelViewColors): void {
-    this.visjsGroupsByName = (['default', 'variable', 'changed', 'changedVariable'] as const).reduce(
+    this.visjsGroupsByName = (['defaultObject', 'defaultVariable', 'changedObject', 'changedVariable'] as VisjsGroupName[]).reduce(
       (groups, name) => ({
         ...groups,
         [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
