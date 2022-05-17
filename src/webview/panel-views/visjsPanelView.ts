@@ -8,7 +8,7 @@ import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
-type VisjsGroupName = 'default' | 'variable' | 'changed' | 'changedVariable';
+type VisjsGroupName = 'defaultObject' | 'defaultVariable' | 'changedObject' | 'changedVariable';
 
 interface VisjsGroup {
   color: Color;
