@@ -114,7 +114,7 @@ export class VisjsPanelView implements PanelViewProxy {
         case ChangeAction.update:
           updateNodes.push({
             ...nodeChange.newNode,
-            group: nodeChange.newNode.group === 'variable' ? 'changedVariable' : 'changed',
+            group: (nodeChange.newNode.group as VisjsGroupName === 'defaultVariable' ? 'changedVariable' : 'changedObject') as VisjsGroupName,
           });
           break;
         case ChangeAction.delete:
