@@ -6,19 +6,17 @@ const to16BitHex = (number: number): string => number.toString(16).padStart(4, '
 const itShouldEscapeCharacter = (charCode: number, escapeSequenceLetter?: string): void => {
   const hex = to16BitHex(charCode);
   const expected = escapeSequenceLetter === undefined ? `\\u${hex}` : `\\${escapeSequenceLetter}`;
-  it(`should escape the character of char code 0x${hex} as '${expected}'`, () => {
-    void expect(escapeString(String.fromCharCode(charCode))).to.equal(expected);
-  });
+  it(`should escape the character of char code 0x${hex} as '${expected}'`, () =>
+    void expect(escapeString(String.fromCharCode(charCode))).to.equal(expected));
 };
 
 const itShouldNotEscapeCharacter = (charCode: number): void => {
   const char = String.fromCharCode(charCode);
-  it(`should NOT escape the character '${char}' (char code: 0x${to16BitHex(charCode)})'`, () => {
-    void expect(escapeString(char)).to.equal(char);
-  });
+  it(`should NOT escape the character '${char}' (char code: 0x${to16BitHex(charCode)})'`, () =>
+    void expect(escapeString(char)).to.equal(char));
 };
 
-describe('EscapedString', () => {
+describe('EscapedString', () =>
   describe('escapeString', () => {
     describe('C0 control characters', () => {
       for (let charCode = 0x00; charCode < 0x08; charCode++) {
@@ -47,5 +45,4 @@ describe('EscapedString', () => {
         itShouldEscapeCharacter(charCode);
       }
     });
-  });
-});
+  }));

@@ -1,5 +1,5 @@
 @startuml
-map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+map "<<[StackFrame]>>" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 {
   borderWidth => 5 (int)
   args =>
   topLeft =>
@@ -7,38 +7,38 @@ map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>>
   bottomRight =>
   background =>
 }
-object "String[0]@8" as _482d9dec6ff954d68d94793f765be61dbc59cb47 <<String[]>> {
+object "<<String[]>>" as _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889 {
   []
 }
-map "Point@9 <U+0022>x: 1 y: 1<U+0022>" as _782d99bf989d0a8059bfc0b89707b5fecd44189a <<Point>> {
+map "<<Point>>" as _46c25277abcd692a5e18dbd97d65eb7d62791a96 {
   x => 1 (int)
   y => 1 (int)
 }
-map "Point@10 <U+0022>x: 5 y: 7<U+0022>" as _a4085fe64a34efdca9c495374ced14d982a9fcf0 <<Point>> {
+map "<<Point>>" as _a6ed3c1901ccfa2adffe839bb7b830200a6393ef {
   x => 5 (int)
   y => 7 (int)
 }
-map "Color@11 <U+0022>BLUE<U+0022>" as _c782cb251d54e777f73ba090318ea4549ea0154c <<Color>> {
+map "<<Color>>" as _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b {
   ordinal => 2 (int)
   hexValue =>
   name =>
   textValue =>
 }
-object "<U+0022>#0000FF<U+0022>" as _ddc022e583fa6f700df84118a557f6ee593d0896 <<String>> {
+object "<<String>>" as _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b {
   "#0000FF"
 }
-object "<U+0022>BLUE<U+0022>" as _68f417e07413646bc6802be73fa896ef65e71986 <<String>> {
+object "<<String>>" as _998c19af6e8387e89fb44a945734ec829e663b43 {
   "BLUE"
 }
-object "<U+0022>blue<U+0022>" as _2fc96ff8cf245465ff831587cf4c032a1fee1ecb <<String>> {
+object "<<String>>" as _c8f291339090d790de0913e8078a801c796e0248 {
   "blue"
 }
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args => _482d9dec6ff954d68d94793f765be61dbc59cb47 : args
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeft => _782d99bf989d0a8059bfc0b89707b5fecd44189a : topLeft
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeftCopy => _782d99bf989d0a8059bfc0b89707b5fecd44189a : topLeftCopy
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::bottomRight => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : bottomRight
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::background => _c782cb251d54e777f73ba090318ea4549ea0154c : background
-_c782cb251d54e777f73ba090318ea4549ea0154c::hexValue => _ddc022e583fa6f700df84118a557f6ee593d0896 : hexValue
-_c782cb251d54e777f73ba090318ea4549ea0154c::name => _68f417e07413646bc6802be73fa896ef65e71986 : name
-_c782cb251d54e777f73ba090318ea4549ea0154c::textValue => _2fc96ff8cf245465ff831587cf4c032a1fee1ecb : textValue
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args ==> _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeft ==> _46c25277abcd692a5e18dbd97d65eb7d62791a96
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeftCopy ==> _46c25277abcd692a5e18dbd97d65eb7d62791a96
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::bottomRight ==> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::background ==> _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::hexValue ==> _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::name ==> _998c19af6e8387e89fb44a945734ec829e663b43
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::textValue ==> _c8f291339090d790de0913e8078a801c796e0248
 @enduml

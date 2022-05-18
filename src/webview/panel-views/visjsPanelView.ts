@@ -2,24 +2,30 @@ import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
-import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
+import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation, NodeColor } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
+type VisjsGroupName = 'defaultNode' | 'defaultVariable' | 'changedNode' | 'changedVariable';
+
+interface VisjsGroup {
+  color: Color;
+  font?: Font;
+}
+
+type VisjsGroupsByName = Record<VisjsGroupName, VisjsGroup>;
+
+interface EdgeColor {
+  color?: string;
+  highlight?: string;
+}
 
 export class VisjsPanelView implements PanelViewProxy {
-  private defaultNodeColor: Color = {};
-  private defaultNodeFont: Font = {};
-  private variableNodeColor: Color = {};
-  private variableNodeFont: Font = {};
-  private defaultEdgeColor: { color?: string; highlight?: string } = {};
-  private changedNodeColor: Color = {};
-  private changedNodeFont: Font = {};
-  private changedVariableColor: Color = {};
-  private changedVariableFont: Font = {};
-  private changedEdgeColor: { color?: string; highlight?: string } = {};
+  private visjsGroupsByName?: VisjsGroupsByName;
+  private defaultEdgeColor: EdgeColor = {};
+  private changedEdgeColor: EdgeColor = {};
   private updateColor = false;
 
   constructor(private readonly context: ExtensionContext) {}
@@ -68,24 +74,7 @@ export class VisjsPanelView implements PanelViewProxy {
             nodeDistance: 100,
           },
         },
-        groups: {
-          default: {
-            color: this.defaultNodeColor,
-            font: this.defaultNodeFont,
-          },
-          variable: {
-            color: this.variableNodeColor,
-            font: this.variableNodeFont,
-          },
-          changed: {
-            color: this.changedNodeColor,
-            font: this.changedNodeFont,
-          },
-          changedVariable: {
-            color: this.changedVariableColor,
-            font: this.changedVariableFont,
-          },
-        },
+        groups: this.visjsGroupsByName,
       };
 
       return { command: 'initializeVisjs', data: this.parseInputToData(newVariables), options };
@@ -119,13 +108,15 @@ export class VisjsPanelView implements PanelViewProxy {
         case ChangeAction.create:
           addNodes.push({
             ...nodeChange.node,
-            group: nodeChange.node.group === 'variable' ? 'changedVariable' : 'changed',
+            group: ((nodeChange.node.group as VisjsGroupName) === 'defaultVariable' ? 'changedVariable' : 'changedNode') as VisjsGroupName,
           });
           break;
         case ChangeAction.update:
           updateNodes.push({
             ...nodeChange.newNode,
-            group: nodeChange.newNode.group === 'variable' ? 'changedVariable' : 'changed',
+            group: ((nodeChange.newNode.group as VisjsGroupName) === 'defaultVariable'
+              ? 'changedVariable'
+              : 'changedNode') as VisjsGroupName,
           });
           break;
         case ChangeAction.delete:
@@ -325,7 +316,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
     const variableType = variable.type ? `(${variable.type})` : '';
-    const group = !variable.type && variable.name ? 'variable' : 'default';
+    const group: VisjsGroupName = !variable.type && variable.name ? 'defaultVariable' : 'defaultNode';
     const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
@@ -362,68 +353,46 @@ export class VisjsPanelView implements PanelViewProxy {
     return edges;
   }
 
-  public setPanelStyles(colorMap: Map<string, string>): void {
-    this.updateColor = true;
-    this.defaultNodeColor = {
-      border: colorMap.get('defaultColorBorder'),
-      background: colorMap.get('defaultColor'),
+  public setPanelStyles(viewColors: PanelViewColors): void {
+    this.visjsGroupsByName = (['defaultNode', 'defaultVariable', 'changedNode', 'changedVariable'] as VisjsGroupName[]).reduce(
+      (groups, name) => ({
+        ...groups,
+        [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
+      }),
+      {}
+    ) as VisjsGroupsByName;
+    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultNodeColor);
+    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedNodeColor);
+  }
+
+  private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
+    return {
+      color: VisjsPanelView.getColor(nodeColor),
+      font: VisjsPanelView.getFont(nodeColor),
+    };
+  }
+
+  private static getColor(nodeColor: NodeColor): Color {
+    return {
+      border: nodeColor.border,
+      background: nodeColor.background,
       highlight: {
-        border: colorMap.get('defaultColorBorder'),
-        background: colorMap.get('defaultColor'),
+        border: nodeColor.border,
+        background: nodeColor.background,
       },
     };
+  }
 
-    this.defaultNodeFont = {
-      color: colorMap.get('defaultColorFont'),
+  private static getFont(nodeColor: NodeColor): Font {
+    return {
+      color: nodeColor.font,
     };
+  }
 
-    this.variableNodeColor = {
-      border: colorMap.get('variableColorBorder'),
-      background: colorMap.get('variableColor'),
-      highlight: {
-        border: colorMap.get('variableColorBorder'),
-        background: colorMap.get('variableColor'),
-      },
-    };
-
-    this.variableNodeFont = {
-      color: colorMap.get('variableColorFont'),
-    };
-
-    this.defaultEdgeColor = {
-      color: colorMap.get('defaultColorBorder'),
-      highlight: colorMap.get('defaultColorBorder'),
-    };
-
-    this.changedNodeColor = {
-      border: colorMap.get('changedColorBorder'),
-      background: colorMap.get('changedColor'),
-      highlight: {
-        border: colorMap.get('changedColorBorder'),
-        background: colorMap.get('changedColor'),
-      },
-    };
-
-    this.changedNodeFont = {
-      color: colorMap.get('changedColorFont'),
-    };
-
-    this.changedVariableColor = {
-      border: colorMap.get('changedVariableColorBorder'),
-      background: colorMap.get('changedVariableColor'),
-      highlight: {
-        border: colorMap.get('changedVariableColorBorder'),
-        background: colorMap.get('changedVariableColor'),
-      },
-    };
-
-    this.changedVariableFont = {
-      color: colorMap.get('changedVariableColorFont'),
-    };
-
-    this.changedEdgeColor = {
-      color: colorMap.get('changedColorBorder'),
-      highlight: colorMap.get('changedColorBorder'),
+  private static getEdgeColor(nodeColor: NodeColor): EdgeColor {
+    return {
+      color: nodeColor.border,
+      highlight: nodeColor.border,
     };
   }
 }

@@ -147,7 +147,7 @@
         nodes.updateOnly(
           nodes.map((node) => ({
             ...node,
-            group: node.group === 'changedVariable' || node.group === 'variable' ? 'variable' : 'default',
+            group: node.group === 'changedVariable' || node.group === 'defaultVariable' ? 'defaultVariable' : 'defaultNode',
           }))
         );
         edges.updateOnly(
@@ -322,11 +322,7 @@
       }
 
       function openAllClusters() {
-        openClusterStack(
-          Object.keys(network.body.nodes).filter((nodeId) => {
-            return nodeId.startsWith('cluster_');
-          })
-        );
+        openClusterStack(Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')));
       }
     </script>
   </body>

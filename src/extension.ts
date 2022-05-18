@@ -3,6 +3,7 @@ import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
+import { panelViewColorKeys, PanelViewColors } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -40,6 +41,14 @@ class Extension {
       ) {
         debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
       }
+      if (
+        e.affectsConfiguration('visual-oo-debugger.defaultNodeColor') ||
+        e.affectsConfiguration('visual-oo-debugger.defaultVariableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedNodeColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
+      ) {
+        debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
+      }
     });
   }
 
@@ -56,27 +65,18 @@ class Extension {
         return new VisjsPanelView(this.context);
     }
   }
-  getPanelStylesByConfiguration(): Map<string, string[]> {
+  getPanelStylesByConfiguration(): PanelViewColors {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
-    const baseColorMap = new Map<string, string[]>();
 
-    baseColorMap.set('defaultColor', [
-      configuration.get('defaultColor') as string,
-      configuration.inspect('defaultColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('variableColor', [
-      configuration.get('variableColor') as string,
-      configuration.inspect('variableColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('changedColor', [
-      configuration.get('changedColor') as string,
-      configuration.inspect('changedColor')?.defaultValue as string,
-    ]);
-    baseColorMap.set('changedVariableColor', [
-      configuration.get('changedVariableColor') as string,
-      configuration.inspect('changedVariableColor')?.defaultValue as string,
-    ]);
-
-    return baseColorMap;
+    return panelViewColorKeys.reduce(
+      (styles, name) => ({
+        ...styles,
+        [name]: {
+          background: configuration.get(name) as string,
+          fallback: configuration.inspect(name)?.defaultValue as string,
+        },
+      }),
+      {}
+    ) as PanelViewColors;
   }
 }

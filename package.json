@@ -80,29 +80,29 @@
           ],
           "order": 1
         },
-        "visual-oo-debugger.defaultColor": {
-          "description": "Controls the colour in hex of the object nodes in the dynamic visualisation",
+        "visual-oo-debugger.defaultNodeColor": {
+          "description": "Default background color of object nodes in the dynamic visualization",
           "type": "string",
           "default": "#1e88e5",
           "css.lint.hexColorLength": "error",
           "order": 2
         },
-        "visual-oo-debugger.variableColor": {
-          "description": "Controls the colour in hex of the variable nodes in the dynamic visualisation",
+        "visual-oo-debugger.defaultVariableColor": {
+          "description": "Default background color of variable nodes in the dynamic visualization",
           "type": "string",
           "default": "#005cb2",
           "css.lint.hexColorLength": "error",
           "order": 3
         },
-        "visual-oo-debugger.changedColor": {
-          "description": "Controls the colour in hex of newly changed object nodes in the dynamic visualisation",
+        "visual-oo-debugger.changedNodeColor": {
+          "description": "Background color of newly changed object nodes in the dynamic visualization",
           "type": "string",
           "default": "#fdd835",
           "css.lint.hexColorLength": "error",
           "order": 4
         },
         "visual-oo-debugger.changedVariableColor": {
-          "description": "Controls the colour in hex of newly changed variable nodes in the dynamic visualisation",
+          "description": "Background color of newly changed variable nodes in the dynamic visualization",
           "type": "string",
           "default": "#c6a700",
           "css.lint.hexColorLength": "error",

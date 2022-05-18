@@ -11,6 +11,5 @@ import { StructureId } from './structureId';
 export interface Structure {
   id: StructureId;
   type: string;
-  name: EscapedString;
   value?: EscapedString;
 }

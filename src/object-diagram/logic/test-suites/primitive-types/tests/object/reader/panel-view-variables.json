@@ -1,10 +1,10 @@
 [
   {
-    "id": "PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
+    "id": "object_PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
     "type": "PrimitiveTypesDemo$FieldContainer",
     "incomingRelations": [
       {
-        "parentId": "fieldContainer",
+        "parentId": "variable_fieldContainer",
         "relationName": ""
       }
     ],
@@ -52,11 +52,11 @@
     ]
   },
   {
-    "id": "fieldContainer",
+    "id": "variable_fieldContainer",
     "name": "fieldContainer",
     "references": [
       {
-        "childId": "PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
+        "childId": "object_PrimitiveTypesDemo$FieldContainer@11 \"FieldContainer[_boolean=false, _byte=0, _char=\u0000, _short=0, _int=0, _long=0, _float=0.0, _double=0.0]\"",
         "relationName": ""
       }
     ]

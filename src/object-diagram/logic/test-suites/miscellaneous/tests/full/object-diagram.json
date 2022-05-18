@@ -2,141 +2,116 @@
   "structures": [
     {
       "id": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "name": "[StackFrame]",
       "type": "[StackFrame]"
     },
     {
-      "id": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
+      "id": "_bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889",
       "type": "String[]",
-      "name": "String[0]@8",
       "value": "[]"
     },
     {
-      "id": "_1b1d14e75647f191269ac449d87d9ac12506b865",
-      "type": "Point",
-      "name": "Point@9 \"x: 42 y: 1\""
+      "id": "_3fb27fbe48150f15f1c717154e8b2838635ef4ae",
+      "type": "Point"
     },
     {
-      "id": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
-      "type": "Point",
-      "name": "Point@10 \"x: 5 y: 7\""
+      "id": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
+      "type": "Point"
     },
     {
-      "id": "_c782cb251d54e777f73ba090318ea4549ea0154c",
-      "type": "Color",
-      "name": "Color@11 \"BLUE\""
+      "id": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
+      "type": "Color"
     },
     {
-      "id": "_ddc022e583fa6f700df84118a557f6ee593d0896",
+      "id": "_9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b",
       "type": "String",
-      "name": "\"#0000FF\"",
       "value": "\"#0000FF\""
     },
     {
-      "id": "_68f417e07413646bc6802be73fa896ef65e71986",
+      "id": "_998c19af6e8387e89fb44a945734ec829e663b43",
       "type": "String",
-      "name": "\"BLUE\"",
       "value": "\"BLUE\""
     },
     {
-      "id": "_2fc96ff8cf245465ff831587cf4c032a1fee1ecb",
+      "id": "_c8f291339090d790de0913e8078a801c796e0248",
       "type": "String",
-      "name": "\"blue\"",
       "value": "\"blue\""
     },
     {
-      "id": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
-      "type": "Color",
-      "name": "Color@37 \"GREEN\""
+      "id": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
+      "type": "Color"
     },
     {
-      "id": "_f38dba1e51caf683679520a6946afc772ac2222d",
+      "id": "_6513eb7336cb77040da38112a94686c4cdfc1607",
       "type": "String",
-      "name": "\"#00FF00\"",
       "value": "\"#00FF00\""
     },
     {
-      "id": "_ed9882efaf59d7dfde3338f3304ac8f964ed8375",
+      "id": "_481d93b92603bf4e6e55ca8891db71a1da7006fa",
       "type": "String",
-      "name": "\"GREEN\"",
       "value": "\"GREEN\""
     },
     {
-      "id": "_4593e280546f904a7f1a2b3c5cfa43d8ae500f53",
+      "id": "_e5a403d2671b9d13666e19f6043ce08954ad7a93",
       "type": "String",
-      "name": "\"green\"",
       "value": "\"green\""
     },
     {
-      "id": "_33682ad97510072b61183de7a4bb48da0e39b0b1",
+      "id": "_fbdaf54b6dbf15b4c6d6bd83657537997479c998",
       "type": "String",
-      "name": "\"topLeft\"",
       "value": "\"topLeft\""
     },
     {
-      "id": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
-      "type": "Rectangle",
-      "name": "Rectangle@39 \"topLeft\""
+      "id": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
+      "type": "Rectangle"
     },
     {
-      "id": "_86d2b65f32348774927a79d7a31769d7e10f45e3",
-      "type": "HashMap",
-      "name": "HashMap@40 size=3"
+      "id": "_305ce90efc792b2616442e67c2a982b762a53ea1",
+      "type": "HashMap"
     },
     {
-      "id": "_a21cb739419a4eaab8ba844909b45dd76458437f",
-      "type": "HashMap$Node",
-      "name": "HashMap$Node@68 \"top left\":null"
+      "id": "_d72423b2e32100781060e9dbcadb1726c415d8b6",
+      "type": "HashMap$Node"
     },
     {
-      "id": "_cd6760fb5af30e8ebf4ff44f153961f212af9bb5",
+      "id": "_4468ba2744623f2b161cf71c3f33bf34c36957e9",
       "type": "String",
-      "name": "\"top left\"",
       "value": "\"top left\""
     },
     {
-      "id": "_1163868589bb43fc94f11464b480fbb3e9138123",
-      "type": "HashMap$Node",
-      "name": "HashMap$Node@69 \"middle\":null"
+      "id": "_d34de9314d56ec12f3d2aaf5b51868d660f4e148",
+      "type": "HashMap$Node"
     },
     {
-      "id": "_34de41e50bb069b8e9e78b1b7731121eb4debf9c",
+      "id": "_c3e6011325e16486c70a59186b6908448cd76e5d",
       "type": "String",
-      "name": "\"middle\"",
       "value": "\"middle\""
     },
     {
-      "id": "_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7",
-      "type": "HashMap$Node",
-      "name": "HashMap$Node@70 \"bottom right\":\"x: 5 y: 7\""
+      "id": "_c1b1e0ff8e344a816f12ec5d11e527a3085219c6",
+      "type": "HashMap$Node"
     },
     {
-      "id": "_9ec248d870dc55767f1de0ba3545ed57f767a43c",
+      "id": "_b7a9be3f2325ed4f44e5e4126aa64169f66fcd93",
       "type": "String",
-      "name": "\"bottom right\"",
       "value": "\"bottom right\""
     },
     {
-      "id": "_26cb8f97b39839eb7ae52c25f2f8d102403660b5",
+      "id": "_c2190a17eb819df74fe6c05aed316fd1544a4e29",
       "type": "int[]",
-      "name": "int[58]@41",
       "value": "[2,3,5,7,11,13,17,19,23,29,…]"
     },
     {
-      "id": "_71d4b85b1d4247e6d2f27d76c2384fefeec170bd",
+      "id": "_03159dd871b813f740c37c20d0b948aba1fbf408",
       "type": "String[]",
-      "name": "String[2]@42",
       "value": "[\"one\",\"two\"]"
     },
     {
-      "id": "_d2d6627a35a13caa54370564ee9914486bf006b6",
-      "type": "Point[]",
-      "name": "Point[3]@43"
+      "id": "_238e5fd2037166644245b9322a12f59898950d0a",
+      "type": "Point[]"
     },
     {
-      "id": "_19700cd8fd1b87bef6d2046533a6afbb10c87d0a",
-      "type": "Point",
-      "name": "Point@80 \"x: 1337 y: 7331\""
+      "id": "_32ecf3f2055354b1c3bc249a7e8301cbf5cfc944",
+      "type": "Point"
     }
   ],
   "fields": [
@@ -147,86 +122,86 @@
       "type": "int"
     },
     {
-      "parentId": "_1d9ff94f1d480c3b2687dbc72c7c080d50f0aefb",
-      "name": "",
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "topLeft",
       "value": "null"
     },
     {
-      "parentId": "_1b1d14e75647f191269ac449d87d9ac12506b865",
+      "parentId": "_3fb27fbe48150f15f1c717154e8b2838635ef4ae",
       "type": "int",
       "name": "x",
       "value": "42"
     },
     {
-      "parentId": "_1b1d14e75647f191269ac449d87d9ac12506b865",
+      "parentId": "_3fb27fbe48150f15f1c717154e8b2838635ef4ae",
       "type": "int",
       "name": "y",
       "value": "1"
     },
     {
-      "parentId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "parentId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "type": "int",
       "name": "x",
       "value": "5"
     },
     {
-      "parentId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "parentId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "type": "int",
       "name": "y",
       "value": "7"
     },
     {
-      "parentId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
+      "parentId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
       "type": "int",
       "name": "ordinal",
       "value": "2"
     },
     {
-      "parentId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
+      "parentId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
       "type": "int",
       "name": "ordinal",
       "value": "1"
     },
     {
-      "parentId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
+      "parentId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
       "type": "int",
       "name": "borderWidth",
       "value": "3"
     },
     {
-      "parentId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
+      "parentId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
       "name": "topLeft",
       "value": "null"
     },
     {
-      "parentId": "_dcfb801a3d73818877f375062bc743ad84a7a091",
-      "name": "",
+      "parentId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
+      "name": "pNull",
       "value": "null"
     },
     {
-      "parentId": "_a21cb739419a4eaab8ba844909b45dd76458437f",
+      "parentId": "_d72423b2e32100781060e9dbcadb1726c415d8b6",
       "name": "value",
       "value": "null"
     },
     {
-      "parentId": "_1163868589bb43fc94f11464b480fbb3e9138123",
+      "parentId": "_d34de9314d56ec12f3d2aaf5b51868d660f4e148",
       "name": "value",
       "value": "null"
     },
     {
-      "parentId": "_19700cd8fd1b87bef6d2046533a6afbb10c87d0a",
+      "parentId": "_32ecf3f2055354b1c3bc249a7e8301cbf5cfc944",
       "type": "int",
       "name": "x",
       "value": "1337"
     },
     {
-      "parentId": "_19700cd8fd1b87bef6d2046533a6afbb10c87d0a",
+      "parentId": "_32ecf3f2055354b1c3bc249a7e8301cbf5cfc944",
       "type": "int",
       "name": "y",
       "value": "7331"
     },
     {
-      "parentId": "_d2d6627a35a13caa54370564ee9914486bf006b6",
+      "parentId": "_238e5fd2037166644245b9322a12f59898950d0a",
       "name": "2",
       "value": "null"
     }
@@ -234,152 +209,152 @@
   "references": [
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_482d9dec6ff954d68d94793f765be61dbc59cb47",
+      "endId": "_bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889",
       "name": "args"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_1b1d14e75647f191269ac449d87d9ac12506b865",
+      "endId": "_3fb27fbe48150f15f1c717154e8b2838635ef4ae",
       "name": "topLeftCopy"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "endId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "name": "bottomRight"
     },
     {
-      "startId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
-      "endId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "startId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
+      "endId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "name": "bottomRight"
     },
     {
-      "startId": "_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7",
-      "endId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "startId": "_c1b1e0ff8e344a816f12ec5d11e527a3085219c6",
+      "endId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "name": "value"
     },
     {
-      "startId": "_d2d6627a35a13caa54370564ee9914486bf006b6",
-      "endId": "_a4085fe64a34efdca9c495374ced14d982a9fcf0",
+      "startId": "_238e5fd2037166644245b9322a12f59898950d0a",
+      "endId": "_a6ed3c1901ccfa2adffe839bb7b830200a6393ef",
       "name": "1"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
+      "endId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
       "name": "background"
     },
     {
-      "startId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
-      "endId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
+      "startId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
+      "endId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
       "name": "backgroundColor"
     },
     {
-      "startId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
-      "endId": "_ddc022e583fa6f700df84118a557f6ee593d0896",
+      "startId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
+      "endId": "_9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b",
       "name": "hexValue"
     },
     {
-      "startId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
-      "endId": "_68f417e07413646bc6802be73fa896ef65e71986",
+      "startId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
+      "endId": "_998c19af6e8387e89fb44a945734ec829e663b43",
       "name": "name"
     },
     {
-      "startId": "_c782cb251d54e777f73ba090318ea4549ea0154c",
-      "endId": "_2fc96ff8cf245465ff831587cf4c032a1fee1ecb",
+      "startId": "_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b",
+      "endId": "_c8f291339090d790de0913e8078a801c796e0248",
       "name": "textValue"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
+      "endId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
       "name": "border"
     },
     {
-      "startId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
-      "endId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
+      "startId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
+      "endId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
       "name": "borderColor"
     },
     {
-      "startId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
-      "endId": "_f38dba1e51caf683679520a6946afc772ac2222d",
+      "startId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
+      "endId": "_6513eb7336cb77040da38112a94686c4cdfc1607",
       "name": "hexValue"
     },
     {
-      "startId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
-      "endId": "_ed9882efaf59d7dfde3338f3304ac8f964ed8375",
+      "startId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
+      "endId": "_481d93b92603bf4e6e55ca8891db71a1da7006fa",
       "name": "name"
     },
     {
-      "startId": "_83b1db9c519c2b87f16cd319822b17b3c6a62a8e",
-      "endId": "_4593e280546f904a7f1a2b3c5cfa43d8ae500f53",
+      "startId": "_974a0f2d033c9fcc489e835fde8908db6a8ffb17",
+      "endId": "_e5a403d2671b9d13666e19f6043ce08954ad7a93",
       "name": "textValue"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_33682ad97510072b61183de7a4bb48da0e39b0b1",
+      "endId": "_fbdaf54b6dbf15b4c6d6bd83657537997479c998",
       "name": "text"
     },
     {
-      "startId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
-      "endId": "_33682ad97510072b61183de7a4bb48da0e39b0b1",
+      "startId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
+      "endId": "_fbdaf54b6dbf15b4c6d6bd83657537997479c998",
       "name": "text"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_e91898f089a0f9e253c468c6d8d606f38cf85329",
+      "endId": "_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d",
       "name": "rect"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_86d2b65f32348774927a79d7a31769d7e10f45e3",
+      "endId": "_305ce90efc792b2616442e67c2a982b762a53ea1",
       "name": "map"
     },
     {
-      "startId": "_86d2b65f32348774927a79d7a31769d7e10f45e3",
-      "endId": "_a21cb739419a4eaab8ba844909b45dd76458437f",
+      "startId": "_305ce90efc792b2616442e67c2a982b762a53ea1",
+      "endId": "_d72423b2e32100781060e9dbcadb1726c415d8b6",
       "name": "0"
     },
     {
-      "startId": "_a21cb739419a4eaab8ba844909b45dd76458437f",
-      "endId": "_cd6760fb5af30e8ebf4ff44f153961f212af9bb5",
+      "startId": "_d72423b2e32100781060e9dbcadb1726c415d8b6",
+      "endId": "_4468ba2744623f2b161cf71c3f33bf34c36957e9",
       "name": "key"
     },
     {
-      "startId": "_86d2b65f32348774927a79d7a31769d7e10f45e3",
-      "endId": "_1163868589bb43fc94f11464b480fbb3e9138123",
+      "startId": "_305ce90efc792b2616442e67c2a982b762a53ea1",
+      "endId": "_d34de9314d56ec12f3d2aaf5b51868d660f4e148",
       "name": "1"
     },
     {
-      "startId": "_1163868589bb43fc94f11464b480fbb3e9138123",
-      "endId": "_34de41e50bb069b8e9e78b1b7731121eb4debf9c",
+      "startId": "_d34de9314d56ec12f3d2aaf5b51868d660f4e148",
+      "endId": "_c3e6011325e16486c70a59186b6908448cd76e5d",
       "name": "key"
     },
     {
-      "startId": "_86d2b65f32348774927a79d7a31769d7e10f45e3",
-      "endId": "_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7",
+      "startId": "_305ce90efc792b2616442e67c2a982b762a53ea1",
+      "endId": "_c1b1e0ff8e344a816f12ec5d11e527a3085219c6",
       "name": "2"
     },
     {
-      "startId": "_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7",
-      "endId": "_9ec248d870dc55767f1de0ba3545ed57f767a43c",
+      "startId": "_c1b1e0ff8e344a816f12ec5d11e527a3085219c6",
+      "endId": "_b7a9be3f2325ed4f44e5e4126aa64169f66fcd93",
       "name": "key"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_26cb8f97b39839eb7ae52c25f2f8d102403660b5",
+      "endId": "_c2190a17eb819df74fe6c05aed316fd1544a4e29",
       "name": "intArray"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_71d4b85b1d4247e6d2f27d76c2384fefeec170bd",
+      "endId": "_03159dd871b813f740c37c20d0b948aba1fbf408",
       "name": "stringArray"
     },
     {
       "startId": "_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352",
-      "endId": "_d2d6627a35a13caa54370564ee9914486bf006b6",
+      "endId": "_238e5fd2037166644245b9322a12f59898950d0a",
       "name": "points"
     },
     {
-      "startId": "_d2d6627a35a13caa54370564ee9914486bf006b6",
-      "endId": "_19700cd8fd1b87bef6d2046533a6afbb10c87d0a",
+      "startId": "_238e5fd2037166644245b9322a12f59898950d0a",
+      "endId": "_32ecf3f2055354b1c3bc249a7e8301cbf5cfc944",
       "name": "0"
     }
   ]

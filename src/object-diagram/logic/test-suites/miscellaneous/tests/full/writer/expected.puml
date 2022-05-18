@@ -1,6 +1,8 @@
 @startuml
-map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+map "<<[StackFrame]>>" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 {
   borderWidth => 3 (int)
+  topLeft => null
+  pNull => null
   args =>
   topLeftCopy =>
   bottomRight =>
@@ -13,51 +15,51 @@ map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>>
   stringArray =>
   points =>
 }
-object "String[0]@8" as _482d9dec6ff954d68d94793f765be61dbc59cb47 <<String[]>> {
+object "<<String[]>>" as _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889 {
   []
 }
-map "Point@9 <U+0022>x: 42 y: 1<U+0022>" as _1b1d14e75647f191269ac449d87d9ac12506b865 <<Point>> {
+map "<<Point>>" as _3fb27fbe48150f15f1c717154e8b2838635ef4ae {
   x => 42 (int)
   y => 1 (int)
 }
-map "Point@10 <U+0022>x: 5 y: 7<U+0022>" as _a4085fe64a34efdca9c495374ced14d982a9fcf0 <<Point>> {
+map "<<Point>>" as _a6ed3c1901ccfa2adffe839bb7b830200a6393ef {
   x => 5 (int)
   y => 7 (int)
 }
-map "Color@11 <U+0022>BLUE<U+0022>" as _c782cb251d54e777f73ba090318ea4549ea0154c <<Color>> {
+map "<<Color>>" as _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b {
   ordinal => 2 (int)
   hexValue =>
   name =>
   textValue =>
 }
-object "<U+0022>#0000FF<U+0022>" as _ddc022e583fa6f700df84118a557f6ee593d0896 <<String>> {
+object "<<String>>" as _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b {
   "#0000FF"
 }
-object "<U+0022>BLUE<U+0022>" as _68f417e07413646bc6802be73fa896ef65e71986 <<String>> {
+object "<<String>>" as _998c19af6e8387e89fb44a945734ec829e663b43 {
   "BLUE"
 }
-object "<U+0022>blue<U+0022>" as _2fc96ff8cf245465ff831587cf4c032a1fee1ecb <<String>> {
+object "<<String>>" as _c8f291339090d790de0913e8078a801c796e0248 {
   "blue"
 }
-map "Color@37 <U+0022>GREEN<U+0022>" as _83b1db9c519c2b87f16cd319822b17b3c6a62a8e <<Color>> {
+map "<<Color>>" as _974a0f2d033c9fcc489e835fde8908db6a8ffb17 {
   ordinal => 1 (int)
   hexValue =>
   name =>
   textValue =>
 }
-object "<U+0022>#00FF00<U+0022>" as _f38dba1e51caf683679520a6946afc772ac2222d <<String>> {
+object "<<String>>" as _6513eb7336cb77040da38112a94686c4cdfc1607 {
   "#00FF00"
 }
-object "<U+0022>GREEN<U+0022>" as _ed9882efaf59d7dfde3338f3304ac8f964ed8375 <<String>> {
+object "<<String>>" as _481d93b92603bf4e6e55ca8891db71a1da7006fa {
   "GREEN"
 }
-object "<U+0022>green<U+0022>" as _4593e280546f904a7f1a2b3c5cfa43d8ae500f53 <<String>> {
+object "<<String>>" as _e5a403d2671b9d13666e19f6043ce08954ad7a93 {
   "green"
 }
-object "<U+0022>topLeft<U+0022>" as _33682ad97510072b61183de7a4bb48da0e39b0b1 <<String>> {
+object "<<String>>" as _fbdaf54b6dbf15b4c6d6bd83657537997479c998 {
   "topLeft"
 }
-map "Rectangle@39 <U+0022>topLeft<U+0022>" as _e91898f089a0f9e253c468c6d8d606f38cf85329 <<Rectangle>> {
+map "<<Rectangle>>" as _a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d {
   borderWidth => 3 (int)
   topLeft => null
   bottomRight =>
@@ -65,75 +67,75 @@ map "Rectangle@39 <U+0022>topLeft<U+0022>" as _e91898f089a0f9e253c468c6d8d606f38
   borderColor =>
   text =>
 }
-map "HashMap@40 size=3" as _86d2b65f32348774927a79d7a31769d7e10f45e3 <<HashMap>> {
+map "<<HashMap>>" as _305ce90efc792b2616442e67c2a982b762a53ea1 {
   0 =>
   1 =>
   2 =>
 }
-map "HashMap$Node@68 <U+0022>top left<U+0022>:null" as _a21cb739419a4eaab8ba844909b45dd76458437f <<HashMap$Node>> {
+map "<<HashMap$Node>>" as _d72423b2e32100781060e9dbcadb1726c415d8b6 {
   value => null
   key =>
 }
-object "<U+0022>top left<U+0022>" as _cd6760fb5af30e8ebf4ff44f153961f212af9bb5 <<String>> {
+object "<<String>>" as _4468ba2744623f2b161cf71c3f33bf34c36957e9 {
   "top left"
 }
-map "HashMap$Node@69 <U+0022>middle<U+0022>:null" as _1163868589bb43fc94f11464b480fbb3e9138123 <<HashMap$Node>> {
+map "<<HashMap$Node>>" as _d34de9314d56ec12f3d2aaf5b51868d660f4e148 {
   value => null
   key =>
 }
-object "<U+0022>middle<U+0022>" as _34de41e50bb069b8e9e78b1b7731121eb4debf9c <<String>> {
+object "<<String>>" as _c3e6011325e16486c70a59186b6908448cd76e5d {
   "middle"
 }
-map "HashMap$Node@70 <U+0022>bottom right<U+0022>:<U+0022>x: 5 y: 7<U+0022>" as _687cda35abd48b9a7e14c54e9ef62d1f9cc080a7 <<HashMap$Node>> {
+map "<<HashMap$Node>>" as _c1b1e0ff8e344a816f12ec5d11e527a3085219c6 {
   value =>
   key =>
 }
-object "<U+0022>bottom right<U+0022>" as _9ec248d870dc55767f1de0ba3545ed57f767a43c <<String>> {
+object "<<String>>" as _b7a9be3f2325ed4f44e5e4126aa64169f66fcd93 {
   "bottom right"
 }
-object "int[58]@41" as _26cb8f97b39839eb7ae52c25f2f8d102403660b5 <<int[]>> {
+object "<<int[]>>" as _c2190a17eb819df74fe6c05aed316fd1544a4e29 {
   [2,3,5,7,11,13,17,19,23,29,…]
 }
-object "String[2]@42" as _71d4b85b1d4247e6d2f27d76c2384fefeec170bd <<String[]>> {
+object "<<String[]>>" as _03159dd871b813f740c37c20d0b948aba1fbf408 {
   ["one","two"]
 }
-map "Point[3]@43" as _d2d6627a35a13caa54370564ee9914486bf006b6 <<Point[]>> {
+map "<<Point[]>>" as _238e5fd2037166644245b9322a12f59898950d0a {
   2 => null
   1 =>
   0 =>
 }
-map "Point@80 <U+0022>x: 1337 y: 7331<U+0022>" as _19700cd8fd1b87bef6d2046533a6afbb10c87d0a <<Point>> {
+map "<<Point>>" as _32ecf3f2055354b1c3bc249a7e8301cbf5cfc944 {
   x => 1337 (int)
   y => 7331 (int)
 }
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args => _482d9dec6ff954d68d94793f765be61dbc59cb47 : args
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeftCopy => _1b1d14e75647f191269ac449d87d9ac12506b865 : topLeftCopy
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::bottomRight => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : bottomRight
-_e91898f089a0f9e253c468c6d8d606f38cf85329::bottomRight => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : bottomRight
-_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7::value => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : value
-_d2d6627a35a13caa54370564ee9914486bf006b6::1 => _a4085fe64a34efdca9c495374ced14d982a9fcf0 : 1
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::background => _c782cb251d54e777f73ba090318ea4549ea0154c : background
-_e91898f089a0f9e253c468c6d8d606f38cf85329::backgroundColor => _c782cb251d54e777f73ba090318ea4549ea0154c : backgroundColor
-_c782cb251d54e777f73ba090318ea4549ea0154c::hexValue => _ddc022e583fa6f700df84118a557f6ee593d0896 : hexValue
-_c782cb251d54e777f73ba090318ea4549ea0154c::name => _68f417e07413646bc6802be73fa896ef65e71986 : name
-_c782cb251d54e777f73ba090318ea4549ea0154c::textValue => _2fc96ff8cf245465ff831587cf4c032a1fee1ecb : textValue
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::border => _83b1db9c519c2b87f16cd319822b17b3c6a62a8e : border
-_e91898f089a0f9e253c468c6d8d606f38cf85329::borderColor => _83b1db9c519c2b87f16cd319822b17b3c6a62a8e : borderColor
-_83b1db9c519c2b87f16cd319822b17b3c6a62a8e::hexValue => _f38dba1e51caf683679520a6946afc772ac2222d : hexValue
-_83b1db9c519c2b87f16cd319822b17b3c6a62a8e::name => _ed9882efaf59d7dfde3338f3304ac8f964ed8375 : name
-_83b1db9c519c2b87f16cd319822b17b3c6a62a8e::textValue => _4593e280546f904a7f1a2b3c5cfa43d8ae500f53 : textValue
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::text => _33682ad97510072b61183de7a4bb48da0e39b0b1 : text
-_e91898f089a0f9e253c468c6d8d606f38cf85329::text => _33682ad97510072b61183de7a4bb48da0e39b0b1 : text
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::rect => _e91898f089a0f9e253c468c6d8d606f38cf85329 : rect
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::map => _86d2b65f32348774927a79d7a31769d7e10f45e3 : map
-_86d2b65f32348774927a79d7a31769d7e10f45e3::0 => _a21cb739419a4eaab8ba844909b45dd76458437f : 0
-_a21cb739419a4eaab8ba844909b45dd76458437f::key => _cd6760fb5af30e8ebf4ff44f153961f212af9bb5 : key
-_86d2b65f32348774927a79d7a31769d7e10f45e3::1 => _1163868589bb43fc94f11464b480fbb3e9138123 : 1
-_1163868589bb43fc94f11464b480fbb3e9138123::key => _34de41e50bb069b8e9e78b1b7731121eb4debf9c : key
-_86d2b65f32348774927a79d7a31769d7e10f45e3::2 => _687cda35abd48b9a7e14c54e9ef62d1f9cc080a7 : 2
-_687cda35abd48b9a7e14c54e9ef62d1f9cc080a7::key => _9ec248d870dc55767f1de0ba3545ed57f767a43c : key
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::intArray => _26cb8f97b39839eb7ae52c25f2f8d102403660b5 : intArray
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::stringArray => _71d4b85b1d4247e6d2f27d76c2384fefeec170bd : stringArray
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::points => _d2d6627a35a13caa54370564ee9914486bf006b6 : points
-_d2d6627a35a13caa54370564ee9914486bf006b6::0 => _19700cd8fd1b87bef6d2046533a6afbb10c87d0a : 0
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args ==> _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::topLeftCopy ==> _3fb27fbe48150f15f1c717154e8b2838635ef4ae
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::bottomRight ==> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d::bottomRight ==> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+_c1b1e0ff8e344a816f12ec5d11e527a3085219c6::value ==> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+_238e5fd2037166644245b9322a12f59898950d0a::1 ==> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::background ==> _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b
+_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d::backgroundColor ==> _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::hexValue ==> _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::name ==> _998c19af6e8387e89fb44a945734ec829e663b43
+_997cc01d7a247aeedb702fa90f2b9ab4ef820a7b::textValue ==> _c8f291339090d790de0913e8078a801c796e0248
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::border ==> _974a0f2d033c9fcc489e835fde8908db6a8ffb17
+_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d::borderColor ==> _974a0f2d033c9fcc489e835fde8908db6a8ffb17
+_974a0f2d033c9fcc489e835fde8908db6a8ffb17::hexValue ==> _6513eb7336cb77040da38112a94686c4cdfc1607
+_974a0f2d033c9fcc489e835fde8908db6a8ffb17::name ==> _481d93b92603bf4e6e55ca8891db71a1da7006fa
+_974a0f2d033c9fcc489e835fde8908db6a8ffb17::textValue ==> _e5a403d2671b9d13666e19f6043ce08954ad7a93
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::text ==> _fbdaf54b6dbf15b4c6d6bd83657537997479c998
+_a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d::text ==> _fbdaf54b6dbf15b4c6d6bd83657537997479c998
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::rect ==> _a7ef8c9b8666e11b9a290d26d9ecba5100a36a2d
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::map ==> _305ce90efc792b2616442e67c2a982b762a53ea1
+_305ce90efc792b2616442e67c2a982b762a53ea1::0 ==> _d72423b2e32100781060e9dbcadb1726c415d8b6
+_d72423b2e32100781060e9dbcadb1726c415d8b6::key ==> _4468ba2744623f2b161cf71c3f33bf34c36957e9
+_305ce90efc792b2616442e67c2a982b762a53ea1::1 ==> _d34de9314d56ec12f3d2aaf5b51868d660f4e148
+_d34de9314d56ec12f3d2aaf5b51868d660f4e148::key ==> _c3e6011325e16486c70a59186b6908448cd76e5d
+_305ce90efc792b2616442e67c2a982b762a53ea1::2 ==> _c1b1e0ff8e344a816f12ec5d11e527a3085219c6
+_c1b1e0ff8e344a816f12ec5d11e527a3085219c6::key ==> _b7a9be3f2325ed4f44e5e4126aa64169f66fcd93
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::intArray ==> _c2190a17eb819df74fe6c05aed316fd1544a4e29
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::stringArray ==> _03159dd871b813f740c37c20d0b948aba1fbf408
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::points ==> _238e5fd2037166644245b9322a12f59898950d0a
+_238e5fd2037166644245b9322a12f59898950d0a::0 ==> _32ecf3f2055354b1c3bc249a7e8301cbf5cfc944
 @enduml

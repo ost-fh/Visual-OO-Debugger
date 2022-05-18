@@ -1,142 +1,142 @@
 [
   {
-    "id": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+    "id": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
     "type": "PrimitiveArrayTypesDemo$FieldContainer",
     "incomingRelations": [
       {
-        "parentId": "fieldContainer",
+        "parentId": "variable_fieldContainer",
         "relationName": ""
       }
     ],
     "references": [
       {
-        "childId": "boolean[1]@9",
+        "childId": "object_boolean[1]@9",
         "relationName": "booleans"
       },
       {
-        "childId": "byte[1]@10",
+        "childId": "object_byte[1]@10",
         "relationName": "bytes"
       },
       {
-        "childId": "char[1]@11",
+        "childId": "object_char[1]@11",
         "relationName": "chars"
       },
       {
-        "childId": "double[1]@16",
+        "childId": "object_double[1]@16",
         "relationName": "doubles"
       },
       {
-        "childId": "float[1]@15",
+        "childId": "object_float[1]@15",
         "relationName": "floats"
       },
       {
-        "childId": "int[1]@13",
+        "childId": "object_int[1]@13",
         "relationName": "ints"
       },
       {
-        "childId": "long[1]@14",
+        "childId": "object_long[1]@14",
         "relationName": "longs"
       },
       {
-        "childId": "short[1]@12",
+        "childId": "object_short[1]@12",
         "relationName": "shorts"
       }
     ]
   },
   {
-    "id": "fieldContainer",
+    "id": "variable_fieldContainer",
     "name": "fieldContainer",
     "references": [
       {
-        "childId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "childId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "boolean[1]@9",
+    "id": "object_boolean[1]@9",
     "type": "boolean[]",
     "value": "[false]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "booleans"
       }
     ]
   },
   {
-    "id": "byte[1]@10",
+    "id": "object_byte[1]@10",
     "type": "byte[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "bytes"
       }
     ]
   },
   {
-    "id": "char[1]@11",
+    "id": "object_char[1]@11",
     "type": "char[]",
     "value": "[\u0000]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "chars"
       }
     ]
   },
   {
-    "id": "double[1]@16",
+    "id": "object_double[1]@16",
     "type": "double[]",
     "value": "[0.000000]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "doubles"
       }
     ]
   },
   {
-    "id": "float[1]@15",
+    "id": "object_float[1]@15",
     "type": "float[]",
     "value": "[0.000000]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "floats"
       }
     ]
   },
   {
-    "id": "int[1]@13",
+    "id": "object_int[1]@13",
     "type": "int[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "ints"
       }
     ]
   },
   {
-    "id": "long[1]@14",
+    "id": "object_long[1]@14",
     "type": "long[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "longs"
       }
     ]
   },
   {
-    "id": "short[1]@12",
+    "id": "object_short[1]@12",
     "type": "short[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
+        "parentId": "object_PrimitiveArrayTypesDemo$FieldContainer@27 \"FieldContainer[booleans=[Z@355da254, bytes=[B@4dc63996, chars=[C@d716361, shorts=[S@6ff3c5b5, ints=[I@3764951d, longs=[J@4b1210ee, floats=[F@4d7e1886, doubles=[D@3cd1a2f1]\"",
         "relationName": "shorts"
       }
     ]

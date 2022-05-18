@@ -1,5 +1,5 @@
 @startuml
-map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>> {
+map "<<[StackFrame]>>" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 {
   _boolean => false (boolean)
   _byte => 0 (byte)
   _char => \u0000 (char)
@@ -10,8 +10,8 @@ map "[StackFrame]" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 <<[StackFrame]>>
   _double => 0.000000 (double)
   args =>
 }
-object "String[0]@8" as _482d9dec6ff954d68d94793f765be61dbc59cb47 <<String[]>> {
+object "<<String[]>>" as _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889 {
   []
 }
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args => _482d9dec6ff954d68d94793f765be61dbc59cb47 : args
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::args ==> _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889
 @enduml
