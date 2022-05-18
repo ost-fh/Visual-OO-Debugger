@@ -33,6 +33,13 @@ class Extension {
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
+      } else if (
+        e.affectsConfiguration('visual-oo-debugger.defaultColor') ||
+        e.affectsConfiguration('visual-oo-debugger.variableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
+      ) {
+        debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
       }
       if (
         e.affectsConfiguration('visual-oo-debugger.defaultNodeColor') ||

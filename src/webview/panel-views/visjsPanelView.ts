@@ -184,20 +184,6 @@ export class VisjsPanelView implements PanelViewProxy {
     nodeChanges: ChangedNode[],
     edgeChanges: ChangedEdge[]
   ): void {
-    if (
-      oldVariable.value !== newVariable.value ||
-      oldVariable.tooltip !== newVariable.tooltip ||
-      oldVariable.type !== newVariable.type ||
-      oldVariable.name !== newVariable.name ||
-      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
-    ) {
-      nodeChanges.push({
-        action: ChangeAction.update,
-        oldNode: this.createNode(oldVariable),
-        newNode: this.createNode(newVariable),
-      });
-    }
-
     const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
       (relation: VariableRelation) =>
         !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
@@ -228,6 +214,21 @@ export class VisjsPanelView implements PanelViewProxy {
           to: newVariable.id,
           label: relation.relationName,
         },
+      });
+    }
+
+    if (
+      oldVariable.value !== newVariable.value ||
+      oldVariable.tooltip !== newVariable.tooltip ||
+      oldVariable.type !== newVariable.type ||
+      oldVariable.name !== newVariable.name ||
+      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues) ||
+      (edgeChanges.some((changedEdge) => changedEdge.edge.from === oldVariable.id) && oldVariable.id.startsWith('variable_'))
+    ) {
+      nodeChanges.push({
+        action: ChangeAction.update,
+        oldNode: this.createNode(oldVariable),
+        newNode: this.createNode(newVariable),
       });
     }
   }
