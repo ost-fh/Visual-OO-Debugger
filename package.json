@@ -77,7 +77,36 @@
           "default": "vis.js",
           "enum": [
             "vis.js"
-          ]
+          ],
+          "order": 1
+        },
+        "visual-oo-debugger.defaultNodeColor": {
+          "description": "Default background color of object nodes in the dynamic visualization",
+          "type": "string",
+          "default": "#1e88e5",
+          "css.lint.hexColorLength": "error",
+          "order": 2
+        },
+        "visual-oo-debugger.defaultVariableColor": {
+          "description": "Default background color of variable nodes in the dynamic visualization",
+          "type": "string",
+          "default": "#005cb2",
+          "css.lint.hexColorLength": "error",
+          "order": 3
+        },
+        "visual-oo-debugger.changedNodeColor": {
+          "description": "Background color of newly changed object nodes in the dynamic visualization",
+          "type": "string",
+          "default": "#fdd835",
+          "css.lint.hexColorLength": "error",
+          "order": 4
+        },
+        "visual-oo-debugger.changedVariableColor": {
+          "description": "Background color of newly changed variable nodes in the dynamic visualization",
+          "type": "string",
+          "default": "#c6a700",
+          "css.lint.hexColorLength": "error",
+          "order": 5
         }
       }
     },
@@ -162,6 +191,7 @@
     "@types/mocha": "^9.1.0",
     "@types/node": "^17.0.25",
     "@types/object-hash": "^2.2.1",
+    "@types/tinycolor2": "^1.4.3",
     "@types/vscode": "^1.66.0",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
@@ -191,6 +221,7 @@
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "lodash": "^4.17.21",
     "object-hash": "^3.0.0",
+    "tinycolor2": "^1.4.2",
     "vis-network": "^9.1.2"
   }
 }

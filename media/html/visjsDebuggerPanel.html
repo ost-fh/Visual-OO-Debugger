@@ -32,7 +32,6 @@
       let network;
       let edges;
       let nodes;
-      let defaultNodeColor;
       let defaultEdgeColor;
       let recorder;
       let chunks;
@@ -74,7 +73,6 @@
         const container = document.querySelector('#visjs-network');
         edges = new vis.DataSet(message.data.edges);
         nodes = new vis.DataSet(message.data.nodes);
-        defaultNodeColor = message.options.nodes.color;
         defaultEdgeColor = message.options.edges.color;
         const data = {
           edges,
@@ -131,6 +129,9 @@
           },
           clusterNodeProperties: {
             borderWidth: 5,
+            group: nodes.get(id).group,
+            color: nodes.get(id).color,
+            font: nodes.get(id).font,
           },
         };
         if (nodeList != undefined) {
@@ -146,7 +147,7 @@
         nodes.updateOnly(
           nodes.map((node) => ({
             ...node,
-            color: defaultNodeColor,
+            group: node.group === 'changedVariable' || node.group === 'defaultVariable' ? 'defaultVariable' : 'defaultNode',
           }))
         );
         edges.updateOnly(
