@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, workspace, WorkspaceConfiguration } from 'vscode';
+import { commands, ExtensionContext, workspace } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
