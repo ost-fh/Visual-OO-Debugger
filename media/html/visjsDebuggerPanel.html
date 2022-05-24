@@ -28,6 +28,9 @@
           <span class="codicon codicon-type-hierarchy"></span>
         </vscode-button>
       </div>
+      <div class="bottom-row">
+        <span id ="recording" class="recording codicon codicon-record"></span>
+      </div>
     </div>
 
     <script type="text/javascript">
@@ -232,6 +235,7 @@
       }
 
       function startRecordingVisjsGif() {
+        document.getElementById("recording").style.visibility = "visible";
         if (canvas) {
           gifFrames = [];
           gifFrameCount = 0;
@@ -248,6 +252,7 @@
       }
 
       function startRecordingVisjsWebm() {
+        document.getElementById("recording").style.visibility = "visible";
         if (canvas) {
           chunks = [];
           const stream = canvas.captureStream();
@@ -264,7 +269,8 @@
         }
       }
 
-      function stopRecordingVisjsGif(render) {
+      function stopRecordingVisjsGif() {
+        document.getElementById("recording").style.visibility = "hidden";
         if (vscode) {
           gifRecording = false;
           vscode.postMessage({ command: 'creatingGif'});
@@ -277,7 +283,8 @@
         }
       }
 
-      function stopRecordingVisjsWebm(render) {
+      function stopRecordingVisjsWebm() {
+        document.getElementById("recording").style.visibility = "hidden";
         if (vscode) {
           recorder.stop();
           setTimeout(() => {

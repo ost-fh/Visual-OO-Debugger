@@ -49,13 +49,13 @@
         "command": "visual-oo-debugger.startGIF",
         "title": "Start recording a GIF",
         "category": "VOOD",
-        "enablement": "!viewPanel.recordingGif"
+        "enablement": "!viewPanel.recordingGif && !viewPanel.recordingWebm"
       },
       {
         "command": "visual-oo-debugger.startWEBM",
         "title": "Start recording a WEBM",
         "category": "VOOD",
-        "enablement": "!viewPanel.recordingWebm"
+        "enablement": "!viewPanel.recordingWebm && !viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.stopGIF",
@@ -183,7 +183,8 @@
     "test:ext": "node ./out/test/runTest.js",
     "test:spec": "cross-env TS_NODE_PROJECT=\"tsconfig.spec.json\" mocha -r ts-node/register \"src/**/*.spec.ts\"",
     "test:spec:watch": "npm run test:spec -- --watch --watch-files src",
-    "deploy": "vsce publish"
+    "deploy": "vsce publish",
+    "install": "git clone https://github.com/antimatter15/jsgif node_modules/jsgif"
   },
   "devDependencies": {
     "@types/chai": "4.3.1",
