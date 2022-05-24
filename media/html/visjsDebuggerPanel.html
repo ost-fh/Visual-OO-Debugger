@@ -29,7 +29,7 @@
         </vscode-button>
       </div>
       <div class="bottom-row">
-        <span id ="recording" class="recording codicon codicon-record"></span>
+        <span id="recording" class="recording codicon codicon-record"></span>
       </div>
     </div>
 
@@ -235,16 +235,16 @@
       }
 
       function startRecordingVisjsGif() {
-        document.getElementById("recording").style.visibility = "visible";
+        document.getElementById('recording').style.visibility = 'visible';
         if (canvas) {
           gifFrames = [];
           gifFrameCount = 0;
           gifRecording = true;
           count = 0;
           encoder = new GIFEncoder();
-          encoder.setRepeat(0); 
+          encoder.setRepeat(0);
           encoder.setQuality(20);
-          encoder.setDelay(90); 
+          encoder.setDelay(90);
           encoder.setSize(canvas.width, canvas.height);
           window.requestAnimationFrame(drawFrame);
           encoder.start();
@@ -252,7 +252,7 @@
       }
 
       function startRecordingVisjsWebm() {
-        document.getElementById("recording").style.visibility = "visible";
+        document.getElementById('recording').style.visibility = 'visible';
         if (canvas) {
           chunks = [];
           const stream = canvas.captureStream();
@@ -270,35 +270,35 @@
       }
 
       function stopRecordingVisjsGif() {
-        document.getElementById("recording").style.visibility = "hidden";
+        document.getElementById('recording').style.visibility = 'hidden';
         if (vscode) {
           gifRecording = false;
-          vscode.postMessage({ command: 'creatingGif'});
-          gifFrames.forEach(gifFrame => {
-            encoder.addFrame(gifFrame,true);
+          vscode.postMessage({ command: 'creatingGif' });
+          gifFrames.forEach((gifFrame) => {
+            encoder.addFrame(gifFrame, true);
           });
 
           encoder.finish();
-          encoder.download("export.gif");
+          encoder.download('export.gif');
         }
       }
 
       function stopRecordingVisjsWebm() {
-        document.getElementById("recording").style.visibility = "hidden";
+        document.getElementById('recording').style.visibility = 'hidden';
         if (vscode) {
           recorder.stop();
           setTimeout(() => {
             const blob = new Blob(chunks, {
               type: 'video/webm',
             });
-            downloadFile('export.webm',URL.createObjectURL(blob));
+            downloadFile('export.webm', URL.createObjectURL(blob));
           }, 0);
         }
       }
 
-      function drawFrame(){
-        if(gifRecording){
-          if(gifFrameCount % 3 === 0) {
+      function drawFrame() {
+        if (gifRecording) {
+          if (gifFrameCount % 3 === 0) {
             gifFrames.push(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data);
           }
           gifFrameCount++;
