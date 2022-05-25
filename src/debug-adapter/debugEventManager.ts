@@ -1,40 +1,35 @@
 import { DebugProtocol } from '@vscode/debugprotocol';
-import * as hash from 'object-hash';
-import { debug, window } from 'vscode';
+import { debug, DebugAdapterTracker, DebugSession, ProviderResult, window } from 'vscode';
+import { AbstractDataExtractor } from '../data-extractor/abstractDataExtractor';
+import { JavaDataExtractor } from '../data-extractor/javaDataExtractor';
 import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
-import { addNullPrefix, addObjectPrefix, addVariablePrefix } from '../util/nodePrefixHandler';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
 
 export class DebugEventManager {
-  private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
-  private readonly primitiveDataTypes = ['boolean', 'char', 'byte', 'short', 'int', 'long', 'float', 'double'];
-  private readonly sizeSuffix = 'size=';
   private readonly maxValueLength = 30;
   private readonly maxDepth = 10;
 
-  private callSeq: number | undefined;
-
-  private debugSessionProxy: DebugSessionProxy | undefined;
-
   registerDebuggerPanel(debuggerPanel: DebuggerPanel): void {
     debug.registerDebugAdapterTrackerFactory('*', {
-      createDebugAdapterTracker: (session) => {
-        this.debugSessionProxy = new DebugSessionProxy(session);
+      createDebugAdapterTracker: (session: DebugSession): ProviderResult<DebugAdapterTracker> => {
+        const debugSessionProxy = new DebugSessionProxy(session);
+        const dataExtractor = this.getDataExtractor(session);
+        let callSeq: number | undefined;
         const onDidSendMessage = (m: DebugProtocol.ProtocolMessage): void => {
           try {
             if (m.type === 'response' && (m as DebugProtocol.Response).command === 'initialize' && (m as DebugProtocol.Response).success) {
-              this.callSeq = undefined;
+              callSeq = undefined;
               debuggerPanel.reset();
             } else if (m.type === 'event' && (m as DebugProtocol.Event).event === 'stopped') {
-              this.callSeq = m.seq;
+              callSeq = m.seq;
 
               const threadId = (m as DebugProtocol.StoppedEvent).body.threadId;
-              void this.debugSessionProxy?.loadStackFrames(threadId ?? 0).then(() => {
-                const currentCallStack = this.debugSessionProxy?.getCallStack();
+              void debugSessionProxy.loadStackFrames(threadId ?? 0).then(() => {
+                const currentCallStack = debugSessionProxy.getCallStack();
                 if (currentCallStack !== undefined) {
-                  void this.getData(currentCallStack).then((data: PanelViewInput) => {
-                    if (this.callSeq === m.seq) {
+                  void this.getData(currentCallStack, debugSessionProxy, dataExtractor).then((data: PanelViewInput) => {
+                    if (callSeq === m.seq) {
                       debuggerPanel.updatePanel(data);
                     }
                   });
@@ -51,32 +46,41 @@ export class DebugEventManager {
     });
   }
 
-  private async getData(stackFrames: DebugProtocol.StackFrame[]): Promise<PanelViewInput> {
+  private getDataExtractor(session: DebugSession): AbstractDataExtractor {
+    if (session.type === 'java') {
+      return new JavaDataExtractor();
+    }
+    throw new Error(`${session.type} is not supported by VOOD`);
+  }
+
+  private async getData(
+    stackFrames: DebugProtocol.StackFrame[],
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor
+  ): Promise<PanelViewInput> {
     const panelViewInput: PanelViewInput = { callstack: [] };
     for (const stackFrame of stackFrames) {
-      panelViewInput.callstack.push(await this.getStackFrameData(stackFrame));
+      panelViewInput.callstack.push(await this.getStackFrameData(stackFrame, debugSessionProxy, dataExtractor));
     }
     return panelViewInput;
   }
 
-  private async getStackFrameData(stackFrame: DebugProtocol.StackFrame): Promise<PanelViewStackFrame> {
+  private async getStackFrameData(
+    stackFrame: DebugProtocol.StackFrame,
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor
+  ): Promise<PanelViewStackFrame> {
     const panelViewStackFrame = { name: stackFrame?.name, variables: new Map() };
-    const variables = await this.debugSessionProxy?.getAllVariables(stackFrame?.id);
+    const variables = await debugSessionProxy.getAllVariables(stackFrame?.id);
     // Add primitives of local scope
     for (const variable of variables || []) {
-      if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
-        const panelViewVariable: PanelViewVariable = {
-          id: addVariablePrefix(hash(variable)),
-          name: variable.name,
-          type: variable.type,
-          value: variable.value,
-        };
-
+      if (dataExtractor.isPrimitiveVariable(variable)) {
+        const panelViewVariable: PanelViewVariable = dataExtractor.createPrimitiveVariable(variable);
         panelViewStackFrame.variables.set(panelViewVariable.id, panelViewVariable);
       }
     }
 
-    await this.readDataOfVariables(variables, panelViewStackFrame);
+    await this.readDataOfVariables(variables, panelViewStackFrame, debugSessionProxy, dataExtractor);
 
     return panelViewStackFrame;
   }
@@ -84,6 +88,8 @@ export class DebugEventManager {
   private async readDataOfVariables(
     variables: DebugProtocol.Variable[] | undefined,
     panelViewStackFrame: PanelViewStackFrame,
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor,
     parentId?: string | undefined,
     maxDepth = this.maxDepth
   ): Promise<void> {
@@ -92,10 +98,10 @@ export class DebugEventManager {
     }
 
     for (const variable of variables) {
-      if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
-        this.addPrimitiveValueToParent(variable, parentId, panelViewStackFrame);
+      if (dataExtractor.isPrimitiveVariable(variable)) {
+        this.addPrimitiveValueToParent(variable, parentId, panelViewStackFrame, dataExtractor);
       } else {
-        await this.prepareObjectData(variable, maxDepth, parentId, panelViewStackFrame);
+        await this.prepareObjectData(variable, maxDepth, parentId, panelViewStackFrame, debugSessionProxy, dataExtractor);
       }
     }
   }
@@ -103,15 +109,13 @@ export class DebugEventManager {
   private addPrimitiveValueToParent(
     variable: DebugProtocol.Variable,
     parentId: string | undefined,
-    panelViewStackFrame: PanelViewStackFrame
+    panelViewStackFrame: PanelViewStackFrame,
+    dataExtractor: AbstractDataExtractor
   ): void {
     if (parentId) {
       const panelViewVariable = panelViewStackFrame.variables.get(parentId);
-      if (panelViewVariable && variable.type) {
-        panelViewVariable.primitiveValues = [
-          ...(panelViewVariable.primitiveValues || []),
-          { type: variable.type, name: variable.name, value: variable.value },
-        ];
+      if (panelViewVariable) {
+        panelViewVariable.primitiveValues = [...(panelViewVariable.primitiveValues || []), dataExtractor.createPrimitiveValue(variable)];
       }
     }
   }
@@ -120,13 +124,15 @@ export class DebugEventManager {
     variable: DebugProtocol.Variable,
     maxDepth: number,
     parentId: string | undefined,
-    panelViewStackFrame: PanelViewStackFrame
+    panelViewStackFrame: PanelViewStackFrame,
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor
   ): Promise<void> {
     let isNewAndObject = false;
-    const id = variable.type === 'null' ? addNullPrefix(hash(variable)) : addObjectPrefix(variable.value.split(this.sizeSuffix)[0]);
+    const id = dataExtractor.createVariableId(variable);
     let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
-      [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
+      [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable, debugSessionProxy, dataExtractor);
 
       panelViewStackFrame.variables.set(panelViewVariable.id, panelViewVariable);
     }
@@ -134,55 +140,51 @@ export class DebugEventManager {
     if (parentId) {
       panelViewVariable.incomingRelations = [
         ...(panelViewVariable.incomingRelations || []),
-        { parentId: parentId, relationName: variable.name },
+        dataExtractor.createVariableRelation(parentId, variable),
       ];
       const parentVariable = panelViewStackFrame.variables.get(parentId);
       if (parentVariable) {
-        parentVariable.references = [
-          ...(parentVariable.references || []),
-          {
-            childId: id,
-            relationName: variable.name,
-          },
-        ];
+        parentVariable.references = [...(parentVariable.references || []), dataExtractor.createVariableReference(id, variable)];
       }
     } else {
-      const namedVariable = this.createVariableEntryForNamedVariable(variable, id);
+      const namedVariable = dataExtractor.createVariableEntryForNamedVariable(id, variable);
       panelViewStackFrame.variables.set(namedVariable.id, namedVariable);
       panelViewVariable.incomingRelations = [
         ...(panelViewVariable.incomingRelations || []),
-        { parentId: namedVariable.id, relationName: '' },
+        dataExtractor.createVariableRelation(namedVariable.id, undefined),
       ];
     }
 
     if (isNewAndObject && variable.variablesReference) {
-      let childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
-      if (variable.presentationHint?.lazy && childVariables && childVariables.length > 0) {
-        childVariables = await this.debugSessionProxy?.getVariables(childVariables[0].variablesReference);
+      let childVariables = await debugSessionProxy.getVariables(variable.variablesReference);
+      if (variable.presentationHint?.lazy && childVariables?.length > 0) {
+        childVariables = await debugSessionProxy.getVariables(childVariables[0].variablesReference);
       }
-      await this.readDataOfVariables(childVariables, panelViewStackFrame, id, maxDepth - 1);
+      await this.readDataOfVariables(childVariables, panelViewStackFrame, debugSessionProxy, dataExtractor, id, maxDepth - 1);
     }
   }
 
   private async createPanelViewVariable(
     id: string,
-    variable: DebugProtocol.Variable
+    variable: DebugProtocol.Variable,
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor
   ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
     const panelViewVariable: PanelViewVariable = { id };
 
-    if (variable.type === 'null') {
-      panelViewVariable.value = 'null';
+    if (dataExtractor.isNullVariable(variable)) {
+      panelViewVariable.value = dataExtractor.nullText;
       return [panelViewVariable, isNewAndObject];
     }
 
     panelViewVariable.type = variable.type;
-    if (variable.type === 'String') {
+    if (dataExtractor.isStringVariable(variable)) {
       [panelViewVariable.value, panelViewVariable.tooltip] = this.prepareStringData(variable);
-    } else if (variable.type && this.primitiveArrayDataTypes.includes(variable.type)) {
-      [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, ',');
-    } else if (variable.type === 'String[]') {
-      [panelViewVariable.value, panelViewVariable.tooltip] = await this.preparePrimitiveArrayData(variable, '","');
+    } else if (dataExtractor.isPrimitiveArrayVariable(variable)) {
+      [panelViewVariable.value, panelViewVariable.tooltip] = await this.prepareArrayData(variable, ',', debugSessionProxy, dataExtractor);
+    } else if (dataExtractor.isStringArrayVariable(variable)) {
+      [panelViewVariable.value, panelViewVariable.tooltip] = await this.prepareArrayData(variable, '","', debugSessionProxy, dataExtractor);
     } else {
       isNewAndObject = true;
     }
@@ -190,20 +192,14 @@ export class DebugEventManager {
     return [panelViewVariable, isNewAndObject];
   }
 
-  private createVariableEntryForNamedVariable(variable: DebugProtocol.Variable, referencedObjectId: string): PanelViewVariable {
-    return {
-      id: addVariablePrefix(variable.name),
-      name: variable.name,
-      references: [{ childId: referencedObjectId, relationName: '' }],
-    };
-  }
-
-  private async preparePrimitiveArrayData(
+  private async prepareArrayData(
     variable: DebugProtocol.Variable,
-    delimiter: string
+    delimiter: string,
+    debugSessionProxy: DebugSessionProxy,
+    dataExtractor: AbstractDataExtractor
   ): Promise<[label: string, tooltip: string | undefined]> {
-    const childVariables = await this.debugSessionProxy?.getVariables(variable.variablesReference);
-    const fullLengthArray = childVariables ? this.renderAsArray(childVariables) : '[]';
+    const childVariables = await debugSessionProxy.getVariables(variable.variablesReference);
+    const fullLengthArray = dataExtractor.createArrayString(childVariables);
 
     let value = fullLengthArray;
     let tooltip;
@@ -226,9 +222,5 @@ export class DebugEventManager {
     }
 
     return [value, tooltip];
-  }
-
-  private renderAsArray(variables: DebugProtocol.Variable[]): string {
-    return `[${variables.map((v) => v.value).join(',')}]`;
   }
 }
