@@ -35,7 +35,7 @@ const config: Configuration = {
           {
             loader: 'ts-loader',
             options: {
-              configFile: 'tsconfig.ext.json',
+              configFile: 'tsconfig.extension.json',
             },
           },
         ],
@@ -43,6 +43,48 @@ const config: Configuration = {
     ],
   },
   plugins: [copyNodeModulesFiles()],
+};
+
+const webviewConfig: Configuration = {
+  target: 'web',
+  entry: [
+    //  TODO: VOOD-173: Register jointJsDebuggerPanel.ts
+    //    'jointJs',
+    //  TODO: VOOD-183: Register visjsDebuggerPanel.ts
+    //    'visjs',
+  ].reduce((entries, partialName) => {
+    const name = `${partialName}DebuggerPanel`;
+    return {
+      ...entries,
+      [name]: `./src/webview/panel-views/${name}.ts`,
+    };
+  }, {}),
+  output: {
+    path: path.resolve(__dirname, 'media', 'js'),
+    filename: '[name].js',
+    devtoolModuleFilenameTemplate: '../[resource-path]',
+    clean: true,
+  },
+  devtool: 'source-map',
+  resolve: {
+    extensions: ['.ts'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              configFile: 'tsconfig.webview.json',
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
 
 function copyNodeModulesFiles(): CopyPlugin {
@@ -70,4 +112,4 @@ function copyNodeModulesFiles(): CopyPlugin {
   });
 }
 
-module.exports = config;
+module.exports = [config, webviewConfig];
