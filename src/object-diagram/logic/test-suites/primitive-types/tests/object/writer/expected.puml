@@ -2,7 +2,7 @@
 map "<<[StackFrame]>>" as _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352 {
   fieldContainer =>
 }
-map "<<PrimitiveTypesDemo$FieldContainer>>" as _ea0aca3bedbad950e9d8b35c1bab07af352d76c4 {
+map "<<PrimitiveTypesDemo$FieldContainer>>" as _2fef72d9b67610cd01efc7ea05b854fb8c5e3ceb {
   _boolean => false (boolean)
   _byte => 0 (byte)
   _char => \u0000 (char)
@@ -12,5 +12,5 @@ map "<<PrimitiveTypesDemo$FieldContainer>>" as _ea0aca3bedbad950e9d8b35c1bab07af
   _long => 0 (long)
   _short => 0 (short)
 }
-_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::fieldContainer => _ea0aca3bedbad950e9d8b35c1bab07af352d76c4
+_0f07b6f2a31cbd2e26428c51e8660b0dffe6e352::fieldContainer ==> _2fef72d9b67610cd01efc7ea05b854fb8c5e3ceb
 @enduml

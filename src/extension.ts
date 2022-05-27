@@ -3,6 +3,7 @@ import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
 import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
+import { panelViewColorKeys, PanelViewColors } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
   const extension = new Extension(context);
@@ -18,6 +19,7 @@ class Extension {
 
   registerCommands(): void {
     const debuggerPanel = new DebuggerPanel(this.context, this.getPanelViewByConfiguration());
+    debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
     const debugEventManager = new DebugEventManager();
     debugEventManager.registerDebuggerPanel(debuggerPanel);
 
@@ -31,6 +33,21 @@ class Extension {
     workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('visual-oo-debugger.preferredView')) {
         debuggerPanel.setPanelViewProxy(this.getPanelViewByConfiguration());
+      } else if (
+        e.affectsConfiguration('visual-oo-debugger.defaultColor') ||
+        e.affectsConfiguration('visual-oo-debugger.variableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
+      ) {
+        debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
+      }
+      if (
+        e.affectsConfiguration('visual-oo-debugger.defaultNodeColor') ||
+        e.affectsConfiguration('visual-oo-debugger.defaultVariableColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedNodeColor') ||
+        e.affectsConfiguration('visual-oo-debugger.changedVariableColor')
+      ) {
+        debuggerPanel.setPanelStyles(this.getPanelStylesByConfiguration());
       }
     });
   }
@@ -40,12 +57,26 @@ class Extension {
   }
 
   getPanelViewByConfiguration(): PanelViewProxy {
-    const preferredView = workspace.getConfiguration('visual-oo-debugger');
-    switch (preferredView.get('preferredView')) {
+    const configuration = workspace.getConfiguration('visual-oo-debugger');
+    switch (configuration.get('preferredView')) {
       case 'vis.js':
         return new VisjsPanelView(this.context);
       default:
         return new VisjsPanelView(this.context);
     }
+  }
+  getPanelStylesByConfiguration(): PanelViewColors {
+    const configuration = workspace.getConfiguration('visual-oo-debugger');
+
+    return panelViewColorKeys.reduce(
+      (styles, name) => ({
+        ...styles,
+        [name]: {
+          background: configuration.get(name) as string,
+          fallback: configuration.inspect(name)?.defaultValue as string,
+        },
+      }),
+      {}
+    ) as PanelViewColors;
   }
 }

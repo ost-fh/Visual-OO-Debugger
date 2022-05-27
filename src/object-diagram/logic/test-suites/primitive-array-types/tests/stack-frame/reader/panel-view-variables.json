@@ -1,189 +1,189 @@
 [
   {
-    "id": "String[0]@8",
+    "id": "object_String[0]@8",
     "type": "String[]",
     "value": "[]",
     "incomingRelations": [
       {
-        "parentId": "args",
+        "parentId": "variable_args",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "args",
+    "id": "variable_args",
     "name": "args",
     "references": [
       {
-        "childId": "String[0]@8",
+        "childId": "object_String[0]@8",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "boolean[1]@9",
+    "id": "object_boolean[1]@9",
     "type": "boolean[]",
     "value": "[false]",
     "incomingRelations": [
       {
-        "parentId": "booleans",
+        "parentId": "variable_booleans",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "booleans",
+    "id": "variable_booleans",
     "name": "booleans",
     "references": [
       {
-        "childId": "boolean[1]@9",
+        "childId": "object_boolean[1]@9",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "byte[1]@10",
+    "id": "object_byte[1]@10",
     "type": "byte[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "bytes",
+        "parentId": "variable_bytes",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "bytes",
+    "id": "variable_bytes",
     "name": "bytes",
     "references": [
       {
-        "childId": "byte[1]@10",
+        "childId": "object_byte[1]@10",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "char[1]@11",
+    "id": "object_char[1]@11",
     "type": "char[]",
     "value": "[\u0000]",
     "incomingRelations": [
       {
-        "parentId": "chars",
+        "parentId": "variable_chars",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "chars",
+    "id": "variable_chars",
     "name": "chars",
     "references": [
       {
-        "childId": "char[1]@11",
+        "childId": "object_char[1]@11",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "short[1]@12",
+    "id": "object_short[1]@12",
     "type": "short[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "shorts",
+        "parentId": "variable_shorts",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "shorts",
+    "id": "variable_shorts",
     "name": "shorts",
     "references": [
       {
-        "childId": "short[1]@12",
+        "childId": "object_short[1]@12",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "int[1]@13",
+    "id": "object_int[1]@13",
     "type": "int[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "ints",
+        "parentId": "variable_ints",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "ints",
+    "id": "variable_ints",
     "name": "ints",
     "references": [
       {
-        "childId": "int[1]@13",
+        "childId": "object_int[1]@13",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "long[1]@14",
+    "id": "object_long[1]@14",
     "type": "long[]",
     "value": "[0]",
     "incomingRelations": [
       {
-        "parentId": "longs",
+        "parentId": "variable_longs",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "longs",
+    "id": "variable_longs",
     "name": "longs",
     "references": [
       {
-        "childId": "long[1]@14",
+        "childId": "object_long[1]@14",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "float[1]@15",
+    "id": "object_float[1]@15",
     "type": "float[]",
     "value": "[0.000000]",
     "incomingRelations": [
       {
-        "parentId": "floats",
+        "parentId": "variable_floats",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "floats",
+    "id": "variable_floats",
     "name": "floats",
     "references": [
       {
-        "childId": "float[1]@15",
+        "childId": "object_float[1]@15",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "double[1]@16",
+    "id": "object_double[1]@16",
     "type": "double[]",
     "value": "[0.000000]",
     "incomingRelations": [
       {
-        "parentId": "doubles",
+        "parentId": "variable_doubles",
         "relationName": ""
       }
     ]
   },
   {
-    "id": "doubles",
+    "id": "variable_doubles",
     "name": "doubles",
     "references": [
       {
-        "childId": "double[1]@16",
+        "childId": "object_double[1]@16",
         "relationName": ""
       }
     ]

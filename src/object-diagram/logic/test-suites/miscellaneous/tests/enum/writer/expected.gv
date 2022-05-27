@@ -9,45 +9,45 @@ digraph ObjectDiagram {
     <tr><td align="left">bottomRight</td><td align="left" port="bottomRight"></td></tr>
     <tr><td align="left">background</td><td align="left" port="background"></td></tr>
   </table>>]
-  _482d9dec6ff954d68d94793f765be61dbc59cb47 [label=<<table border="0" cellborder="1" cellspacing="0">
+  _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889 [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;String[]&gt;&gt;</i></td></th>
     <tr><td colspan="2">[]</td></tr>
   </table>>]
-  _782d99bf989d0a8059bfc0b89707b5fecd44189a [label=<<table border="0" cellborder="1" cellspacing="0">
+  _46c25277abcd692a5e18dbd97d65eb7d62791a96 [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;Point&gt;&gt;</i></td></th>
     <tr><td align="left">x</td><td align="left" port="x">1 (int)</td></tr>
     <tr><td align="left">y</td><td align="left" port="y">1 (int)</td></tr>
   </table>>]
-  _a4085fe64a34efdca9c495374ced14d982a9fcf0 [label=<<table border="0" cellborder="1" cellspacing="0">
+  _a6ed3c1901ccfa2adffe839bb7b830200a6393ef [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;Point&gt;&gt;</i></td></th>
     <tr><td align="left">x</td><td align="left" port="x">5 (int)</td></tr>
     <tr><td align="left">y</td><td align="left" port="y">7 (int)</td></tr>
   </table>>]
-  _c782cb251d54e777f73ba090318ea4549ea0154c [label=<<table border="0" cellborder="1" cellspacing="0">
+  _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;Color&gt;&gt;</i></td></th>
     <tr><td align="left">ordinal</td><td align="left" port="ordinal">2 (int)</td></tr>
     <tr><td align="left">hexValue</td><td align="left" port="hexValue"></td></tr>
     <tr><td align="left">name</td><td align="left" port="name"></td></tr>
     <tr><td align="left">textValue</td><td align="left" port="textValue"></td></tr>
   </table>>]
-  _ddc022e583fa6f700df84118a557f6ee593d0896 [label=<<table border="0" cellborder="1" cellspacing="0">
+  _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"#0000FF"</td></tr>
   </table>>]
-  _68f417e07413646bc6802be73fa896ef65e71986 [label=<<table border="0" cellborder="1" cellspacing="0">
+  _998c19af6e8387e89fb44a945734ec829e663b43 [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"BLUE"</td></tr>
   </table>>]
-  _2fc96ff8cf245465ff831587cf4c032a1fee1ecb [label=<<table border="0" cellborder="1" cellspacing="0">
+  _c8f291339090d790de0913e8078a801c796e0248 [label=<<table border="0" cellborder="1" cellspacing="0">
     <th><td colspan="2"><i>&lt;&lt;String&gt;&gt;</i></td></th>
     <tr><td colspan="2">"blue"</td></tr>
   </table>>]
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _482d9dec6ff954d68d94793f765be61dbc59cb47
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeft -> _782d99bf989d0a8059bfc0b89707b5fecd44189a
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeftCopy -> _782d99bf989d0a8059bfc0b89707b5fecd44189a
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:bottomRight -> _a4085fe64a34efdca9c495374ced14d982a9fcf0
-  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:background -> _c782cb251d54e777f73ba090318ea4549ea0154c
-  _c782cb251d54e777f73ba090318ea4549ea0154c:hexValue -> _ddc022e583fa6f700df84118a557f6ee593d0896
-  _c782cb251d54e777f73ba090318ea4549ea0154c:name -> _68f417e07413646bc6802be73fa896ef65e71986
-  _c782cb251d54e777f73ba090318ea4549ea0154c:textValue -> _2fc96ff8cf245465ff831587cf4c032a1fee1ecb
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:args -> _bdb37fd1fa1b13d2c62e42aa9a27afaa093a1889
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeft -> _46c25277abcd692a5e18dbd97d65eb7d62791a96
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:topLeftCopy -> _46c25277abcd692a5e18dbd97d65eb7d62791a96
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:bottomRight -> _a6ed3c1901ccfa2adffe839bb7b830200a6393ef
+  _0f07b6f2a31cbd2e26428c51e8660b0dffe6e352:background -> _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b
+  _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b:hexValue -> _9c04b7d66febb3f9b9860ba0795ec96cd00ebd7b
+  _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b:name -> _998c19af6e8387e89fb44a945734ec829e663b43
+  _997cc01d7a247aeedb702fa90f2b9ab4ef820a7b:textValue -> _c8f291339090d790de0913e8078a801c796e0248
 }

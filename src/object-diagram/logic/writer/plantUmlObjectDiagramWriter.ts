@@ -20,7 +20,7 @@ export class PlantUmlObjectDiagramWriter extends ObjectDiagramWriter {
     yield '}';
   }
   protected *generateReferenceDeclarationLines({ startId, endId, name }: Reference): Generator<string> {
-    yield `${startId}::${name} => ${endId}`;
+    yield `${startId}::${name} ==> ${endId}`;
   }
   protected *generateFooterLines(): Generator<string> {
     yield '@enduml';

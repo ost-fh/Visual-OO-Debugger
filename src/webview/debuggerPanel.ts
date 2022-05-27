@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { isEqual } from 'lodash';
-import { PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
+import { NodeColor, PanelViewColors, PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
 import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
@@ -9,6 +9,7 @@ import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
+import * as tinycolor from 'tinycolor2';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -24,6 +25,8 @@ export class DebuggerPanel {
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
   private readonly graphVizObjectDiagramFileSaver: FileSaver;
+
+  private viewColors: PanelViewColors | undefined;
 
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
     const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
@@ -127,6 +130,9 @@ export class DebuggerPanel {
     const viewPanelVisible = this.viewPanel?.visible;
     this.teardownPanel();
     this.panelViewProxy = panelViewProxy;
+    if (this.viewColors) {
+      this.panelViewProxy.setPanelStyles(this.viewColors);
+    }
     if (viewPanelVisible) {
       this.openPanel();
     }
@@ -137,6 +143,22 @@ export class DebuggerPanel {
     this.currentVariables = undefined;
     this.inputHistory = [];
     this.historyIndex = -1;
+  }
+
+  setPanelStyles(panelViewColors: PanelViewColors): void {
+    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultNodeColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.defaultVariableColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.changedNodeColor);
+    DebuggerPanel.normalizeNodeColor(panelViewColors.changedVariableColor);
+    this.viewColors = panelViewColors;
+    this.panelViewProxy.setPanelStyles(panelViewColors);
+  }
+
+  private static normalizeNodeColor(nodecolor: NodeColor): void {
+    const color = tinycolor(nodecolor.background).isValid() ? tinycolor(nodecolor.background) : tinycolor(nodecolor.fallback);
+    nodecolor.background = color.toHexString();
+    nodecolor.border = color.darken(10).toHexString();
+    nodecolor.font = tinycolor.mostReadable(nodecolor.background, ['#000'], { includeFallbackColors: true }).toHexString();
   }
 
   private stepBack(): void {

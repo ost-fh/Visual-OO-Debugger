@@ -1,15 +1,12 @@
+import { DebugProtocol } from '@vscode/debugprotocol';
 import * as hash from 'object-hash';
 import { debug, window } from 'vscode';
-import { DebugProtocol } from '@vscode/debugprotocol';
 import { PanelViewInput, PanelViewStackFrame, PanelViewVariable } from '../model/panelViewInput';
+import { addNullPrefix, addObjectPrefix, addVariablePrefix } from '../util/nodePrefixHandler';
 import { DebuggerPanel } from '../webview/debuggerPanel';
 import { DebugSessionProxy } from './debugSessionProxy';
 
 export class DebugEventManager {
-  public static readonly variablePrefix = 'variable_';
-  public static readonly objectPrefix = 'object_';
-  public static readonly nullPrefix = 'null_';
-
   private readonly primitiveArrayDataTypes = ['boolean[]', 'char[]', 'byte[]', 'short[]', 'int[]', 'long[]', 'float[]', 'double[]'];
   private readonly primitiveDataTypes = ['boolean', 'char', 'byte', 'short', 'int', 'long', 'float', 'double'];
   private readonly sizeSuffix = 'size=';
@@ -69,7 +66,7 @@ export class DebugEventManager {
     for (const variable of variables || []) {
       if (variable.type && this.primitiveDataTypes.includes(variable.type)) {
         const panelViewVariable: PanelViewVariable = {
-          id: `${DebugEventManager.variablePrefix}${hash(variable)}`,
+          id: addVariablePrefix(hash(variable)),
           name: variable.name,
           type: variable.type,
           value: variable.value,
@@ -126,7 +123,7 @@ export class DebugEventManager {
     panelViewStackFrame: PanelViewStackFrame
   ): Promise<void> {
     let isNewAndObject = false;
-    const id = variable.value === 'null' ? variable.value : `${DebugEventManager.objectPrefix}${variable.value.split(this.sizeSuffix)[0]}`;
+    const id = variable.type === 'null' ? addNullPrefix(hash(variable)) : addObjectPrefix(variable.value.split(this.sizeSuffix)[0]);
     let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable);
@@ -172,11 +169,10 @@ export class DebugEventManager {
     variable: DebugProtocol.Variable
   ): Promise<[variable: PanelViewVariable, isNewAndObject: boolean]> {
     let isNewAndObject = false;
-    const panelViewVariable: PanelViewVariable = { id: id !== 'null' ? id : `${DebugEventManager.variablePrefix}${hash(variable)}` };
+    const panelViewVariable: PanelViewVariable = { id };
 
     if (variable.type === 'null') {
       panelViewVariable.value = 'null';
-      panelViewVariable.id = `${DebugEventManager.nullPrefix}${hash(variable)}`;
       return [panelViewVariable, isNewAndObject];
     }
 
@@ -196,7 +192,7 @@ export class DebugEventManager {
 
   private createVariableEntryForNamedVariable(variable: DebugProtocol.Variable, referencedObjectId: string): PanelViewVariable {
     return {
-      id: `${DebugEventManager.variablePrefix}${variable.name}`,
+      id: addVariablePrefix(variable.name),
       name: variable.name,
       references: [{ childId: referencedObjectId, relationName: '' }],
     };
@@ -212,8 +208,8 @@ export class DebugEventManager {
     let value = fullLengthArray;
     let tooltip;
     if (fullLengthArray.length > this.maxValueLength) {
-      const shorterVersion = fullLengthArray.substr(0, this.maxValueLength - 2);
-      value = `[${shorterVersion.substr(1, shorterVersion.lastIndexOf(delimiter))}\u2026]`;
+      const shorterVersion = fullLengthArray.substring(0, this.maxValueLength - 1);
+      value = `[${shorterVersion.substring(1, shorterVersion.lastIndexOf(delimiter) + 1)}\u2026]`;
       tooltip = fullLengthArray;
     }
 
@@ -224,8 +220,8 @@ export class DebugEventManager {
     let tooltip;
     let value = variable.value;
     if (value.length > this.maxValueLength) {
-      const shorterVersion = value.substr(0, this.maxValueLength - 2);
-      value = `"${shorterVersion.substr(1, shorterVersion.lastIndexOf(' '))}\u2026"`;
+      const shorterVersion = value.substring(0, this.maxValueLength - 1);
+      value = `"${shorterVersion.substring(1, shorterVersion.lastIndexOf(' ') + 1)}\u2026"`;
       tooltip = variable.value;
     }
 

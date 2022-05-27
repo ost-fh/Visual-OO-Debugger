@@ -1,42 +1,32 @@
 import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
-import { Color, Data, Edge, Node, Options } from 'vis-network';
+import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { ExtensionContext, Uri, Webview } from 'vscode';
-import { PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
+import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation, NodeColor } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
+type VisjsGroupName = 'defaultNode' | 'defaultVariable' | 'changedNode' | 'changedVariable';
+
+interface VisjsGroup {
+  color: Color;
+  font?: Font;
+}
+
+type VisjsGroupsByName = Record<VisjsGroupName, VisjsGroup>;
+
+interface EdgeColor {
+  color?: string;
+  highlight?: string;
+}
 
 export class VisjsPanelView implements PanelViewProxy {
-  private readonly defaultNodeColor: Color = {
-    border: '#005cb2',
-    background: '#1e88e5',
-    highlight: {
-      border: '#005cb2',
-      background: '#1e88e5',
-    },
-  };
-
-  private readonly defaultEdgeColor: { color?: string; highlight?: string } = {
-    color: '#005cb2',
-    highlight: '#005cb2',
-  };
-
-  private readonly changedNodeColor: Color = {
-    border: '#c6a700',
-    background: '#fdd835',
-    highlight: {
-      border: '#c6a700',
-      background: '#fdd835',
-    },
-  };
-
-  private readonly changedEdgeColor: { color?: string; highlight?: string } = {
-    color: '#c6a700',
-    highlight: '#c6a700',
-  };
+  private visjsGroupsByName?: VisjsGroupsByName;
+  private defaultEdgeColor: EdgeColor = {};
+  private changedEdgeColor: EdgeColor = {};
+  private updateColor = false;
 
   constructor(private readonly context: ExtensionContext) {}
 
@@ -68,10 +58,10 @@ export class VisjsPanelView implements PanelViewProxy {
   }
 
   updatePanel(newVariables: PanelViewInputVariableMap, prevVariables?: PanelViewInputVariableMap): PanelViewCommand {
-    if (!prevVariables) {
+    if (!prevVariables || this.updateColor) {
+      this.updateColor = false;
       const options: Options = {
         nodes: {
-          color: this.defaultNodeColor,
           shape: 'box',
         },
         edges: {
@@ -84,6 +74,7 @@ export class VisjsPanelView implements PanelViewProxy {
             nodeDistance: 100,
           },
         },
+        groups: this.visjsGroupsByName,
       };
 
       return { command: 'initializeVisjs', data: this.parseInputToData(newVariables), options };
@@ -115,10 +106,18 @@ export class VisjsPanelView implements PanelViewProxy {
     for (const nodeChange of changes.nodeChanges) {
       switch (nodeChange.action) {
         case ChangeAction.create:
-          addNodes.push({ ...nodeChange.node, color: this.changedNodeColor });
+          addNodes.push({
+            ...nodeChange.node,
+            group: ((nodeChange.node.group as VisjsGroupName) === 'defaultVariable' ? 'changedVariable' : 'changedNode') as VisjsGroupName,
+          });
           break;
         case ChangeAction.update:
-          updateNodes.push({ ...nodeChange.newNode, color: this.changedNodeColor });
+          updateNodes.push({
+            ...nodeChange.newNode,
+            group: ((nodeChange.newNode.group as VisjsGroupName) === 'defaultVariable'
+              ? 'changedVariable'
+              : 'changedNode') as VisjsGroupName,
+          });
           break;
         case ChangeAction.delete:
           deleteNodeIds.push(nodeChange.node.id as string);
@@ -185,20 +184,6 @@ export class VisjsPanelView implements PanelViewProxy {
     nodeChanges: ChangedNode[],
     edgeChanges: ChangedEdge[]
   ): void {
-    if (
-      oldVariable.value !== newVariable.value ||
-      oldVariable.tooltip !== newVariable.tooltip ||
-      oldVariable.type !== newVariable.type ||
-      oldVariable.name !== newVariable.name ||
-      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues)
-    ) {
-      nodeChanges.push({
-        action: ChangeAction.update,
-        oldNode: this.createNode(oldVariable),
-        newNode: this.createNode(newVariable),
-      });
-    }
-
     const addedIncomingRelations = (newVariable.incomingRelations || []).filter(
       (relation: VariableRelation) =>
         !some(oldVariable.incomingRelations, (rel) => rel.relationName === relation.relationName && rel.parentId === relation.parentId)
@@ -229,6 +214,21 @@ export class VisjsPanelView implements PanelViewProxy {
           to: newVariable.id,
           label: relation.relationName,
         },
+      });
+    }
+
+    if (
+      oldVariable.value !== newVariable.value ||
+      oldVariable.tooltip !== newVariable.tooltip ||
+      oldVariable.type !== newVariable.type ||
+      oldVariable.name !== newVariable.name ||
+      !isEqual(oldVariable.primitiveValues, newVariable.primitiveValues) ||
+      (edgeChanges.some((changedEdge) => changedEdge.edge.from === oldVariable.id) && oldVariable.id.startsWith('variable_'))
+    ) {
+      nodeChanges.push({
+        action: ChangeAction.update,
+        oldNode: this.createNode(oldVariable),
+        newNode: this.createNode(newVariable),
       });
     }
   }
@@ -316,6 +316,7 @@ export class VisjsPanelView implements PanelViewProxy {
   private createNode(variable: PanelViewVariable): Node {
     const hasValueAndType = variable.type && variable.name;
     const variableType = variable.type ? `(${variable.type})` : '';
+    const group: VisjsGroupName = !variable.type && variable.name ? 'defaultVariable' : 'defaultNode';
     const topLine = `${variableType}${hasValueAndType ? ' ' : ''}${variable.name ? variable.name : ''}`;
     let bottomSection: string | undefined;
     if (variable.value) {
@@ -334,7 +335,7 @@ export class VisjsPanelView implements PanelViewProxy {
       label = bottomSection;
     }
 
-    return { id: variable.id, label, title: variable.tooltip };
+    return { id: variable.id, label, title: variable.tooltip, group };
   }
 
   private createEdges(variable: PanelViewVariable): Edge[] {
@@ -350,5 +351,48 @@ export class VisjsPanelView implements PanelViewProxy {
     }
 
     return edges;
+  }
+
+  public setPanelStyles(viewColors: PanelViewColors): void {
+    this.visjsGroupsByName = (['defaultNode', 'defaultVariable', 'changedNode', 'changedVariable'] as VisjsGroupName[]).reduce(
+      (groups, name) => ({
+        ...groups,
+        [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
+      }),
+      {}
+    ) as VisjsGroupsByName;
+    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultNodeColor);
+    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedNodeColor);
+  }
+
+  private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
+    return {
+      color: VisjsPanelView.getColor(nodeColor),
+      font: VisjsPanelView.getFont(nodeColor),
+    };
+  }
+
+  private static getColor(nodeColor: NodeColor): Color {
+    return {
+      border: nodeColor.border,
+      background: nodeColor.background,
+      highlight: {
+        border: nodeColor.border,
+        background: nodeColor.background,
+      },
+    };
+  }
+
+  private static getFont(nodeColor: NodeColor): Font {
+    return {
+      color: nodeColor.font,
+    };
+  }
+
+  private static getEdgeColor(nodeColor: NodeColor): EdgeColor {
+    return {
+      color: nodeColor.border,
+      highlight: nodeColor.border,
+    };
   }
 }
