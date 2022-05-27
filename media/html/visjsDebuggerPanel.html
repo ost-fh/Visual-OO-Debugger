@@ -101,11 +101,11 @@
             if (network.isCluster(node)) {
               network.openCluster(node);
               edges.updateOnly(
-              edges.map((edge) => ({
-                ...edge,
-                physics: isPhysicsOn(edge)
-              }))
-            );
+                edges.map((edge) => ({
+                  ...edge,
+                  physics: isPhysicsOn(edge),
+                }))
+              );
             } else if (node.startsWith('variable_')) {
               clusterNodes(node);
             } else {
@@ -170,7 +170,7 @@
           edges.map((edge) => ({
             ...edge,
             color: defaultEdgeColor,
-            physics: isPhysicsOn(edge)
+            physics: isPhysicsOn(edge),
           }))
         );
         const edgesClusterStack = getEdgesClusterStack(message);
@@ -185,17 +185,17 @@
         reCluster(edgesClusterStack);
       }
 
-      function isPhysicsOn(edge){
+      function isPhysicsOn(edge) {
         let isPhysicsOn = network.body.nodes[edge.to].options.physics && network.body.nodes[edge.from].options.physics;
         const clusters = network.findNode(edge.to).concat(network.findNode(edge.from));
-        clusters.forEach(nodeId => {
-          if(!network.body.nodes[nodeId].options.physics){
-            isPhysicsOn =  false;
+        clusters.forEach((nodeId) => {
+          if (!network.body.nodes[nodeId].options.physics) {
+            isPhysicsOn = false;
           }
         });
         return isPhysicsOn;
       }
-      
+
       function getEdgesClusterStack(message) {
         const edgesClusterStack = [];
         message.data.addEdges.forEach((edge) => {
@@ -365,7 +365,7 @@
         );
       }
 
-      function showAllNodes() {    
+      function showAllNodes() {
         let nodeIds = Object.keys(network.body.nodes).filter((nodeId) => {
           return !nodeId.startsWith('edge');
         });
