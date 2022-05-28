@@ -49,13 +49,13 @@
         "command": "visual-oo-debugger.startGIF",
         "title": "Start recording a GIF",
         "category": "VOOD",
-        "enablement": "!viewPanel.recordingGif && !viewPanel.recordingWebm"
+        "enablement": "viewPanel.canRecordGif && !viewPanel.recordingGif && !viewPanel.recordingWebm"
       },
       {
         "command": "visual-oo-debugger.startWEBM",
         "title": "Start recording a WEBM",
         "category": "VOOD",
-        "enablement": "!viewPanel.recordingWebm && !viewPanel.recordingGif"
+        "enablement": "viewPanel.canRecordWebm && !viewPanel.recordingWebm && !viewPanel.recordingGif"
       },
       {
         "command": "visual-oo-debugger.stopGIF",
