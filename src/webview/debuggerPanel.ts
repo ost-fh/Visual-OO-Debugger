@@ -1,7 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { isEqual } from 'lodash';
 import { NodeColor, PanelViewColors, PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
-import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
 import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
@@ -9,6 +8,7 @@ import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
+import { DebuggerPanelMessage } from './panel-views/debuggerPanelMessage';
 import * as tinycolor from 'tinycolor2';
 
 export class DebuggerPanel {
@@ -55,7 +55,7 @@ export class DebuggerPanel {
     this.viewPanel.webview.html = this.panelViewProxy.getHtml(this.viewPanel.webview);
 
     this.viewPanel.webview.onDidReceiveMessage(
-      (message: WebviewMessage) => {
+      (message: DebuggerPanelMessage) => {
         switch (message.command) {
           case 'stepBack':
             this.stepBack();
@@ -64,10 +64,10 @@ export class DebuggerPanel {
             this.stepForward();
             break;
           case 'selectStackFrame':
-            this.selectStackFrame(message.content as number);
+            this.selectStackFrame(message.content);
             break;
           default:
-            console.debug(message);
+            console.warn('Unknown message:', message);
         }
       },
       undefined,
