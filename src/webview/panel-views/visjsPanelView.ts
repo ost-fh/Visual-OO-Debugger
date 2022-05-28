@@ -80,6 +80,15 @@ export class VisjsPanelView implements PanelViewProxy {
     return { command: 'exportVisjs' };
   }
 
+  canRecordGif(): boolean {
+    //  TODO: VOOD-171: Enable
+    return false;
+  }
+
+  canRecordWebm(): boolean {
+    return true;
+  }
+
   startRecordingPanelGif(): PanelViewCommand {
     return { command: 'startRecordingVisjsGif' };
   }

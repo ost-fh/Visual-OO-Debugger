@@ -1,7 +1,6 @@
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
 import { isEqual } from 'lodash';
 import { NodeColor, PanelViewColors, PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
-import { WebviewMessage } from '../model/webviewMessage';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
 import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
@@ -9,6 +8,8 @@ import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
 import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
+import { DebuggerPanelMessage } from './panel-views/debuggerPanelMessage';
+import { ContextManager } from '../util/contextManager';
 import * as tinycolor from 'tinycolor2';
 
 export class DebuggerPanel {
@@ -28,7 +29,19 @@ export class DebuggerPanel {
 
   private viewColors: PanelViewColors | undefined;
 
+  private readonly viewPanelContextManager = new ContextManager<
+    'viewPanel',
+    {
+      exists: boolean;
+      canRecordGif: boolean;
+      recordingGif: boolean;
+      canRecordWebm: boolean;
+      recordingWebm: boolean;
+    }
+  >('viewPanel', (qualifiedName, value): void => void commands.executeCommand('setContext', qualifiedName, value));
+
   constructor(private readonly context: ExtensionContext, private panelViewProxy: PanelViewProxy) {
+    this.updateCapabilitiesFromPanelViewProxy();
     const objectDiagramFileSaverFactory = this.createObjectDiagramFileSaverFactory(context.workspaceState);
     this.plantUmlObjectDiagramFileSaver = objectDiagramFileSaverFactory.createPlantUmlObjectDiagramFileSaver();
     this.graphVizObjectDiagramFileSaver = objectDiagramFileSaverFactory.createGraphVizObjectDiagramFileSaver();
@@ -55,7 +68,7 @@ export class DebuggerPanel {
     this.viewPanel.webview.html = this.panelViewProxy.getHtml(this.viewPanel.webview);
 
     this.viewPanel.webview.onDidReceiveMessage(
-      (message: WebviewMessage) => {
+      (message: DebuggerPanelMessage) => {
         switch (message.command) {
           case 'stepBack':
             this.stepBack();
@@ -64,17 +77,17 @@ export class DebuggerPanel {
             this.stepForward();
             break;
           case 'selectStackFrame':
-            this.selectStackFrame(message.content as number);
+            this.selectStackFrame(message.content);
             break;
           default:
-            console.debug(message);
+            console.warn('Unknown message:', message);
         }
       },
       undefined,
       this.context.subscriptions
     );
 
-    void commands.executeCommand('setContext', 'viewPanel.exists', true);
+    this.viewPanelContextManager.setValue('exists', true);
 
     if (this.currentPanelViewInput) {
       this.currentVariables = undefined;
@@ -107,23 +120,23 @@ export class DebuggerPanel {
   }
 
   startRecordingPanelGif(): void {
-    void commands.executeCommand('setContext', 'viewPanel.recordingGif', true);
+    this.viewPanelContextManager.setValue('recordingGif', true);
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanelGif());
   }
 
   startRecordingPanelWebm(): void {
-    void commands.executeCommand('setContext', 'viewPanel.recordingWebm', true);
+    this.viewPanelContextManager.setValue('recordingWebm', true);
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.startRecordingPanelWebm());
   }
 
   stopRecordingPanelGif(): void {
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanelGif());
-    void commands.executeCommand('setContext', 'viewPanel.recordingGif', false);
+    this.viewPanelContextManager.setValue('recordingGif', false);
   }
 
   stopRecordingPanelWebm(): void {
     this.postCommandToWebViewIfViewPanelIsDefined(() => this.panelViewProxy.stopRecordingPanelWebm());
-    void commands.executeCommand('setContext', 'viewPanel.recordingWebm', false);
+    this.viewPanelContextManager.setValue('recordingWebm', false);
   }
 
   exportAsPlantUml(): Promise<void> {
@@ -138,6 +151,7 @@ export class DebuggerPanel {
     const viewPanelVisible = this.viewPanel?.visible;
     this.teardownPanel();
     this.panelViewProxy = panelViewProxy;
+    this.updateCapabilitiesFromPanelViewProxy();
     if (this.viewColors) {
       this.panelViewProxy.setPanelStyles(this.viewColors);
     }
@@ -241,6 +255,13 @@ export class DebuggerPanel {
     if (typeof this.panelViewProxy.teardownPanelView === 'function') {
       this.panelViewProxy.teardownPanelView();
     }
-    void commands.executeCommand('setContext', 'viewPanel.exists', false);
+    this.viewPanelContextManager.setValue('exists', false);
+  }
+
+  private updateCapabilitiesFromPanelViewProxy(): void {
+    this.viewPanelContextManager.setValues({
+      canRecordGif: this.panelViewProxy.canRecordGif(),
+      canRecordWebm: this.panelViewProxy.canRecordWebm(),
+    });
   }
 }
