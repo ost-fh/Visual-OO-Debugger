@@ -2,6 +2,7 @@ import { commands, ExtensionContext, workspace } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
+import { JointJsPanelViewProxy } from './webview/panel-views/jointJsPanelViewProxy';
 import { VisjsPanelViewProxy } from './webview/panel-views/visjsPanelViewProxy';
 import { panelViewColorKeys, PanelViewColors } from './model/panelViewInput';
 
@@ -61,6 +62,8 @@ class Extension {
   getPanelViewByConfiguration(): PanelViewProxy {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
     switch (configuration.get('preferredView')) {
+      case 'JointJS':
+        return new JointJsPanelViewProxy(this.context);
       case 'vis.js':
         return new VisjsPanelViewProxy(this.context);
       default:
