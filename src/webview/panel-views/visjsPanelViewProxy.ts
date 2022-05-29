@@ -1,13 +1,10 @@
-import { readFileSync } from 'fs';
 import { isEqual, some } from 'lodash';
 import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
-import { ExtensionContext, Uri, Webview } from 'vscode';
+import { ExtensionContext } from 'vscode';
 import { PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation, NodeColor } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
-import { NodeModulesAccessor } from '../../node-modules-accessor/nodeModulesAccessor';
-import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
-import { PanelViewCommand, PanelViewProxy } from './panelViewProxy';
+import { AbstractPanelViewProxy } from './abstractPanelViewProxy';
 type VisjsGroupName = 'defaultNode' | 'defaultVariable' | 'changedNode' | 'changedVariable';
 
 interface VisjsGroup {
@@ -22,78 +19,46 @@ interface EdgeColor {
   highlight?: string;
 }
 
-export class VisjsPanelView implements PanelViewProxy {
+export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, VisjsUpdateInput> {
+  protected readonly debuggerPanelPrefix = 'visjs';
+  protected readonly extraCssNodeModuleKeys = [];
+
   private visjsGroupsByName?: VisjsGroupsByName;
   private defaultEdgeColor: EdgeColor = {};
   private changedEdgeColor: EdgeColor = {};
-  private updateColor = false;
 
-  constructor(private readonly context: ExtensionContext) {}
-
-  getHtml(webview: Webview): string {
-    const visNetworkUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.visNetworkMinJs))
-    );
-    const codiconsUri = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.codiconCss))
-    );
-    const webviewUiToolkit = webview.asWebviewUri(
-      Uri.joinPath(this.context.extensionUri, ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.webviewUiToolkit))
-    );
-    const cssUri = webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'media', 'css', 'visjsDebuggerPanel.css'));
-    const filePath = Uri.joinPath(this.context.extensionUri, 'media', 'html', 'visjsDebuggerPanel.html');
-    return readFileSync(filePath.fsPath, 'utf8')
-      .replace('{{vis-network.min.js}}', visNetworkUri.toString())
-      .replace('{{visjsDebuggerPanel.css}}', cssUri.toString())
-      .replace('{{codicon.css}}', codiconsUri.toString())
-      .replace('{{toolkit.min.js}}', webviewUiToolkit.toString());
+  constructor(context: ExtensionContext) {
+    super(context);
   }
 
-  updatePanel(newVariables: PanelViewInputVariableMap, prevVariables?: PanelViewInputVariableMap): PanelViewCommand {
-    if (!prevVariables || this.updateColor) {
-      this.updateColor = false;
-      const options: Options = {
-        nodes: {
-          shape: 'box',
+  protected getRenderingAreaData(variables: PanelViewInputVariableMap): Data {
+    return this.parseInputToData(variables);
+  }
+
+  protected getRenderingAreaOptions(): Options {
+    return {
+      nodes: {
+        shape: 'box',
+      },
+      edges: {
+        arrows: 'to',
+        color: this.defaultEdgeColor,
+      },
+      physics: {
+        solver: 'repulsion',
+        repulsion: {
+          nodeDistance: 100,
         },
-        edges: {
-          arrows: 'to',
-          color: this.defaultEdgeColor,
-        },
-        physics: {
-          solver: 'repulsion',
-          repulsion: {
-            nodeDistance: 100,
-          },
-        },
-        groups: this.visjsGroupsByName,
-      };
-
-      return { command: 'initializeVisjs', data: this.parseInputToData(newVariables), options };
-    }
-
-    const changes = this.createChanges(newVariables, prevVariables);
-    return { command: 'updateVisjs', data: this.parseChangesToUpdateInput(changes) };
+      },
+      groups: this.visjsGroupsByName,
+    };
   }
 
-  exportPanel(): PanelViewCommand {
-    return { command: 'exportVisjs' };
-  }
-
-  startRecordingPanelGif(): PanelViewCommand {
-    return { command: 'startRecordingVisjsGif' };
-  }
-
-  startRecordingPanelWebm(): PanelViewCommand {
-    return { command: 'startRecordingVisjsWebm' };
-  }
-
-  stopRecordingPanelGif(): PanelViewCommand {
-    return { command: 'stopRecordingVisjsGif' };
-  }
-
-  stopRecordingPanelWebm(): PanelViewCommand {
-    return { command: 'stopRecordingVisjsWebm' };
+  protected getRenderingAreaUpdateData(
+    newVariables: PanelViewInputVariableMap,
+    prevVariables: Map<string, PanelViewVariable>
+  ): VisjsUpdateInput {
+    return this.parseChangesToUpdateInput(this.createChanges(newVariables, prevVariables));
   }
 
   private parseChangesToUpdateInput(changes: VisjsChanges): VisjsUpdateInput {
@@ -353,22 +318,22 @@ export class VisjsPanelView implements PanelViewProxy {
     return edges;
   }
 
-  public setPanelStyles(viewColors: PanelViewColors): void {
+  protected setColors(viewColors: PanelViewColors): void {
     this.visjsGroupsByName = (['defaultNode', 'defaultVariable', 'changedNode', 'changedVariable'] as VisjsGroupName[]).reduce(
       (groups, name) => ({
         ...groups,
-        [name]: VisjsPanelView.getVisjsGroup(viewColors[`${name}Color`]),
+        [name]: VisjsPanelViewProxy.getVisjsGroup(viewColors[`${name}Color`]),
       }),
       {}
     ) as VisjsGroupsByName;
-    this.defaultEdgeColor = VisjsPanelView.getEdgeColor(viewColors.defaultNodeColor);
-    this.changedEdgeColor = VisjsPanelView.getEdgeColor(viewColors.changedNodeColor);
+    this.defaultEdgeColor = VisjsPanelViewProxy.getEdgeColor(viewColors.defaultNodeColor);
+    this.changedEdgeColor = VisjsPanelViewProxy.getEdgeColor(viewColors.changedNodeColor);
   }
 
   private static getVisjsGroup(nodeColor: NodeColor): VisjsGroup {
     return {
-      color: VisjsPanelView.getColor(nodeColor),
-      font: VisjsPanelView.getFont(nodeColor),
+      color: VisjsPanelViewProxy.getColor(nodeColor),
+      font: VisjsPanelViewProxy.getFont(nodeColor),
     };
   }
 

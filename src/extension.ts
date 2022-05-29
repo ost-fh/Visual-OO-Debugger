@@ -2,7 +2,7 @@ import { commands, ExtensionContext, workspace } from 'vscode';
 import { DebugEventManager } from './debug-adapter/debugEventManager';
 import { DebuggerPanel } from './webview/debuggerPanel';
 import { PanelViewProxy } from './webview/panel-views/panelViewProxy';
-import { VisjsPanelView } from './webview/panel-views/visjsPanelView';
+import { VisjsPanelViewProxy } from './webview/panel-views/visjsPanelViewProxy';
 import { panelViewColorKeys, PanelViewColors } from './model/panelViewInput';
 
 export function activate(context: ExtensionContext): void {
@@ -62,9 +62,9 @@ class Extension {
     const configuration = workspace.getConfiguration('visual-oo-debugger');
     switch (configuration.get('preferredView')) {
       case 'vis.js':
-        return new VisjsPanelView(this.context);
+        return new VisjsPanelViewProxy(this.context);
       default:
-        return new VisjsPanelView(this.context);
+        return new VisjsPanelViewProxy(this.context);
     }
   }
   getPanelStylesByConfiguration(): PanelViewColors {
