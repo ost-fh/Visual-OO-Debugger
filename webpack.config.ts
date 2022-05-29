@@ -47,11 +47,7 @@ const config: Configuration = {
 
 const webviewConfig: Configuration = {
   target: 'web',
-  entry: [
-    //  TODO: VOOD-173: Register jointJsDebuggerPanel.ts
-    //    'jointJs',
-    'visjs',
-  ].reduce((entries, partialName) => {
+  entry: ['jointJs', 'visjs'].reduce((entries, partialName) => {
     const name = `${partialName}DebuggerPanel`;
     return {
       ...entries,
