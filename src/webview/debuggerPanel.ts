@@ -80,6 +80,7 @@ export class DebuggerPanel {
     void commands.executeCommand('setContext', 'viewPanel.exists', true);
 
     if (this.currentPanelViewInput) {
+      this.currentVariables = undefined;
       this.updatePanel(this.currentPanelViewInput);
     }
   }
