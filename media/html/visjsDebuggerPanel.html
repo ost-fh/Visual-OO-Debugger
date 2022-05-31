@@ -187,14 +187,11 @@
       }
 
       function isPhysicsOn(edge) {
-        let isPhysicsOn = network.body.nodes[edge.to].options.physics && network.body.nodes[edge.from].options.physics;
+        if (!network.body.nodes[edge.to].options.physics || !network.body.nodes[edge.from].options.physics) {
+          return false;
+        }
         const clusters = network.findNode(edge.to).concat(network.findNode(edge.from));
-        clusters.forEach((nodeId) => {
-          if (!network.body.nodes[nodeId].options.physics) {
-            isPhysicsOn = false;
-          }
-        });
-        return isPhysicsOn;
+        return clusters.every((nodeId) => network.body.nodes[nodeId].options.physics);
       }
 
       function getEdgesClusterStack(message) {
@@ -221,7 +218,7 @@
 
       function openClusterStack(clusterStack) {
         clusterStack.forEach((cluster) => {
-          if (nodes.get(cluster) && network.isCluster(cluster)) {
+          if (nodes.get(cluster) !== undefined && network.isCluster(cluster)) {
             network.openCluster(cluster);
           }
         });
@@ -359,13 +356,11 @@
       }
 
       function openAllClusters() {
-        openClusterStack(Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')));
+        openClusterStack(network ? Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')) : []);
       }
 
       function showAllNodes() {
-        let nodeIds = Object.keys(network.body.nodes).filter((nodeId) => {
-          return !nodeId.startsWith('edge');
-        });
+        const nodeIds = network ? Object.keys(network.body.nodes).filter((nodeId) => !nodeId.startsWith('edge')) : [];
 
         nodeIds.forEach((nodeId) => {
           if (network.body.nodes[nodeId].options.hidden) {
@@ -375,14 +370,14 @@
       }
 
       function hideNode(event) {
-        const nodeId = network.getNodeAt({ x: event.pageX, y: event.pageY });
+        const nodeId = network?.getNodeAt({ x: event.pageX, y: event.pageY });
         if (nodeId) {
           setVisibility(nodeId, false);
         }
       }
 
       function setVisibility(nodeId, visibility) {
-        const nodeEdgeId = nodeId.startsWith('cluster_') ? nodeId.slice(8) : nodeId;
+        const nodeEdgeId = nodeId.startsWith('cluster_') ? nodeId.substring(8) : nodeId;
         const nodeEdges = network.getConnectedEdges(nodeEdgeId);
         network.clustering.updateClusteredNode(nodeId, {
           hidden: !visibility,
@@ -397,7 +392,7 @@
       }
 
       function setOpacity(event, opacityValue) {
-        const nodeId = network.getNodeAt({ x: event.pageX, y: event.pageY });
+        const nodeId = network?.getNodeAt({ x: event.pageX, y: event.pageY });
         if (nodeId) {
           network.clustering.updateClusteredNode(nodeId, {
             opacity: opacityValue,
