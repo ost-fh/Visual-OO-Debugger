@@ -218,7 +218,7 @@
 
       function openClusterStack(clusterStack) {
         clusterStack.forEach((cluster) => {
-          if (nodes.get(cluster) !== undefined && network.isCluster(cluster)) {
+          if (network.isCluster(cluster)) {
             network.openCluster(cluster);
           }
         });
