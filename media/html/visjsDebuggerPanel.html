@@ -25,6 +25,17 @@
         <vscode-button class="open-all-clusters-button" appearance="icon" onclick="openAllClusters()" aria-label="Open all clusters">
           <span class="codicon codicon-type-hierarchy"></span>
         </vscode-button>
+        <vscode-button
+          class="hide-node-button"
+          appearance="icon"
+          onclick="showAllNodes()"
+          onmouseenter="setOpacity(event,0.8)"
+          onmouseleave="setOpacity(event,1)"
+          onmouseup="hideNode(event)"
+          aria-label="Hides node dragged on to it"
+        >
+          <span class="codicon codicon-eye-closed"></span>
+        </vscode-button>
       </div>
     </div>
 
@@ -87,6 +98,12 @@
             const node = params.nodes[0];
             if (network.isCluster(node)) {
               network.openCluster(node);
+              edges.updateOnly(
+                edges.map((edge) => ({
+                  ...edge,
+                  physics: isPhysicsOn(edge),
+                }))
+              );
             } else if (node.startsWith('variable_')) {
               clusterNodes(node);
             } else {
@@ -134,7 +151,7 @@
             font: nodes.get(id).font,
           },
         };
-        if (nodeList != undefined) {
+        if (nodeList) {
           network.cluster(options);
         } else {
           network.clusterByConnection(id, options);
@@ -154,13 +171,27 @@
           edges.map((edge) => ({
             ...edge,
             color: defaultEdgeColor,
+            physics: isPhysicsOn(edge),
           }))
         );
         const edgesClusterStack = getEdgesClusterStack(message);
         nodes.add(message.data.addNodes);
         nodes.updateOnly(message.data.updateNodes);
-        edges.add(message.data.addEdges);
+        edges.add(
+          message.data.addEdges.map((edge) => ({
+            ...edge,
+            physics: isPhysicsOn(edge),
+          }))
+        );
         reCluster(edgesClusterStack);
+      }
+
+      function isPhysicsOn(edge) {
+        if (!network.body.nodes[edge.to].options.physics || !network.body.nodes[edge.from].options.physics) {
+          return false;
+        }
+        const clusters = network.findNode(edge.to).concat(network.findNode(edge.from));
+        return clusters.every((nodeId) => network.body.nodes[nodeId].options.physics);
       }
 
       function getEdgesClusterStack(message) {
@@ -187,7 +218,7 @@
 
       function openClusterStack(clusterStack) {
         clusterStack.forEach((cluster) => {
-          if (nodes.get(cluster) !== undefined && network.isCluster(cluster)) {
+          if (network.isCluster(cluster)) {
             network.openCluster(cluster);
           }
         });
@@ -195,9 +226,11 @@
 
       function updateCluster(clusterStack) {
         if (clusterStack.length >= 1) {
-          if (clusterStack[0] !== undefined && network.isCluster(clusterStack[0])) {
-            const clusterNodeId = clusterStack[0].substring(8);
-            network.openCluster(clusterStack[0]);
+          if (clusterStack[0] && network.isCluster(clusterStack[0])) {
+            const clusterId = clusterStack[0];
+            const clusterNodeId = clusterId.substring(8);
+            const visibility = !network.body.nodes[clusterId].options.hidden;
+            network.openCluster(clusterId);
 
             clusterStack.shift();
             updateCluster(clusterStack);
@@ -207,6 +240,7 @@
             } else {
               clusterChildNodes(clusterNodeId);
             }
+            setVisibility(clusterId, visibility);
           } else {
             clusterStack.shift();
             updateCluster(clusterStack);
@@ -322,7 +356,48 @@
       }
 
       function openAllClusters() {
-        openClusterStack(Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')));
+        openClusterStack(network ? Object.keys(network.body.nodes).filter((nodeId) => nodeId.startsWith('cluster_')) : []);
+      }
+
+      function showAllNodes() {
+        const nodeIds = network ? Object.keys(network.body.nodes).filter((nodeId) => !nodeId.startsWith('edge')) : [];
+
+        nodeIds.forEach((nodeId) => {
+          if (network.body.nodes[nodeId].options.hidden) {
+            setVisibility(nodeId, true);
+          }
+        });
+      }
+
+      function hideNode(event) {
+        const nodeId = network?.getNodeAt({ x: event.pageX, y: event.pageY });
+        if (nodeId) {
+          setVisibility(nodeId, false);
+        }
+      }
+
+      function setVisibility(nodeId, visibility) {
+        const nodeEdgeId = nodeId.startsWith('cluster_') ? nodeId.substring(8) : nodeId;
+        const nodeEdges = network.getConnectedEdges(nodeEdgeId);
+        network.clustering.updateClusteredNode(nodeId, {
+          hidden: !visibility,
+          physics: visibility,
+          opacity: 1,
+        });
+        nodeEdges.forEach((edgeId) => {
+          network.clustering.updateEdge(edgeId, {
+            physics: visibility,
+          });
+        });
+      }
+
+      function setOpacity(event, opacityValue) {
+        const nodeId = network?.getNodeAt({ x: event.pageX, y: event.pageY });
+        if (nodeId) {
+          network.clustering.updateClusteredNode(nodeId, {
+            opacity: opacityValue,
+          });
+        }
       }
     </script>
   </body>
