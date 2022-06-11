@@ -2,6 +2,7 @@ import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
 import { Button, Dropdown, Option } from '@vscode/webview-ui-toolkit';
 import { PanelViewProxyMessage } from './panelViewProxyMessage';
 import { DebuggerPanelMessage } from '../debuggerPanelMessage';
+import GIFEncoder = require('gif-encoder-2-browser');
 
 type ClickHandler = () => void;
 
@@ -10,8 +11,11 @@ const renderingAreaClassName = 'rendering-area';
 type WebMRecordingContext = Pick<MediaRecorder, 'stop'>;
 
 interface GifRecordingContext {
-  //  TODO: VOOD-171: Replace with proper GIF recording context contents
-  dummy: undefined;
+  interval: NodeJS.Timer;
+  frames: ImageData[];
+  height: number;
+  width: number;
+  frameRate: number;
 }
 
 interface RecordingContextsByFormat {
@@ -38,6 +42,7 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
   private canvas: HTMLCanvasElement | null = null;
   private readonly recordingContextsByFormat: Partial<RecordingContextsByFormat> = {};
   private readonly recordingIndicator = this.createRecordingIndicator();
+  private readonly renderIndicator = this.createRenderIndicator();
 
   protected constructor(
     protected readonly window: Window,
@@ -124,19 +129,66 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
   }
 
   private startGifRecording(): void {
-    this.startRecording<'gif'>('gif', () => {
-      //  TODO: VOOD-171: Initialize GIF recording context
-      //  TODO: VOOD-171: Start GIF recording
+    this.startRecording<'gif'>('gif', (canvas) => {
+      const height = canvas.height;
+      const width = canvas.width;
+      const frameRate = 80;
+
+      this.recordFramesGifRecording();
+      const interval = setInterval(() => {
+        this.recordFramesGifRecording();
+      }, frameRate);
+
       return {
-        dummy: undefined,
+        interval: interval,
+        frames: [],
+        height: height,
+        width: width,
+        frameRate: frameRate,
       };
     });
   }
 
+  private recordFramesGifRecording(): void {
+    const context = this.canvas?.getContext('2d');
+    const recordingContext = this.recordingContextsByFormat['gif'];
+    if (context && recordingContext) {
+      recordingContext.frames.push(context.getImageData(0, 0, recordingContext.width, recordingContext.height));
+    }
+  }
+
   private stopGifRecording(): void {
-    this.stopRecording<'gif'>('gif', (handler) => {
-      //  TODO: VOOD-171: Stop GIF recording
-      console.warn('DebuggerPanel.stopGifRecording', 'handler', handler);
+    this.stopRecording<'gif'>('gif', (recordingContext) => {
+      clearInterval(recordingContext.interval);
+
+      const encoder = new GIFEncoder(recordingContext.width, recordingContext.height);
+      encoder.setDelay(recordingContext.frameRate);
+      encoder.setQuality(30);
+      encoder.start();
+
+      const tempCanvas: HTMLCanvasElement = this.document.createElement('canvas');
+      tempCanvas.height = recordingContext.height;
+      tempCanvas.width = recordingContext.width;
+      const tempContext = tempCanvas.getContext('2d');
+
+      if (tempContext) {
+        void recordingContext.frames
+          .reduce((promise, frame) => promise.then(() => this.renderFrameGifReording(tempContext, encoder, frame)), Promise.resolve())
+          .then(() => {
+            encoder.finish();
+            this.downloadBlobFile('export.gif', new Blob([encoder.out.getData()]));
+            console.warn('DebuggerPanel.stopGifRecording', 'handler', recordingContext);
+            this.updateRenderIndicatorVisibility();
+          });
+      }
+    });
+  }
+
+  private renderFrameGifReording(context: CanvasRenderingContext2D, encoder: GIFEncoder, frame: ImageData): Promise<void> {
+    return new Promise<void>((resolve) => {
+      context.putImageData(frame, 0, 0);
+      encoder.addFrame(context);
+      resolve();
     });
   }
 
@@ -173,6 +225,10 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   private updateRecordingIndicatorVisibility(): void {
     this.recordingIndicator.style.visibility = Object.keys(this.recordingContextsByFormat).length > 0 ? 'visible' : 'hidden';
+  }
+
+  private updateRenderIndicatorVisibility(): void {
+    this.renderIndicator.style.display = this.renderIndicator.style.display === 'none' ? 'flex' : 'none';
   }
 
   private resetCanvas(): void {
@@ -243,7 +299,10 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
         this.startGifRecording();
         break;
       case 'stopGifRecording':
-        this.stopGifRecording();
+        this.updateRenderIndicatorVisibility();
+        setTimeout(() => {
+          this.stopGifRecording();
+        }, 100);
         break;
       default:
         console.warn('Unknown message:', message);
@@ -258,6 +317,7 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
     container.appendChild(this.renderingArea);
     container.appendChild(this.createToolBar());
     container.appendChild(this.createStatusBar());
+    container.appendChild(this.renderIndicator);
     return container;
   }
 
@@ -336,6 +396,14 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
     const codicon = this.document.createElement('span');
     codicon.classList.add('codicon', `codicon-${codiconKey}`, ...extraClasses);
     return codicon;
+  }
+
+  private createRenderIndicator(): HTMLDivElement {
+    const renderIndicator = this.document.createElement('div');
+    renderIndicator.className = 'render-indicator';
+    renderIndicator.innerHTML = 'Creating Gif. This may take some time.';
+    renderIndicator.style.display = 'none';
+    return renderIndicator;
   }
 }
 
