@@ -16,7 +16,6 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   private _network?: Network;
   private _nodes?: DataSet<Node>;
   private _edges?: DataSet<Edge>;
-  private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
 
   constructor(window: Window, document: Document, messageService: DebuggerPanelMessageService) {
@@ -26,7 +25,6 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   protected initializeRenderingArea(renderingArea: HTMLDivElement, data: Data, options: Options): void {
     this._nodes = new DataSet(data.nodes as Node[]);
     this._edges = new DataSet(data.edges as Edge[]);
-    this.defaultNodeColor = options.nodes?.color;
     this.defaultEdgeColor = options.edges?.color;
     const { nodes, edges } = this;
     this._network = new Network(
@@ -59,7 +57,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     nodes.updateOnly(
       nodes.map((node) => ({
         ...(node as NodeWithDefinedId),
-        color: this.defaultNodeColor,
+        group: node.group === 'changedVariable' || node.group === 'defaultVariable' ? 'defaultVariable' : 'defaultNode',
       }))
     );
     edges.updateOnly(
@@ -68,6 +66,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
         color: this.defaultEdgeColor,
       }))
     );
+
     const edgesClusterStack = this.getEdgesClusterStack(data);
     nodes.add(data.addNodes);
     nodes.updateOnly(data.updateNodes as NodeWithDefinedId[]);
@@ -111,6 +110,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       processProperties: (clusterOptions: Node) => {
         clusterOptions.id = 'cluster_' + id;
         clusterOptions.label = this.nodes.get(id)?.label;
+        clusterOptions.group = this.nodes.get(id)?.group;
         return clusterOptions;
       },
       clusterNodeProperties: {
