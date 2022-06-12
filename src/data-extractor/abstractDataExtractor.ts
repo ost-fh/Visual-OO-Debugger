@@ -12,7 +12,7 @@ export abstract class AbstractDataExtractor {
 
   abstract createPrimitiveVariable(variable: DebugProtocol.Variable): PanelViewVariable;
   abstract createPrimitiveValue(variable: DebugProtocol.Variable): PrimitiveValue;
-  abstract createVariableId(variable: DebugProtocol.Variable): string;
+  abstract createVariableId(variable: DebugProtocol.Variable, parentId?: string | undefined): string;
   abstract createVariableRelation(parentId: string, variable: DebugProtocol.Variable | undefined): VariableRelation;
   abstract createVariableReference(childId: string, variable: DebugProtocol.Variable | undefined): VariableReference;
   abstract createVariableEntryForNamedVariable(referencedObjectId: string, variable: DebugProtocol.Variable): PanelViewVariable;
