@@ -4,6 +4,7 @@ import { ClusterOptions, Data, Edge, EdgeOptions, IdType, Network, Node, NodeOpt
 import { hasVariablePrefix } from '../../util/nodePrefixHandler';
 import { PrefixManager } from '../../util/prefixManager';
 import { WebMRecorder } from '../../util/webMRecorder';
+import { GIFRecorder } from '../../util/GIFRecorder';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { DebuggerPanel, registerDebuggerPanelFactory } from './debuggerPanel';
 import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
@@ -36,6 +37,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
   private _webMRecorder?: WebMRecorder;
+  private _gifRecorder?: GIFRecorder;
   private static readonly clusterPrefixManager = new PrefixManager('cluster_');
 
   private static nodeIdIsClusterNodeId(id: string): boolean {
@@ -52,7 +54,11 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
 
   constructor(window: Window, document: Document, messageService: DebuggerPanelMessageService) {
     super(window, document, messageService);
+    this.renderIndicator = this.createRenderIndicator();
+    document.body.appendChild(this.renderIndicator);
   }
+
+  private readonly renderIndicator;
 
   //  Initialization :: UI :: Tool bar
 
@@ -73,6 +79,10 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     button.addEventListener('mouseenter', (event) => this.setOpacity(event, 0.8));
     button.addEventListener('mouseleave', (event) => this.setOpacity(event, 1));
     return button;
+  }
+
+  private createRenderIndicator(): HTMLDivElement {
+    return this.createDiv('render-indicator');
   }
 
   //  Event processing :: Message -> Rendering area
@@ -111,6 +121,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       }
     });
     this._webMRecorder = new WebMRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
+    this._gifRecorder = new GIFRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
   }
 
   protected updateRenderingArea(data: VisjsUpdateInput): void {
@@ -268,18 +279,22 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   }
 
   protected gifRecordingInProgress(): boolean {
-    //  TODO: VOOD-171: Replace with implementation
-    return super.gifRecordingInProgress();
+    return this.gifRecorder.isRecording;
   }
 
   protected startGifRecording(): void {
-    //  TODO: VOOD-171: Replace with implementation
-    super.stopGifRecording();
+    this.gifRecorder.startRecording((blob) => {
+      this.setRenderIndicatorVisibility(false);
+      this.downloadBlobFile('export.gif', blob);
+    });
   }
 
   protected stopGifRecording(): void {
-    //  TODO: VOOD-171: Replace with implementation
-    super.stopGifRecording();
+    this.setRenderIndicatorVisibility(true);
+    setTimeout(() => {
+      this.gifRecorder.stopRecording();
+      this.updateRecordingIndicatorVisibility();
+    }, 100);
   }
 
   private static getCanvas(renderingArea: HTMLDivElement): HTMLCanvasElement {
@@ -327,6 +342,10 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
         opacity,
       });
     }
+  }
+
+  private setRenderIndicatorVisibility(visible: boolean): void {
+    this.renderIndicator.style.display = visible ? 'flex' : 'none';
   }
 
   //  Event processing :: Shared
@@ -388,6 +407,14 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       throw new Error('WebM recorder not set');
     }
     return webMRecorder;
+  }
+
+  private get gifRecorder(): GIFRecorder {
+    const gifRecorder = this._gifRecorder;
+    if (!gifRecorder) {
+      throw new Error('GIF recorder not set');
+    }
+    return gifRecorder;
   }
 }
 

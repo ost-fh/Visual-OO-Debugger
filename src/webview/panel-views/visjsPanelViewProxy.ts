@@ -319,8 +319,7 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
   }
 
   canRecordGif(): boolean {
-    //  TODO: VOOD-171: Enable
-    return false;
+    return true;
   }
 
   canRecordWebm(): boolean {
