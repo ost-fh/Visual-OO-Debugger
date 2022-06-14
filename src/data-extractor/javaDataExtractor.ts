@@ -47,9 +47,9 @@ export class JavaDataExtractor extends AbstractDataExtractor {
     return { type: variable.type, name: variable.name, value: variable.value };
   }
 
-  createVariableId(variable: DebugProtocol.Variable, parentId?: string | undefined): string {
+  createVariableId(variable: DebugProtocol.Variable, parentId?: string): string {
     return this.isNullVariable(variable)
-      ? addNullPrefix(hash(parentId ? parentId : variable))
+      ? addNullPrefix(`${parentId ? parentId : ''}_${variable.name}`)
       : addObjectPrefix(variable.value.split(this.sizeSuffix)[0]);
   }
 
