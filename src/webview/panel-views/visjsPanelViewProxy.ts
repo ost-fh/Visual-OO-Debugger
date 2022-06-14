@@ -7,6 +7,7 @@ import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { AbstractPanelViewProxy } from './abstractPanelViewProxy';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { VisjsGroupName } from './visjsGroupName';
+import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 
 interface VisjsGroup {
   color: Color;
@@ -301,7 +302,7 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
       label = bottomSection;
     }
 
-    return { id: variable.id, label, title: variable.tooltip, group };
+    return { id: variable.id, label, title: variable.tooltip, group, borderWidth: hasClusterPrefix(variable.id) ? 6 : 1 };
   }
 
   private createEdges(variable: PanelViewVariable): Edge[] {

@@ -30,6 +30,10 @@ body,
   margin: 0 16px;
 }
 
+.tool-bar .open-all-clusters-button {
+  margin-right: 16px;
+}
+
 .status-bar {
   display: flex;
   position: absolute;

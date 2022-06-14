@@ -1,21 +1,16 @@
 import { Button } from '@vscode/webview-ui-toolkit';
 import { DataSet } from 'vis-data';
-import { ClusterOptions, Data, Edge, EdgeOptions, IdType, Network, Node, NodeOptions, Options } from 'vis-network';
-import { hasVariablePrefix } from '../../util/nodePrefixHandler';
-import { PrefixManager } from '../../util/prefixManager';
-import { WebMRecorder } from '../../util/webMRecorder';
+import { Data, Edge, EdgeOptions, IdType, Network, Node, NodeOptions, Options } from 'vis-network';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
+import { hasClusterPrefix } from '../../util/nodePrefixHandler';
+import { WebMRecorder } from '../../util/webMRecorder';
 import { DebuggerPanel, registerDebuggerPanelFactory } from './debuggerPanel';
 import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
 import { VisjsGroupName } from './visjsGroupName';
 
-type EdgesClusterStackEntry = Record<'fromCluster' | 'toCluster', string[]>;
-type EdgesClusterStack = EdgesClusterStackEntry[];
-
 type WithDefinedId<T extends Partial<Record<'id', unknown>>> = T & Required<Pick<T, 'id'>>;
 type NodeWithDefinedId = WithDefinedId<Node>;
 type EdgeWithDefinedId = WithDefinedId<Edge>;
-type EdgeWithDefinedFromAndTo = Edge & Required<Pick<Edge, 'from' | 'to'>>;
 
 type NetworkWithJsProperties = Network & {
   body: {
@@ -26,7 +21,6 @@ type NetworkWithJsProperties = Network & {
       }
     >;
   };
-  clustering: Pick<Network, 'updateClusteredNode' | 'updateEdge'>;
 };
 
 export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdateInput> {
@@ -36,19 +30,6 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
   private _webMRecorder?: WebMRecorder;
-  private static readonly clusterPrefixManager = new PrefixManager('cluster_');
-
-  private static nodeIdIsClusterNodeId(id: string): boolean {
-    return this.clusterPrefixManager.hasPrefix(id);
-  }
-
-  private static convertNodeIdToClusterNodeId(id: string): string {
-    return this.clusterPrefixManager.addPrefix(id);
-  }
-
-  private static convertClusterNodeIdToNodeId(id: string): string {
-    return this.clusterPrefixManager.removePrefix(id);
-  }
 
   constructor(window: Window, document: Document, messageService: DebuggerPanelMessageService) {
     super(window, document, messageService);
@@ -58,13 +39,8 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
 
   protected createToolBar(): HTMLDivElement {
     const toolBar = super.createToolBar();
-    toolBar.appendChild(this.createOpenAllClustersButton());
     toolBar.appendChild(this.createHideNodeButton());
     return toolBar;
-  }
-
-  private createOpenAllClustersButton(): Button {
-    return this.createToolBarButton('open-all-clusters-button', 'Open all clusters', 'type-hierarchy', () => this.openAllClusters());
   }
 
   private createHideNodeButton(): Button {
@@ -95,18 +71,10 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     network.on('selectNode', (params: Record<'nodes', string[]>) => {
       if (params.nodes.length === 1) {
         const node = params.nodes[0];
-        if (network.isCluster(node)) {
-          network.openCluster(node);
-          edges.updateOnly(
-            edges.map((edge) => ({
-              ...(edge as EdgeWithDefinedId),
-              physics: this.isPhysicsOn(edge),
-            }))
-          );
-        } else if (hasVariablePrefix(node)) {
-          this.clusterNodes(node);
+        if (hasClusterPrefix(node)) {
+          this.openCluster(node);
         } else {
-          this.clusterChildNodes(node);
+          this.createCluster(node);
         }
       }
     });
@@ -133,7 +101,6 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
         physics: this.isPhysicsOn(edge),
       }))
     );
-    const edgesClusterStack = this.getEdgesClusterStack(data);
     nodes.add(data.addNodes);
     nodes.updateOnly(data.updateNodes as NodeWithDefinedId[]);
     edges.add(
@@ -142,113 +109,16 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
         physics: this.isPhysicsOn(edge),
       }))
     );
-    this.reCluster(edgesClusterStack);
   }
 
   private isPhysicsOn(edge: Edge): boolean {
-    const { network } = this;
-    const { nodes } = network.body;
+    const network = this.network;
+    const nodes = network.body.nodes;
     if (!nodes[edge.to as IdType].options.physics || !nodes[edge.from as IdType].options.physics) {
       return false;
     }
     const clusters = network.findNode(edge.to as IdType).concat(network.findNode(edge.from as IdType));
     return clusters.every((nodeId) => nodes[nodeId].options.physics);
-  }
-
-  private getEdgesClusterStack(updateInput: VisjsUpdateInput): EdgesClusterStack {
-    const edgesClusterStack: EdgesClusterStack = [];
-    const { network } = this;
-    (updateInput.addEdges as EdgeWithDefinedFromAndTo[]).forEach((edge) => {
-      if (network.findNode(edge.from).length > 1 || network.findNode(edge.to).length > 1) {
-        edgesClusterStack.push({
-          fromCluster: network.findNode(edge.from) as string[],
-          toCluster: network.findNode(edge.to) as string[],
-        });
-      }
-    });
-    return edgesClusterStack;
-  }
-
-  private reCluster(edgesClusterStack: EdgesClusterStack): void {
-    edgesClusterStack.forEach(({ fromCluster, toCluster }) => {
-      if (fromCluster.length < toCluster.length) {
-        this.openClusterStack(fromCluster.filter((cluster) => !toCluster.includes(cluster)));
-        this.updateCluster(toCluster);
-      } else {
-        this.openClusterStack(toCluster.filter((cluster) => !fromCluster.includes(cluster)));
-        this.updateCluster(fromCluster);
-      }
-    });
-  }
-
-  private updateCluster(clusterStack: string[]): void {
-    if (clusterStack.length >= 1) {
-      const { network } = this;
-      const clusterId = clusterStack[0];
-      if (clusterId && network.isCluster(clusterId)) {
-        const clusterNodeId = VisjsDebuggerPanel.convertClusterNodeIdToNodeId(clusterId);
-        const visibility = !network.body.nodes[clusterId].options.hidden;
-        network.openCluster(clusterId);
-
-        clusterStack.shift();
-        this.updateCluster(clusterStack);
-
-        if (hasVariablePrefix(clusterNodeId)) {
-          this.clusterNodes(clusterNodeId);
-        } else {
-          this.clusterChildNodes(clusterNodeId);
-        }
-        this.setVisibility(clusterId, visibility);
-      } else {
-        clusterStack.shift();
-        this.updateCluster(clusterStack);
-      }
-    }
-  }
-
-  private clusterChildNodes(id: string): void {
-    const nodeList = new Set([id]);
-    const childNodes = this.network.getConnectedNodes(id, 'to') as IdType[];
-    childNodes.forEach((childNode) => {
-      nodeList.add(childNode as string);
-      this.getAllConnectingNodes(childNode, nodeList);
-    });
-    this.clusterNodes(id, nodeList);
-  }
-
-  private clusterNodes(id: string, nodeList?: Set<IdType>): void {
-    const { network, nodes } = this;
-    const node = nodes.get(id);
-    const options: ClusterOptions = {
-      joinCondition: nodeList && ((nodeOptions: NodeWithDefinedId): boolean => nodeList.has(nodeOptions.id)),
-      processProperties: (clusterOptions: Node) => {
-        clusterOptions.id = VisjsDebuggerPanel.convertNodeIdToClusterNodeId(id);
-        clusterOptions.label = node?.label;
-        return clusterOptions;
-      },
-      clusterNodeProperties: {
-        borderWidth: 5,
-        group: node?.group,
-        color: node?.color,
-        font: node?.font,
-      },
-    };
-    if (nodeList) {
-      network.cluster(options);
-    } else {
-      network.clusterByConnection(id, options);
-    }
-  }
-
-  private getAllConnectingNodes(id: IdType, nodeList: Set<IdType>): Set<IdType> {
-    const children = (this.network.getConnectedNodes(id) as IdType[]).filter((nodeId) => !nodeList.has(nodeId));
-    if (children.length !== 0) {
-      children.forEach((child) => {
-        nodeList.add(child);
-        this.getAllConnectingNodes(child, nodeList);
-      });
-    }
-    return nodeList;
   }
 
   protected exportImage(renderingArea: HTMLDivElement): void {
@@ -292,12 +162,16 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
 
   //  Event processing :: UI :: Tool bar
 
-  private openAllClusters(): void {
-    this.openClusterStack(Object.keys(this.network.body.nodes).filter((nodeId) => VisjsDebuggerPanel.nodeIdIsClusterNodeId(nodeId)));
+  private openCluster(clusterId: string): void {
+    this.messageService.openCluster(clusterId);
+  }
+
+  private createCluster(clusterId: string): void {
+    this.messageService.createCluster(clusterId);
   }
 
   private showAllNodes(): void {
-    const { nodes } = this.network.body;
+    const nodes = this.network.body.nodes;
     const nodeIds = Object.keys(nodes).filter((nodeId) => !nodeId.startsWith('edge'));
     nodeIds.forEach((nodeId) => {
       if (nodes[nodeId].options.hidden) {
@@ -317,13 +191,13 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   }
 
   private setOpacity({ pageX, pageY }: MouseEvent, opacity: number): void {
-    const { network } = this;
-    const nodeId = network.getNodeAt({
+    const nodeId = this.network.getNodeAt({
       x: pageX,
       y: pageY,
     });
     if (nodeId) {
-      network.clustering.updateClusteredNode(nodeId, {
+      this.nodes.updateOnly({
+        id: nodeId,
         opacity,
       });
     }
@@ -331,26 +205,17 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
 
   //  Event processing :: Shared
 
-  private openClusterStack(clusterStack: string[]): void {
-    const { network } = this;
-    clusterStack.forEach((cluster) => {
-      if (network.isCluster(cluster)) {
-        network.openCluster(cluster);
-      }
-    });
-  }
-
   private setVisibility(nodeId: string, visibility: boolean): void {
-    const { network } = this;
-    const nodeEdgeId = VisjsDebuggerPanel.nodeIdIsClusterNodeId(nodeId) ? VisjsDebuggerPanel.convertClusterNodeIdToNodeId(nodeId) : nodeId;
-    const nodeEdges = network.getConnectedEdges(nodeEdgeId);
-    network.clustering.updateClusteredNode(nodeId, {
+    const nodeEdges = this.network.getConnectedEdges(nodeId);
+    this.nodes.updateOnly({
+      id: nodeId,
       hidden: !visibility,
       physics: visibility,
       opacity: 1,
     });
     nodeEdges.forEach((edgeId) => {
-      network.clustering.updateEdge(edgeId, {
+      this.edges.updateOnly({
+        id: edgeId,
         physics: visibility,
       });
     });
