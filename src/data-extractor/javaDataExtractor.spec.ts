@@ -131,7 +131,7 @@ describe('JavaDataExtractor', () => {
   describe('createVariableId', () => {
     it('should add null_ prefix to null variable', () => {
       const inputVariable = createVariable('null');
-      const expected = `null_${hash(inputVariable)}`;
+      const expected = `null__${inputVariable.name}`;
       expect(dataExtractor.createVariableId(inputVariable)).to.equal(expected);
     });
 
