@@ -23,6 +23,26 @@ export class DebuggerPanelMessageService {
     });
   }
 
+  openAllClusters(): void {
+    this.postMessage({
+      command: 'openAllClusters',
+    });
+  }
+
+  openCluster(clusterId: string): void {
+    this.postMessage({
+      command: 'openCluster',
+      content: clusterId,
+    });
+  }
+
+  createCluster(nodeId: string): void {
+    this.postMessage({
+      command: 'createCluster',
+      content: nodeId,
+    });
+  }
+
   private postMessage(message: DebuggerPanelMessage): void {
     this.webviewApi.postMessage(message);
   }

@@ -42,7 +42,13 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   protected createToolBar(): HTMLDivElement {
     this.toolBarButtons.length = 0;
-    return this.createDiv('tool-bar', this.createStepBackButton(), this.createStepForwardButton(), this.stackFramesDropdown);
+    return this.createDiv(
+      'tool-bar',
+      this.createStepBackButton(),
+      this.createStepForwardButton(),
+      this.stackFramesDropdown,
+      this.createOpenAllClustersButton()
+    );
   }
 
   private createStepBackButton(): Button {
@@ -55,6 +61,10 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   private createStepButton(ariaLabel: string, codiconKey: string, clickHandler: ClickHandler): Button {
     return this.createToolBarButton('progress-button', ariaLabel, codiconKey, clickHandler);
+  }
+
+  private createOpenAllClustersButton(): Button {
+    return this.createToolBarButton('open-all-clusters-button', 'Open all clusters', 'type-hierarchy', () => this.openAllClusters());
   }
 
   private createStackFramesDropdown(): Dropdown {
@@ -226,6 +236,10 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   private get toolBarControls(): (Button | Dropdown)[] {
     return [...this.toolBarButtons, this.stackFramesDropdown];
+  }
+
+  private openAllClusters(): void {
+    this.messageService.openAllClusters();
   }
 
   //  Event processing :: Message -> Status bar
