@@ -5,6 +5,7 @@ import { NodeColor, PanelViewColors, PanelViewInputVariableMap, PanelViewVariabl
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { AbstractPanelViewProxy } from './abstractPanelViewProxy';
+import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { VisjsGroupName } from './visjsGroupName';
 
 interface VisjsGroup {
@@ -21,7 +22,7 @@ interface EdgeColor {
 
 export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, VisjsUpdateInput> {
   protected readonly debuggerPanelPrefix = 'visjs';
-  protected readonly extraCssNodeModuleKeys = [];
+  protected readonly extraNodeModuleKeys = [NodeModulesKeys.visNetworkMinJs];
 
   private visjsGroupsByName?: VisjsGroupsByName;
   private defaultEdgeColor: EdgeColor = {};
