@@ -2,14 +2,10 @@ import { Button } from '@vscode/webview-ui-toolkit';
 import { DataSet } from 'vis-data';
 
 import { Data, Edge, EdgeOptions, IdType, Network, Node, NodeOptions, Options } from 'vis-network';
-import { hasVariablePrefix } from '../../util/nodePrefixHandler';
-import { PrefixManager } from '../../util/prefixManager';
-import { WebMRecorder } from '../../util/webMRecorder';
-import { GifRecorder } from '../../util/gifRecorder';
-
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 import { WebMRecorder } from '../../util/webMRecorder';
+import { GifRecorder } from '../../util/gifRecorder';
 import { DebuggerPanel, registerDebuggerPanelFactory } from './debuggerPanel';
 import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
 import { VisjsGroupName } from './visjsGroupName';
