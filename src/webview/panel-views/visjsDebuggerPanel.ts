@@ -4,7 +4,7 @@ import { ClusterOptions, Data, Edge, EdgeOptions, IdType, Network, Node, NodeOpt
 import { hasVariablePrefix } from '../../util/nodePrefixHandler';
 import { PrefixManager } from '../../util/prefixManager';
 import { WebMRecorder } from '../../util/webMRecorder';
-import { GIFRecorder } from '../../util/GIFRecorder';
+import { GifRecorder } from '../../util/gifRecorder';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { DebuggerPanel, registerDebuggerPanelFactory } from './debuggerPanel';
 import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
@@ -37,7 +37,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
   private _webMRecorder?: WebMRecorder;
-  private _gifRecorder?: GIFRecorder;
+  private _gifRecorder?: GifRecorder;
   private static readonly clusterPrefixManager = new PrefixManager('cluster_');
 
   private static nodeIdIsClusterNodeId(id: string): boolean {
@@ -121,7 +121,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       }
     });
     this._webMRecorder = new WebMRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
-    this._gifRecorder = new GIFRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
+    this._gifRecorder = new GifRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
   }
 
   protected updateRenderingArea(data: VisjsUpdateInput): void {
@@ -409,7 +409,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     return webMRecorder;
   }
 
-  private get gifRecorder(): GIFRecorder {
+  private get gifRecorder(): GifRecorder {
     const gifRecorder = this._gifRecorder;
     if (!gifRecorder) {
       throw new Error('GIF recorder not set');

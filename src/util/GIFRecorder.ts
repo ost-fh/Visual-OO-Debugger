@@ -1,5 +1,5 @@
 import { Recorder } from './recorder';
-import GIFEncoder = require('gif-encoder-2-browser');
+import gifEncoder = require('gif-encoder-2-browser');
 import { createCanvas } from 'canvas';
 
 interface GifRecordingContext {
@@ -11,7 +11,7 @@ interface GifRecordingContext {
   onDataReady: (data: Blob) => void;
 }
 
-export class GIFRecorder extends Recorder<Blob, GifRecordingContext> {
+export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
   protected readonly format = 'GIF';
   constructor(private readonly canvas: HTMLCanvasElement) {
     super();
@@ -49,7 +49,7 @@ export class GIFRecorder extends Recorder<Blob, GifRecordingContext> {
 
   protected stopRecordingImplementation(recordingContext: GifRecordingContext): void {
     clearInterval(recordingContext.interval);
-    const encoder = new GIFEncoder(recordingContext.width, recordingContext.height);
+    const encoder = new gifEncoder(recordingContext.width, recordingContext.height);
     encoder.setDelay(recordingContext.frameRate);
     encoder.setQuality(30);
     encoder.start();
@@ -66,7 +66,7 @@ export class GIFRecorder extends Recorder<Blob, GifRecordingContext> {
       });
   }
 
-  private renderFrameGifReording(context: CanvasRenderingContext2D, encoder: GIFEncoder, frame: ImageData): Promise<void> {
+  private renderFrameGifReording(context: CanvasRenderingContext2D, encoder: gifEncoder, frame: ImageData): Promise<void> {
     return new Promise<void>((resolve) => {
       context.putImageData(frame, 0, 0);
       encoder.addFrame(context);
