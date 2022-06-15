@@ -18,9 +18,9 @@ and see the visualization update in the debugger view.
 
 [marketplace]: https://marketplace.visualstudio.com/items?itemName=GinoCardilloOST.visual-oo-debugger
 
-### Exporting a PNG
+### Exporting a static image
 
-Execute the command `VOOD: Export as PNG` to create a PNG of the current state of the visualization.
+Execute the command `VOOD: Export as static image` to create a static image of the current state of the visualization.
 
 ### Recording a GIF
 

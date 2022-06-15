@@ -24,7 +24,7 @@ class Extension {
     debugEventManager.registerDebuggerPanel(debuggerPanel);
 
     this.registerCommand('visual-oo-debugger.openDebugger', () => debuggerPanel.openPanel());
-    this.registerCommand('visual-oo-debugger.exportPNG', () => debuggerPanel.exportPanel());
+    this.registerCommand('visual-oo-debugger.exportStaticImage', () => debuggerPanel.exportPanel());
     this.registerCommand('visual-oo-debugger.startGIF', () => debuggerPanel.startRecordingPanelGif());
     this.registerCommand('visual-oo-debugger.startWEBM', () => debuggerPanel.startRecordingPanelWebm());
     this.registerCommand('visual-oo-debugger.stopGIF', () => debuggerPanel.stopRecordingPanelGif());
