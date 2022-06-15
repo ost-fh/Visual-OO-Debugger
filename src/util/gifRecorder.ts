@@ -7,7 +7,7 @@ interface GifRecordingContext {
   frames: ImageData[];
   height: number;
   width: number;
-  frameRatePerSecond: number;
+  frameDuration: number;
   onDataReady: (data: Blob) => void;
 }
 
@@ -21,7 +21,7 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
     const canvas = this.canvas;
     const height = canvas.height;
     const width = canvas.width;
-    const frameRate = 80;
+    const frameDuration = 80;
     const frames: ImageData[] = [];
 
     const interval = setInterval(() => {
@@ -29,14 +29,14 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
       if (context) {
         frames.push(context.getImageData(0, 0, width, height));
       }
-    }, frameRate);
+    }, frameDuration);
 
     return {
       interval: interval,
       frames: frames,
       height: height,
       width: width,
-      frameRatePerSecond: frameRate,
+      frameDuration: frameDuration,
       onDataReady: onDataReady,
     };
   }
@@ -44,7 +44,7 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
   protected stopRecordingImplementation(recordingContext: GifRecordingContext): void {
     clearInterval(recordingContext.interval);
     const encoder = new gifEncoder(recordingContext.width, recordingContext.height);
-    encoder.setDelay(recordingContext.frameRatePerSecond);
+    encoder.setDelay(recordingContext.frameDuration);
     encoder.setQuality(30);
     encoder.start();
 
