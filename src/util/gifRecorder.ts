@@ -7,7 +7,7 @@ interface GifRecordingContext {
   frames: ImageData[];
   height: number;
   width: number;
-  frameRate: number;
+  frameRatePerSecond: number;
   onDataReady: (data: Blob) => void;
 }
 
@@ -17,39 +17,34 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
     super();
   }
 
-
   protected startRecordingImplementation(onDataReady: (data: Blob) => void): GifRecordingContext {
     const canvas = this.canvas;
     const height = canvas.height;
     const width = canvas.width;
     const frameRate = 80;
+    const frames: ImageData[] = [];
 
-    this.recordFramesGifRecording();
-    const interval = setInterval(() => this.recordFramesGifRecording(), frameRate);
+    const interval = setInterval(() => {
+      const context = this.canvas?.getContext('2d');
+      if (context) {
+        frames.push(context.getImageData(0, 0, width, height));
+      }
+    }, frameRate);
 
-    const recordingContext = {
+    return {
       interval: interval,
-      frames: [],
+      frames: frames,
       height: height,
       width: width,
-      frameRate: frameRate,
+      frameRatePerSecond: frameRate,
       onDataReady: onDataReady,
     };
-
-    return recordingContext;
-  }
-
-  private recordFramesGifRecording(): void {
-    const context = this.canvas?.getContext('2d');
-    if (context && this.recordingContext) {
-      this.recordingContext.frames.push(context.getImageData(0, 0, this.recordingContext.width, this.recordingContext.height));
-    }
   }
 
   protected stopRecordingImplementation(recordingContext: GifRecordingContext): void {
     clearInterval(recordingContext.interval);
     const encoder = new gifEncoder(recordingContext.width, recordingContext.height);
-    encoder.setDelay(recordingContext.frameRate);
+    encoder.setDelay(recordingContext.frameRatePerSecond);
     encoder.setQuality(30);
     encoder.start();
 
@@ -61,7 +56,7 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
       .then(() => {
         encoder.finish();
         recordingContext.onDataReady(new Blob([encoder.out.getData()]));
-        console.warn('DebuggerPanel.stopGifRecording', 'handler', this.recordingContext);
+        console.warn('DebuggerPanel.stopGifRecording', 'handler', recordingContext);
       });
   }
 
