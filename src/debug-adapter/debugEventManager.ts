@@ -129,7 +129,7 @@ export class DebugEventManager {
     dataExtractor: AbstractDataExtractor
   ): Promise<void> {
     let isNewAndObject = false;
-    const id = dataExtractor.createVariableId(variable);
+    const id = dataExtractor.createVariableId(variable, parentId);
     let panelViewVariable = panelViewStackFrame.variables.get(id);
     if (panelViewVariable === undefined) {
       [panelViewVariable, isNewAndObject] = await this.createPanelViewVariable(id, variable, debugSessionProxy, dataExtractor);
