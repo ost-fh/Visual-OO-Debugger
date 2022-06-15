@@ -20,15 +20,13 @@ export class GIFRecorder extends Recorder<Blob, GifRecordingContext> {
   private recordingContext: GifRecordingContext | undefined;
 
   protected startRecordingImplementation(onDataReady: (data: Blob) => void): GifRecordingContext {
-    const { canvas } = this;
+    const canvas = this.canvas;
     const height = canvas.height;
     const width = canvas.width;
     const frameRate = 80;
 
     this.recordFramesGifRecording();
-    const interval = setInterval(() => {
-      this.recordFramesGifRecording();
-    }, frameRate);
+    const interval = setInterval(() => this.recordFramesGifRecording(), frameRate);
 
     this.recordingContext = {
       interval: interval,

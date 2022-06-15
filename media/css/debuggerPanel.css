@@ -63,5 +63,5 @@ body,
 }
 
 .render-indicator:before {
-  content: 'Creating Gif. This may take some time.';
+  content: 'Creating GIF. This may take some time.';
 }
