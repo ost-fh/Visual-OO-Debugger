@@ -20,7 +20,7 @@ export abstract class AbstractPanelViewProxy<RenderingAreaData, RenderingAreaOpt
   abstract canRecordGif(): boolean;
   abstract canRecordWebm(): boolean;
   protected abstract readonly debuggerPanelPrefix: string;
-  protected abstract readonly extraCssNodeModuleKeys: NodeModulesKeys[];
+  protected abstract readonly extraNodeModuleKeys: NodeModulesKeys[];
 
   protected constructor(private readonly context: ExtensionContext) {}
 
@@ -28,7 +28,7 @@ export abstract class AbstractPanelViewProxy<RenderingAreaData, RenderingAreaOpt
     const debuggerFileNameStub = `${this.debuggerPanelPrefix}DebuggerPanel`;
     const pathHelper = new PathHelper(webview, this.context);
     return [
-      ...[NodeModulesKeys.codiconCss, NodeModulesKeys.webviewUiToolkit, ...this.extraCssNodeModuleKeys].map((key) => ({
+      ...[NodeModulesKeys.codiconCss, NodeModulesKeys.webviewUiToolkit, ...this.extraNodeModuleKeys].map((key) => ({
         tag: NodeModulesAccessor.getPathToNodeModulesFile(key).fileName,
         uri: pathHelper.getUri(...NodeModulesAccessor.getPathToOutputFile(key)),
       })),

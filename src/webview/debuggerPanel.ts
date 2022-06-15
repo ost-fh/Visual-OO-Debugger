@@ -1,16 +1,25 @@
+import { cloneDeep, isEqual } from 'lodash';
+import * as tinycolor from 'tinycolor2';
 import { commands, ExtensionContext, Memento, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
-import { isEqual } from 'lodash';
-import { NodeColor, PanelViewColors, PanelViewInput, PanelViewInputVariableMap } from '../model/panelViewInput';
+import {
+  NodeColor,
+  PanelViewColors,
+  PanelViewInput,
+  PanelViewInputVariableMap,
+  PanelViewVariable,
+  VariableReference,
+  VariableRelation,
+} from '../model/panelViewInput';
 import { NodeModulesAccessor } from '../node-modules-accessor/nodeModulesAccessor';
 import { ObjectDiagramFileSaverFactory } from '../object-diagram/logic/export/objectDiagramFileSaverFactory';
 import { PanelViewInputObjectDiagramReader } from '../object-diagram/logic/reader/panelViewInputObjectDiagramReader';
 import { ObjectDiagram } from '../object-diagram/model/objectDiagram';
 import { FileSaver } from '../object-diagram/utilities/export/fileSaver';
 import { MementoAccessor } from '../object-diagram/utilities/storage/mementoAccessor';
-import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
-import { DebuggerPanelMessage } from './panel-views/debuggerPanelMessage';
 import { ContextManager } from '../util/contextManager';
-import * as tinycolor from 'tinycolor2';
+import { addClusterPrefix, removeClusterPrefix } from '../util/nodePrefixHandler';
+import { DebuggerPanelMessage } from './panel-views/debuggerPanelMessage';
+import { PanelViewCommand, PanelViewProxy } from './panel-views/panelViewProxy';
 
 export class DebuggerPanel {
   private viewPanel: WebviewPanel | undefined;
@@ -21,7 +30,11 @@ export class DebuggerPanel {
 
   private currentVariables: PanelViewInputVariableMap | undefined;
 
+  private currentClusteredVariables: PanelViewInputVariableMap | undefined;
+
   private historyIndex = -1;
+
+  private clusters = new Set<string>();
 
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
@@ -79,6 +92,15 @@ export class DebuggerPanel {
           case 'selectStackFrame':
             this.selectStackFrame(message.content);
             break;
+          case 'openAllClusters':
+            this.openAllClusters();
+            break;
+          case 'openCluster':
+            this.openCluster(message.content);
+            break;
+          case 'createCluster':
+            this.createCluster(message.content);
+            break;
           default:
             console.warn('Unknown message:', message);
         }
@@ -91,6 +113,7 @@ export class DebuggerPanel {
 
     if (this.currentPanelViewInput) {
       this.currentVariables = undefined;
+      this.currentClusteredVariables = undefined;
       this.updatePanel(this.currentPanelViewInput);
     }
   }
@@ -163,8 +186,10 @@ export class DebuggerPanel {
   reset(): void {
     this.currentPanelViewInput = undefined;
     this.currentVariables = undefined;
+    this.currentClusteredVariables = undefined;
     this.inputHistory = [];
     this.historyIndex = -1;
+    this.clusters.clear();
   }
 
   setPanelStyles(panelViewColors: PanelViewColors): void {
@@ -213,8 +238,10 @@ export class DebuggerPanel {
   }
 
   private delegateUpdate(variables: PanelViewInputVariableMap): PanelViewCommand {
-    const command = this.panelViewProxy.updatePanel(variables, this.currentVariables);
+    const clusteredVariables = this.applyClustering(variables);
+    const command = this.panelViewProxy.updatePanel(clusteredVariables, this.currentClusteredVariables);
     this.currentVariables = variables;
+    this.currentClusteredVariables = clusteredVariables;
     return command;
   }
 
@@ -263,5 +290,94 @@ export class DebuggerPanel {
       canRecordGif: this.panelViewProxy.canRecordGif(),
       canRecordWebm: this.panelViewProxy.canRecordWebm(),
     });
+  }
+
+  private openAllClusters(): void {
+    this.clusters.clear();
+    this.updatePanelAfterReclustering();
+  }
+
+  private openCluster(clusterId: string): void {
+    this.clusters.delete(clusterId);
+    this.updatePanelAfterReclustering();
+  }
+
+  private createCluster(nodeId: string): void {
+    const references = this.currentVariables?.get(nodeId)?.references ?? [];
+    if (references.length > 0) {
+      this.clusters.add(addClusterPrefix(nodeId));
+      this.updatePanelAfterReclustering();
+    }
+  }
+
+  private updatePanelAfterReclustering(): void {
+    if (this.currentVariables) {
+      const variables = this.currentVariables;
+      this.postCommandToWebViewIfViewPanelIsDefined(() => this.delegateUpdate(variables));
+    }
+  }
+
+  private applyClustering(variables: PanelViewInputVariableMap): PanelViewInputVariableMap {
+    variables = cloneDeep(variables);
+    for (const cluster of this.clusters) {
+      const rootNode = variables.get(removeClusterPrefix(cluster));
+      if (rootNode) {
+        const referencedNodes = new Set<string>();
+        this.addReferencedNodes(rootNode, variables, referencedNodes);
+        if (referencedNodes.size === 0) {
+          continue;
+        }
+        const incomingRelations = this.updateReferencesToCluster(cluster, referencedNodes, variables);
+
+        const clusterNode: PanelViewVariable = {
+          ...rootNode,
+          id: cluster,
+          incomingRelations,
+          references: [],
+        };
+
+        variables.set(cluster, clusterNode);
+        referencedNodes.forEach((nodeId) => variables.delete(nodeId));
+      }
+    }
+    return variables;
+  }
+
+  private addReferencedNodes(node: PanelViewVariable | undefined, variables: PanelViewInputVariableMap, nodes: Set<string>): void {
+    if (!node || nodes.has(node.id)) {
+      return;
+    }
+    nodes.add(node.id);
+
+    for (const referencedNode of node?.references ?? []) {
+      const childId = referencedNode.childId;
+      this.addReferencedNodes(variables.get(childId), variables, nodes);
+    }
+  }
+
+  private updateReferencesToCluster(
+    clusterId: string,
+    containedNodes: Set<string>,
+    variables: PanelViewInputVariableMap
+  ): VariableRelation[] {
+    const relations: VariableRelation[] = [];
+
+    for (const nodeId of containedNodes) {
+      const newRelations: VariableRelation[] = (variables.get(nodeId)?.incomingRelations ?? []).filter(
+        (relation) => !containedNodes.has(relation.parentId)
+      );
+
+      for (const relation of newRelations) {
+        const references = variables.get(relation.parentId)?.references as VariableReference[];
+        const referencesToNode = references.filter((reference) => reference.childId === nodeId);
+        for (const reference of referencesToNode) {
+          reference.childId = clusterId;
+        }
+      }
+
+      relations.push(...newRelations);
+    }
+
+    return relations;
   }
 }

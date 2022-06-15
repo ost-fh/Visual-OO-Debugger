@@ -13,4 +13,24 @@ interface SelectStackFrameDebuggerPanelMessage extends WebviewMessage {
   content: number;
 }
 
-export type DebuggerPanelMessage = StepBackDebuggerPanelMessage | StepForwardDebuggerPanelMessage | SelectStackFrameDebuggerPanelMessage;
+interface OpenAllClustersDebuggerPanelMessage extends WebviewMessage {
+  command: 'openAllClusters';
+}
+
+interface OpenClusterDebuggerPanelMessage extends WebviewMessage {
+  command: 'openCluster';
+  content: string;
+}
+
+interface CreateClusterDebuggerPanelMessage extends WebviewMessage {
+  command: 'createCluster';
+  content: string;
+}
+
+export type DebuggerPanelMessage =
+  | StepBackDebuggerPanelMessage
+  | StepForwardDebuggerPanelMessage
+  | SelectStackFrameDebuggerPanelMessage
+  | OpenAllClustersDebuggerPanelMessage
+  | OpenClusterDebuggerPanelMessage
+  | CreateClusterDebuggerPanelMessage;
