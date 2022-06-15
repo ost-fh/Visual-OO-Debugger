@@ -23,7 +23,7 @@
   ],
   "activationEvents": [
     "onCommand:visual-oo-debugger.openDebugger",
-    "onCommand:visual-oo-debugger.exportPNG",
+    "onCommand:visual-oo-debugger.exportStaticImage",
     "onDebug"
   ],
   "keywords": [
@@ -41,8 +41,8 @@
         "category": "VOOD"
       },
       {
-        "command": "visual-oo-debugger.exportPNG",
-        "title": "Export as PNG",
+        "command": "visual-oo-debugger.exportStaticImage",
+        "title": "Export as static image",
         "category": "VOOD"
       },
       {
@@ -125,7 +125,7 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "visual-oo-debugger.exportPNG",
+          "command": "visual-oo-debugger.exportStaticImage",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
@@ -162,7 +162,7 @@
       ],
       "editor/title": [
         {
-          "command": "visual-oo-debugger.exportPNG",
+          "command": "visual-oo-debugger.exportStaticImage",
           "when": "viewPanel.exists",
           "group": "visual-oo-debugger.exportFromCanvas"
         },
