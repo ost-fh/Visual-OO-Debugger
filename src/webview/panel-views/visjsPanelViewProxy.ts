@@ -1,13 +1,13 @@
-import { ExtensionContext } from 'vscode';
-import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
 import { isEqual, some } from 'lodash';
+import { Color, Data, Edge, Font, Node, Options } from 'vis-network';
+import { ExtensionContext } from 'vscode';
 import { NodeColor, PanelViewColors, PanelViewInputVariableMap, PanelViewVariable, VariableRelation } from '../../model/panelViewInput';
 import { ChangeAction, ChangedEdge, ChangedNode, VisjsChanges } from '../../model/visjsChangelogEntry';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
+import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 import { AbstractPanelViewProxy } from './abstractPanelViewProxy';
 import { NodeModulesKeys } from '../../node-modules-accessor/nodeModulesKeys';
 import { VisjsGroupName } from './visjsGroupName';
-import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 
 interface VisjsGroup {
   color: Color;
@@ -163,24 +163,14 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
     for (const relation of addedIncomingRelations) {
       edgeChanges.push({
         action: ChangeAction.create,
-        edge: {
-          id: `${relation.parentId}to${newVariable.id}withName${relation.relationName}`,
-          from: relation.parentId,
-          to: newVariable.id,
-          label: relation.relationName,
-        },
+        edge: this.createEdge(newVariable, relation),
       });
     }
 
     for (const relation of deletedIncomingRelations) {
       edgeChanges.push({
         action: ChangeAction.delete,
-        edge: {
-          id: `${relation.parentId}to${newVariable.id}withName${relation.relationName}`,
-          from: relation.parentId,
-          to: newVariable.id,
-          label: relation.relationName,
-        },
+        edge: this.createEdge(newVariable, relation),
       });
     }
 
@@ -218,12 +208,7 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
         for (const relation of variable.incomingRelations || []) {
           edgeChanges.push({
             action: ChangeAction.create,
-            edge: {
-              id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
-              from: relation.parentId,
-              to: variable.id,
-              label: relation.relationName,
-            },
+            edge: this.createEdge(variable, relation),
           });
         }
       }
@@ -250,12 +235,7 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
         for (const relation of variable.incomingRelations || []) {
           edgeChanges.push({
             action: ChangeAction.delete,
-            edge: {
-              id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
-              from: relation.parentId,
-              to: variable.id,
-              label: relation.relationName,
-            },
+            edge: this.createEdge(variable, relation),
           });
         }
       }
@@ -309,15 +289,21 @@ export class VisjsPanelViewProxy extends AbstractPanelViewProxy<Data, Options, V
     const edges: Edge[] = [];
 
     for (const relation of variable.incomingRelations || []) {
-      edges.push({
-        id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
-        from: relation.parentId,
-        to: variable.id,
-        label: relation.relationName,
-      });
+      edges.push(this.createEdge(variable, relation));
     }
 
     return edges;
+  }
+
+  createEdge(variable: PanelViewVariable, relation: VariableRelation): Edge {
+    const isCluster = hasClusterPrefix(variable.id);
+    return {
+      id: `${relation.parentId}to${variable.id}withName${relation.relationName}`,
+      from: relation.parentId,
+      to: variable.id,
+      label: relation.relationName,
+      dashes: isCluster,
+    };
   }
 
   canRecordGif(): boolean {
