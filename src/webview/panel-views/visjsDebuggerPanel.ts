@@ -1,9 +1,11 @@
 import { Button } from '@vscode/webview-ui-toolkit';
 import { DataSet } from 'vis-data';
+
 import { Data, Edge, EdgeOptions, IdType, Network, Node, NodeOptions, Options } from 'vis-network';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 import { WebMRecorder } from '../../util/webMRecorder';
+import { GifRecorder } from '../../util/gifRecorder';
 import { DebuggerPanel, registerDebuggerPanelFactory } from './debuggerPanel';
 import { DebuggerPanelMessageService } from './debuggerPanelMessageService';
 import { VisjsGroupName } from './visjsGroupName';
@@ -30,10 +32,15 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
   private _webMRecorder?: WebMRecorder;
+  private _gifRecorder?: GifRecorder;
 
   constructor(window: Window, document: Document, messageService: DebuggerPanelMessageService) {
     super(window, document, messageService);
+    this.renderIndicator = this.createRenderIndicator();
+    document.body.appendChild(this.renderIndicator);
   }
+
+  private readonly renderIndicator;
 
   //  Initialization :: UI :: Tool bar
 
@@ -49,6 +56,10 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     button.addEventListener('mouseenter', (event) => this.setOpacity(event, 0.8));
     button.addEventListener('mouseleave', (event) => this.setOpacity(event, 1));
     return button;
+  }
+
+  private createRenderIndicator(): HTMLDivElement {
+    return this.createDiv('render-indicator');
   }
 
   //  Event processing :: Message -> Rendering area
@@ -79,6 +90,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       }
     });
     this._webMRecorder = new WebMRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
+    this._gifRecorder = new GifRecorder(VisjsDebuggerPanel.getCanvas(renderingArea));
   }
 
   protected updateRenderingArea(data: VisjsUpdateInput): void {
@@ -138,18 +150,22 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   }
 
   protected gifRecordingInProgress(): boolean {
-    //  TODO: VOOD-171: Replace with implementation
-    return super.gifRecordingInProgress();
+    return this.gifRecorder.isRecording;
   }
 
   protected startGifRecording(): void {
-    //  TODO: VOOD-171: Replace with implementation
-    super.stopGifRecording();
+    this.gifRecorder.startRecording((blob) => {
+      this.setRenderIndicatorVisibility(false);
+      this.downloadBlobFile('export.gif', blob);
+    });
   }
 
   protected stopGifRecording(): void {
-    //  TODO: VOOD-171: Replace with implementation
-    super.stopGifRecording();
+    this.setRenderIndicatorVisibility(true);
+    setTimeout(() => {
+      this.gifRecorder.stopRecording();
+      this.updateRecordingIndicatorVisibility();
+    }, 100);
   }
 
   private static getCanvas(renderingArea: HTMLDivElement): HTMLCanvasElement {
@@ -203,6 +219,10 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     }
   }
 
+  private setRenderIndicatorVisibility(visible: boolean): void {
+    this.renderIndicator.style.display = visible ? 'flex' : 'none';
+  }
+
   //  Event processing :: Shared
 
   private setVisibility(nodeId: string, visibility: boolean): void {
@@ -253,6 +273,14 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       throw new Error('WebM recorder not set');
     }
     return webMRecorder;
+  }
+
+  private get gifRecorder(): GifRecorder {
+    const gifRecorder = this._gifRecorder;
+    if (!gifRecorder) {
+      throw new Error('GIF recorder not set');
+    }
+    return gifRecorder;
   }
 }
 

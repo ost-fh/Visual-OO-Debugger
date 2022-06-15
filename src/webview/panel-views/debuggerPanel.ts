@@ -106,7 +106,7 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   //  Initialization :: UI :: Shared
 
-  private createDiv(className: string, ...children: HTMLElement[]): HTMLDivElement {
+  protected createDiv(className: string, ...children: HTMLElement[]): HTMLDivElement {
     const element = this.document.createElement('div');
     element.className = className;
     for (const child of children) {
@@ -244,7 +244,7 @@ export abstract class DebuggerPanel<RenderingAreaData, RenderingAreaOptions, Ren
 
   //  Event processing :: Message -> Status bar
 
-  private updateRecordingIndicatorVisibility(): void {
+  protected updateRecordingIndicatorVisibility(): void {
     this.setRecordingIndicatorVisibility(this.webMRecordingInProgress() || this.gifRecordingInProgress());
   }
 
