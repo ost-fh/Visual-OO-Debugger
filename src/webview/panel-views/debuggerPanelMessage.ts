@@ -27,10 +27,21 @@ interface CreateClusterDebuggerPanelMessage extends WebviewMessage {
   content: string;
 }
 
+interface HideNodeDebuggerPanelMessage extends WebviewMessage {
+  command: 'hideNode';
+  content: string;
+}
+
+interface ShowAllNodesDebuggerPanelMessage extends WebviewMessage {
+  command: 'showAllNodes';
+}
+
 export type DebuggerPanelMessage =
   | StepBackDebuggerPanelMessage
   | StepForwardDebuggerPanelMessage
   | SelectStackFrameDebuggerPanelMessage
   | OpenAllClustersDebuggerPanelMessage
   | OpenClusterDebuggerPanelMessage
-  | CreateClusterDebuggerPanelMessage;
+  | CreateClusterDebuggerPanelMessage
+  | HideNodeDebuggerPanelMessage
+  | ShowAllNodesDebuggerPanelMessage;

@@ -1,7 +1,6 @@
 import { Button } from '@vscode/webview-ui-toolkit';
 import { DataSet } from 'vis-data';
-
-import { Data, Edge, EdgeOptions, IdType, Network, Node, NodeOptions, Options } from 'vis-network';
+import { Data, Edge, EdgeOptions, Network, Node, Options } from 'vis-network';
 import { VisjsUpdateInput } from '../../model/visjsUpdateInput';
 import { hasClusterPrefix } from '../../util/nodePrefixHandler';
 import { WebMRecorder } from '../../util/webMRecorder';
@@ -14,22 +13,10 @@ type WithDefinedId<T extends Partial<Record<'id', unknown>>> = T & Required<Pick
 type NodeWithDefinedId = WithDefinedId<Node>;
 type EdgeWithDefinedId = WithDefinedId<Edge>;
 
-type NetworkWithJsProperties = Network & {
-  body: {
-    nodes: Record<
-      IdType,
-      {
-        options: NodeOptions;
-      }
-    >;
-  };
-};
-
 export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdateInput> {
-  private _network?: NetworkWithJsProperties;
+  private _network?: Network;
   private _nodes?: DataSet<Node>;
   private _edges?: DataSet<Edge>;
-  private defaultNodeColor?: NodeOptions['color'];
   private defaultEdgeColor?: EdgeOptions['color'];
   private _webMRecorder?: WebMRecorder;
   private _gifRecorder?: GifRecorder;
@@ -51,7 +38,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   }
 
   private createHideNodeButton(): Button {
-    const button = this.createToolBarButton('hide-node-button', 'Hides node dragged on to it', 'eye-closed', () => this.showAllNodes());
+    const button = this.createToolBarButton('hide-node-button', 'Hides node dragged onto it', 'eye-closed', () => this.showAllNodes());
     button.addEventListener('mouseup', (event) => this.hideNode(event));
     button.addEventListener('mouseenter', (event) => this.setOpacity(event, 0.8));
     button.addEventListener('mouseleave', (event) => this.setOpacity(event, 1));
@@ -67,17 +54,9 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   protected initializeRenderingArea(renderingArea: HTMLDivElement, data: Data, options: Options): void {
     this._nodes = new DataSet(data.nodes as Node[]);
     this._edges = new DataSet(data.edges as Edge[]);
-    this.defaultNodeColor = options.nodes?.color;
     this.defaultEdgeColor = options.edges?.color;
     const { nodes, edges } = this;
-    this._network = new Network(
-      renderingArea,
-      {
-        nodes,
-        edges,
-      },
-      options
-    ) as NetworkWithJsProperties;
+    this._network = new Network(renderingArea, { nodes, edges }, options);
     const { network } = this;
     network.on('selectNode', (params: Record<'nodes', string[]>) => {
       if (params.nodes.length === 1) {
@@ -110,27 +89,11 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       edges.map((edge) => ({
         ...(edge as EdgeWithDefinedId),
         color: this.defaultEdgeColor,
-        physics: this.isPhysicsOn(edge),
       }))
     );
     nodes.add(data.addNodes);
     nodes.updateOnly(data.updateNodes as NodeWithDefinedId[]);
-    edges.add(
-      data.addEdges.map((edge) => ({
-        ...edge,
-        physics: this.isPhysicsOn(edge),
-      }))
-    );
-  }
-
-  private isPhysicsOn(edge: Edge): boolean {
-    const network = this.network;
-    const nodes = network.body.nodes;
-    if (!nodes[edge.to as IdType].options.physics || !nodes[edge.from as IdType].options.physics) {
-      return false;
-    }
-    const clusters = network.findNode(edge.to as IdType).concat(network.findNode(edge.from as IdType));
-    return clusters.every((nodeId) => nodes[nodeId].options.physics);
+    edges.add(data.addEdges);
   }
 
   protected exportImage(renderingArea: HTMLDivElement): void {
@@ -187,13 +150,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
   }
 
   private showAllNodes(): void {
-    const nodes = this.network.body.nodes;
-    const nodeIds = Object.keys(nodes).filter((nodeId) => !nodeId.startsWith('edge'));
-    nodeIds.forEach((nodeId) => {
-      if (nodes[nodeId].options.hidden) {
-        this.setVisibility(nodeId, true);
-      }
-    });
+    this.messageService.showAllNodes();
   }
 
   private hideNode({ pageX, pageY }: MouseEvent): void {
@@ -202,7 +159,7 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
       y: pageY,
     }) as string;
     if (nodeId) {
-      this.setVisibility(nodeId, false);
+      this.messageService.hideNode(nodeId);
     }
   }
 
@@ -223,27 +180,9 @@ export class VisjsDebuggerPanel extends DebuggerPanel<Data, Options, VisjsUpdate
     this.renderIndicator.style.display = visible ? 'flex' : 'none';
   }
 
-  //  Event processing :: Shared
-
-  private setVisibility(nodeId: string, visibility: boolean): void {
-    const nodeEdges = this.network.getConnectedEdges(nodeId);
-    this.nodes.updateOnly({
-      id: nodeId,
-      hidden: !visibility,
-      physics: visibility,
-      opacity: 1,
-    });
-    nodeEdges.forEach((edgeId) => {
-      this.edges.updateOnly({
-        id: edgeId,
-        physics: visibility,
-      });
-    });
-  }
-
   //  Utilities :: Safe access
 
-  private get network(): NetworkWithJsProperties {
+  private get network(): Network {
     const network = this._network;
     if (!network) {
       throw new Error('Network not set');

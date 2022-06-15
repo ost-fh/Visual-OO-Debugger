@@ -30,11 +30,13 @@ export class DebuggerPanel {
 
   private currentVariables: PanelViewInputVariableMap | undefined;
 
-  private currentClusteredVariables: PanelViewInputVariableMap | undefined;
+  private currentProcessedVariables: PanelViewInputVariableMap | undefined;
 
   private historyIndex = -1;
 
   private clusters = new Set<string>();
+
+  private hiddenNodes = new Set<string>();
 
   private readonly plantUmlObjectDiagramFileSaver: FileSaver;
 
@@ -101,6 +103,12 @@ export class DebuggerPanel {
           case 'createCluster':
             this.createCluster(message.content);
             break;
+          case 'hideNode':
+            this.hideNode(message.content);
+            break;
+          case 'showAllNodes':
+            this.showAllNodes();
+            break;
           default:
             console.warn('Unknown message:', message);
         }
@@ -113,7 +121,7 @@ export class DebuggerPanel {
 
     if (this.currentPanelViewInput) {
       this.currentVariables = undefined;
-      this.currentClusteredVariables = undefined;
+      this.currentProcessedVariables = undefined;
       this.updatePanel(this.currentPanelViewInput);
     }
   }
@@ -186,10 +194,11 @@ export class DebuggerPanel {
   reset(): void {
     this.currentPanelViewInput = undefined;
     this.currentVariables = undefined;
-    this.currentClusteredVariables = undefined;
+    this.currentProcessedVariables = undefined;
     this.inputHistory = [];
     this.historyIndex = -1;
     this.clusters.clear();
+    this.hiddenNodes.clear();
   }
 
   setPanelStyles(panelViewColors: PanelViewColors): void {
@@ -238,10 +247,11 @@ export class DebuggerPanel {
   }
 
   private delegateUpdate(variables: PanelViewInputVariableMap): PanelViewCommand {
-    const clusteredVariables = this.applyClustering(variables);
-    const command = this.panelViewProxy.updatePanel(clusteredVariables, this.currentClusteredVariables);
+    const processedVariables = this.applyClustering(variables);
+    this.applyHiding(processedVariables);
+    const command = this.panelViewProxy.updatePanel(processedVariables, this.currentProcessedVariables);
     this.currentVariables = variables;
-    this.currentClusteredVariables = clusteredVariables;
+    this.currentProcessedVariables = processedVariables;
     return command;
   }
 
@@ -293,24 +303,29 @@ export class DebuggerPanel {
   }
 
   private openAllClusters(): void {
-    this.clusters.clear();
-    this.updatePanelAfterReclustering();
+    const nonHiddenClusters = Array.from(this.clusters).filter((clusterId) => !this.hiddenNodes.has(clusterId));
+    if (nonHiddenClusters.length > 0) {
+      for (const cluster of nonHiddenClusters) {
+        this.clusters.delete(cluster);
+      }
+      this.reloadPanel();
+    }
   }
 
   private openCluster(clusterId: string): void {
     this.clusters.delete(clusterId);
-    this.updatePanelAfterReclustering();
+    this.reloadPanel();
   }
 
   private createCluster(nodeId: string): void {
-    const references = this.currentVariables?.get(nodeId)?.references ?? [];
+    const references = this.currentProcessedVariables?.get(nodeId)?.references ?? [];
     if (references.length > 0) {
       this.clusters.add(addClusterPrefix(nodeId));
-      this.updatePanelAfterReclustering();
+      this.reloadPanel();
     }
   }
 
-  private updatePanelAfterReclustering(): void {
+  private reloadPanel(): void {
     if (this.currentVariables) {
       const variables = this.currentVariables;
       this.postCommandToWebViewIfViewPanelIsDefined(() => this.delegateUpdate(variables));
@@ -379,5 +394,43 @@ export class DebuggerPanel {
     }
 
     return relations;
+  }
+
+  private hideNode(nodeId: string): void {
+    this.hiddenNodes.add(nodeId);
+    this.reloadPanel();
+  }
+
+  private showAllNodes(): void {
+    if (this.hiddenNodes.size > 0) {
+      this.hiddenNodes.clear();
+      this.reloadPanel();
+    }
+  }
+
+  private applyHiding(variables: PanelViewInputVariableMap): void {
+    for (const hiddenNodeId of this.hiddenNodes) {
+      const nodeToHide = variables.get(hiddenNodeId);
+      if (nodeToHide) {
+        this.deleteReferencesAndRelationsToNode(nodeToHide, variables);
+        variables.delete(hiddenNodeId);
+      }
+    }
+  }
+
+  private deleteReferencesAndRelationsToNode(node: PanelViewVariable, variables: PanelViewInputVariableMap): void {
+    for (const relation of node.incomingRelations ?? []) {
+      const relatedNode = variables.get(relation.parentId);
+      if (relatedNode?.references) {
+        relatedNode.references = relatedNode.references.filter((reference) => reference.childId !== node.id);
+      }
+    }
+
+    for (const reference of node.references ?? []) {
+      const referencedNode = variables.get(reference.childId);
+      if (referencedNode?.incomingRelations) {
+        referencedNode.incomingRelations = referencedNode.incomingRelations.filter((relation) => relation.parentId !== node.id);
+      }
+    }
   }
 }

@@ -43,6 +43,19 @@ export class DebuggerPanelMessageService {
     });
   }
 
+  hideNode(nodeId: string): void {
+    this.postMessage({
+      command: 'hideNode',
+      content: nodeId,
+    });
+  }
+
+  showAllNodes(): void {
+    this.postMessage({
+      command: 'showAllNodes',
+    });
+  }
+
   private postMessage(message: DebuggerPanelMessage): void {
     this.webviewApi.postMessage(message);
   }
