@@ -3,7 +3,7 @@ import gifEncoder = require('gif-encoder-2-browser');
 import { createCanvas } from 'canvas';
 
 interface GifRecordingContext {
-  interval: NodeJS.Timer;
+  interval: ReturnType<typeof setInterval>;
   frames: ImageData[];
   height: number;
   width: number;
@@ -17,7 +17,6 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
     super();
   }
 
-  private recordingContext: GifRecordingContext | undefined;
 
   protected startRecordingImplementation(onDataReady: (data: Blob) => void): GifRecordingContext {
     const canvas = this.canvas;
@@ -28,7 +27,7 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
     this.recordFramesGifRecording();
     const interval = setInterval(() => this.recordFramesGifRecording(), frameRate);
 
-    this.recordingContext = {
+    const recordingContext = {
       interval: interval,
       frames: [],
       height: height,
@@ -37,7 +36,7 @@ export class GifRecorder extends Recorder<Blob, GifRecordingContext> {
       onDataReady: onDataReady,
     };
 
-    return this.recordingContext;
+    return recordingContext;
   }
 
   private recordFramesGifRecording(): void {
