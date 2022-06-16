@@ -55,11 +55,23 @@ update and visualize the variables of the selected stack frame.
 ### Cluster Nodes
 
 Left-click on a node to collapse it along with its references to other nodes. Left-click on the cluster to expand it again.
-To expand all clusters at once, click on the 'Open all clusters' button in the top right-hand corner of the view.
+To expand all clusters at once, click on the 'Open all clusters' button in the upper right-hand corner of the view.
+
+### Hide Nodes
+
+Drag and drop a node or cluster onto the eye icon in the upper right-hand corner of the view to hide it. All hidden
+nodes and clusters can be revealed by clicking on the eye icon.
 
 ## Extension Settings
 
-By default, [vis.js](https://visjs.org/) is used to visualize the debug information. The preferred view can be changed
-in the User/Workspace Settings:
-
 ![settings](./images/settings.png)
+
+### Visualization Styles
+
+By default, [vis.js](https://visjs.org/) is used to visualize the debug information. The preferred view can be changed
+in the User/Workspace settings.
+
+### Customizable Colors
+
+The colors of nodes can be changed in the User/Workspace settings. The colors of edges and text on nodes are derived
+from the selected node colors.
