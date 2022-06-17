@@ -61,8 +61,14 @@ export class JointJsDebuggerPanel extends DebuggerPanel<
   }
 
   protected updateRenderingArea(data: JointJsRenderingAreaUpdateData): void {
+    console.info('JointJsDebuggerPanel.updateRenderingArea', { data });
+    this.initializeFromObjectDiagram({
+      structures: data.structuresToBeRestored,
+      fields: data.fieldsToBeRestored,
+      references: data.referencesToBeRestored,
+    });
     this.runWithFrozenPaper(() => {
-      // this.removeReferences(data.referencesToBeRemoved);
+      this.removeReferences(data.referencesToBeRemoved);
       this.removeFields(data.fieldsToBeRemoved);
       this.removeStructures(data.structuresToBeRemoved);
       this.resetColorsOfStructureShapes();
@@ -77,7 +83,7 @@ export class JointJsDebuggerPanel extends DebuggerPanel<
       this.addFields(data.fieldsToBeAdded, changedVariableColor);
       this.addReferences(data.referencesToBeAdded, changedVariableColor);
       //  We had to add the new structures first
-      this.removeReferences(data.referencesToBeRemoved);
+      // this.removeReferences(data.referencesToBeRemoved);
       this.updateReferences(data.referencesToBeUpdated);
       this.optimizeGeometry();
     });
