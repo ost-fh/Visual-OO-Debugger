@@ -61,7 +61,6 @@ export class JointJsDebuggerPanel extends DebuggerPanel<
   }
 
   protected updateRenderingArea(data: JointJsRenderingAreaUpdateData): void {
-    console.info('JointJsDebuggerPanel.updateRenderingArea', { data });
     this.initializeFromObjectDiagram({
       structures: data.structuresToBeRestored,
       fields: data.fieldsToBeRestored,
