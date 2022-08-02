@@ -68,8 +68,8 @@ Please refer to the [official VS Code extension testing documentation][testing-d
 
 Please use this type of tests to test migrations between versions and interactions with other extensions as well.
 
-[test-suite]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/tree/master/src/test/suite
-[extension-test]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/test/suite/extension.test.ts
+[test-suite]: https://github.com/ost-fh/Visual-OO-Debugger/tree/master/src/test/suite
+[extension-test]: https://github.com/ost-fh/Visual-OO-Debugger/blob/master/src/test/suite/extension.test.ts
 [testing-doc]: https://code.visualstudio.com/api/working-with-extensions/testing-extension
 
 #### Units
@@ -81,9 +81,9 @@ In most cases, a unit test file tests an implementation located in the same dire
 with the `.ts` file name extension (e.g. the file[src/object-diagram/model/escapedString.spec.ts][escaped-string-test]
 tests the implementations in the file [src/object-diagram/model/escapedString.ts][escaped-string]).
 
-[src]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/tree/master/src
-[escaped-string-test]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.spec.ts
-[escaped-string]: https://github.com/GinoCardillo-OST/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.ts
+[src]: https://github.com/ost-fh/Visual-OO-Debugger/tree/master/src
+[escaped-string-test]: https://github.com/ost-fh/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.spec.ts
+[escaped-string]: https://github.com/ost-fh/Visual-OO-Debugger/blob/master/src/object-diagram/model/escapedString.ts
 
 ### Running Tests
 

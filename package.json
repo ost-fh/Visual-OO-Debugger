@@ -1,13 +1,13 @@
 {
   "name": "visual-oo-debugger",
-  "publisher": "GinoCardilloOST",
+  "publisher": "OST - Eastern Switzerland University of Applied Sciences",
   "displayName": "Visual OO Debugger",
   "description": "A visual debugger for Java for teaching object-oriented programming. The extension visualizes objects and variables graphically and can run a program step by step to facilitate a better understanding of how objects and variables change over the course of a program.",
   "version": "0.0.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GinoCardillo-OST/Visual-OO-Debugger.git"
+    "url": "https://github.com/ost-fh/Visual-OO-Debugger.git"
   },
   "icon": "images/logo_128x128.png",
   "galleryBanner": {
