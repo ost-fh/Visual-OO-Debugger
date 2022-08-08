@@ -3,7 +3,7 @@
   "publisher": "ost-fh",
   "displayName": "Visual OO Debugger",
   "description": "A visual debugger for Java for teaching object-oriented programming. The extension visualizes objects and variables graphically and can run a program step by step to facilitate a better understanding of how objects and variables change over the course of a program.",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
