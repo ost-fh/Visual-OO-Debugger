@@ -16,7 +16,7 @@ After installing the extension from [VS Marketplace][marketplace], execute the c
 to open a new view for the visualization. Then execute your code in debug mode and continue the program step-by-step
 and see the visualization update in the debugger view.
 
-[marketplace]: https://marketplace.visualstudio.com/items?itemName=GinoCardilloOST.visual-oo-debugger
+[marketplace]: https://marketplace.visualstudio.com/items?itemName=ost-fh.visual-oo-debugger
 
 ### Exporting a static image
 
